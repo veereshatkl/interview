@@ -1,6 +1,3 @@
-github:
-username: daleveeresh
-passord: 9652241030
 
 what is git
 ------------
