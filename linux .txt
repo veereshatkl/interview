@@ -2,7 +2,7 @@ Roles AND Responsibilities
 Hi 
 Good morning
 I am Veeresh. I have completed my graduation in 2017 from JNTUA. 
-I am having total  5 years of experience, in this i have 4.3 years of experience as a devops with AWS engineer and 6 months experience as a sre engineer. 
+I am having total  5 years of experience, in this i have 3 years of experience as a devops with AWS engineer and 2 years of s experience as a sre engineer. 
 During my tenure  I have been  working on various DevOps tools like git maven jenkins ansible, docker, k8s, terraform, .. and also such as a  various aws services like ec2 aim, s3 load balancing vpc cloud watch and other services. 
 
 my last working company is collabera technoligies and client PANW. In this organisation i worked on wildfire project. In this project my roles and responsibilities is 
