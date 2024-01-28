@@ -1,0 +1,76 @@
+What is Maven?
+Maven is a popular open-source build tool developed by the Apache Group to build, publish, and deploy several projects at once for better project management.
+
+1. Maven works in three steps:
+Reading the pom.xml file is the first step.
+The dependencies mentioned in pom.xml are then downloaded from the central repository into the local repository.
+Finally, it builds and generates a report based on the requirements, as well as handles life cycles, phases, goals, plugins, and other tasks.
+
+2.What elements are used for creating a pom.xml file?
+The following elements are necessary for creating a pom.xml file:
+project- The root element of the pom.xml file is the project.
+modelVersion- It identifies which version of the POM model you're working with. For Maven 2 and Maven 3, use version 4.0.0.
+groupId- groupId is the project group's identifier. It is unique, and you will most likely use a group ID that is similar to the project's root Java package name.
+artifactId- It is used for naming the project you're working on.
+version- The version number of the project is contained in the version element. If your project has been released in multiple versions, it is helpful to list the versions.
+Other Pom.xml File Elements
+
+3. What are the different types of Maven repositories? Discuss.
+The three types of repositories of Maven are:
+
+Local repository
+Central repository
+Remote repository
+Maven scans these repositories for dependencies. Maven looks in the Local repository first, then the Central repository, and finally the Remote repository if the Remote repository is defined in the POM.
+
+Local Repository: Local repository is a directory on the developer's device. The local repository contains all of Maven's dependencies. Even though several projects rely on dependencies, Maven only needs to download them once.
+Central Repository: The Maven community has built the central Maven repository. Maven searches this central repository for any dependencies that aren't available in your local repository. The dependencies are subsequently downloaded into your local repository by Maven.
+Remote Repository: Maven may download dependencies from a remote repository hosted on a web server. It is frequently used to host internal organization projects. The dependencies are subsequently downloaded into your local repository by Maven.
+
+4. What are the different phases of the default life cycle?
+The different phases of the default lifecycle are:
+Validate: Make sure the project is correct and that you have all of the necessary information.
+Test: Test the compiled source code using an appropriate unit testing framework. These tests should not demand that the code be packed or deployed; instead, take the compiled code and package it in a manner that can be distributed, such as a JAR.
+Compile: Compile the project's source code.
+Verify: Perform any necessary checks on integration test findings to ensure that quality criteria are met.
+Install: Adds the package to the local repository, allowing it to be used as a dependency in other projects.
+Deploy: Copies the entire package to the remote repository for sharing with other developers and organizations, and is done in the build environment.
+
+5. What are Maven plugins used for?
+Build plugins:  These plugins are used throughout the build process and are configured in the pom.xml file's <build/> element.
+Reporting plugins: These plugins are configured in the pom.xml's <reporting/> element and run during stage generation
+
+6. How do you know the version of Maven being used?
+mvn –version 
+
+1. mvn clean
+This command cleans the maven project by deleting the target directory.
+
+mvn package
+This command builds the maven project and packages them into a JAR, WAR, etc.
+
+mvn install
+This command builds the maven project and installs the project files (JAR, WAR, pom.xml, etc) to the local repository.
+
+ mvn deploy
+This command is used to deploy the artifact to the remote repository. 
+
+mvn validate
+This command validates the maven project that everything is correct and all the necessary information is available.
+
+mvn verify
+This command build the project, runs all the test cases and run any checks on the results of the integration tests to ensure quality criteria are met.
+
+In Maven, what do you mean by Clean, Default, and Site?
+The three built-in build life cycles are:
+
+Clean: The clean lifecycle is in charge of project cleaning.
+Default: The project deployment is handled by the default lifecycle.
+Site: The creation of the project's site documentation is referred to as the site lifecycle.
+
+What are the phases of the clean lifecycle?
+The Maven clean lifecycle takes care of eliminating all temporary files from the output directory, including generated source files, compiled classes, and previous JAR files, among other things.
+
+pre-clean- performs tasks that are necessary prior to actual project cleaning.
+clean- delete all files created by the previous build.
+post-clean- performs tasks that are necessary to finalize project cleaning

@@ -1,0 +1,371 @@
+docker
+----------
+Docker is a very popular and powerful open-source containerization platform that is used for building, deploying, and running applications.
+
+docker is a tool through which we can implement containerization technology where we can package software applications into docker images and ship them. people can run applications packaged in docker isolated from other as containers.	
+docker workflow:
+develop -> package ->ship
+develop -> build -> package -> release
+
+What is virtualization, what is the purpose of it?
+Virtualization is a technic or a mechanism through which we can run multiple parallel isolated environments on a single machine through the help of using Hypervisor Software.
+
+What is Containerization?
+Containerization is a technology through which we can package software application and its dependent libraries together and can run within a container which is isolated from other software application that are running on the same computer is called "Containerization"	
+
+ADDVANTAGE:
+All these aspects form the core part of DevOps which becomes all the more important for any developer to know these in order to improve productivity, fasten the development along with keeping in mind the factors of application scalability and more efficient resource management.
+Imagine containers as a very lightweight pre-installed box with all the packages, dependencies, software required by your application, just deploy to production with minimal configuration changes.
+Lots of companies like PayPal, Spotify, Uber, etc use Docker to simplify the operations and to bring the infrastructure and security closer to make more secure applications.
+Being portable, Containers can be deployed on multiple platforms like bare instances, virtual machines, Kubernetes platform etc. as per requirements of scale or desired platform
+
+Dockerfile:
+Definition: A Dockerfile is a text file that contains instructions for building a Docker image.
+Docker Image:
+Definition: A Docker image is a lightweight, standalone, executable package that includes everything needed to run a piece of software, including the code, runtime, libraries, and system tools.
+Docker Container:
+Definition: A Docker container is a running instance of a Docker image.
+What is a Container?
+A container is a standard unit of software bundled with dependencies so that applications can be deployed fast and reliably b/w different computing platforms.
+
+How does docker containers are isolated from each other while running on the same operating system?
+There are 3 major features of linux operating system are there while enables isolating a container from another
+#1. linux namespaces
+namespaces helps in isolating a container from another container running on the same machine. each docker container runs out of its own namespace and can access the resources that are allocated to that namespace only.
+Below are the namespaces supported by linux to keep containers isolated
+1. pid
+2. net
+3. uts
+4. mts
+5. ipc
+
+#2. Control Groups (cgroups)
+helps in sharing the resources of the machine and limiting their usage across the containers 
+
+#3. Union Filesystem
+docker images are packaged based on union filesystem to keep them light weight
+
+What is docker architecture?
+There are 3 parts in docker architecture
+1. docker engine
+docker engine is the main component that takes care of running docker containers from an docker image
+The Docker Engine manages the container lifecycle, networking, storage, and other essential aspects of the Docker platform.
+There are 3 main components are there within the docker engine
+	1.1 docker daemon
+	1.2 containerd
+	1.3 runc
+
+2. docker cli 
+docker cli stands for docker command-line interface, which is provided as part of the docker install. which has handful commands that allows the users to communicate with docker engine in managing images/containers
+
+3. docker container registry
+docker container registry is a repository where docker images are published and distributed across the environments/world
+The docker has provided a "http://hub.docker.com" docker registry in which people around the world build their own docker images publishes and distributes to the world
+
+. docker image
+docker image is a file packaged with
+1. application binary
+2. software packages (required for running the application)
+3. instructions in running the application
+4. bins/libs = that enables to communicate with docker engine
+together to run an application in an isolated environment of a computer
+
+There are few characteristics of docker images there
+1. The docker images are read-only
+2. The docker images layered and stackable
+
+DOCKER CONTAINERS COMMANDS
+#1 How to run a docker container interactively?
+docker container run -it image:tag command
+
+#2 How to see the running containers on the docker workstation?
+docker container ps
+
+Only stopped containers can be listed using:
+docker ps -a --filter "status=exited"
+ 
+#3. How to see all the containers on the docker workstation?
+docker container ls -a
+
+#4. How to stop a running docker container?
+docker container stop id/name
+
+#5. How to remove a docker container?
+docker container rm id/name
+
+#6. How to remove an running docker container?
+docker container rm -f id/name
+	
+#7. How to remove all the exited docker containers which are unused?
+docker container prune
+
+#8. How to run a docker container as a daemon?
+docker container run -d image:tag 
+
+#9. How to run a docker container with a given name?
+docker container run --name containerName image:tag
+
+#10. How to launch a container that gets removed automatically upon termination?
+docker container run -d --name containerName --rm image:tag
+
+#4. How to see the logs generated by the program running inside the container?
+docker container logs id/name
+
+#5. How to enter into a daemon container that is running and grab the TTY or execute a command?
+docker container exec -it id/name bin/bash or docker container attach id/name 
+
+#7. How to see the details of a container?
+docker container inspect id/name
+
+#How to start an stopped container?
+docker container start or stop mysql
+
+docker image management commands
+1. How to see all the docker images on the docker workstation or local cache?
+docker image ls
+2. How to see the details of the image?
+docker image inspect image:tag
+3. How to pull a docker image from docker registry?
+docker image pull image:tag
+4. How to retag/add an alias name to an existing image?
+docker image tag image:tag newimage:newtag
+5. How to remove an docker image?
+docker image rm image:tag 
+6. How to remove all the unused images on the workstation?
+docker image prune
+7. How to export an existing docker image on a machine?
+docker image save image:tag -o filename.tar
+8. How to load an docker image from an existing .tar file?
+docker image load -i filename.tar
+
+
+What are the build image instructions that are there?
+1. FROM
+2. ARG
+3. RUN
+4. ADD
+5. WORKDIR
+6. COPY
+7. LABEL
+8. ENV
+
+What are the container instructions?
+1. CMD
+2. EXPOSE
+3. ENTRYPOINT
+4. HEALTHCHECK
+5. VOLUME
+
+1.FROM
+FROM is an directive through which we tell docker engine to extend our image on top of base image
+
+#2. ENV
+ENV is a directive used for defining environment variables to be passed while building the image, so that those variables are available while executing the container.
+docker image build -t image:tag --env-file=variables.env
+
+variables.env
+---------------
+JAVA_HOME=/u01/middleware/openjdk-11-jdk
+TOMCAT_HOME=/u01/middleware/apache-tomcat-9.50.1
+
+#3. ARG directive
+------------------
+ARG is an directive used for passing arguments while building the image. We can parameterize the docker image build process through ARG.
+The ARG we passed are only available within Dockerfile only and are not accessible during the runtime while running the container
+By using arguments, you can pass these values dynamically when running a container, making it easier to deploy the same image with different configurations in various environments (development, testing, production).
+
+Dockerfile
+-----------
+FROM ubuntu:20.04
+ARG JDK_PKG_NM
+RUN apt install -y $JDK_PKG_NM
+
+docker image build -t app:1.0 --build-arg JDK_PKG_NM=openjdk-11-jdk .
+
+#4. LABEL directive
+LABEL is an directive used for defining key=value pair in Dockerfile which is used for documentation of the image
+
+Dockerfile
+----------
+FROM ubuntu:20.04
+LABEL AUTHOR=greg
+LABEL IMAGE_VERSION=1.0
+LABEL LICENSE=apache license 2.0
+	
+docker image build -t label:1.0 .
+docker image inspect label:1.0
+
+#5. MAINTAINER
+MAINTAINER is an another directive used for defining the author of the image, and is deprecated and no more in used in favour of LABEL
+
+Dockerfile
+-----------
+FROM ubuntu:20.04
+MAINTAINER greg
+
+#6. RUN directive
+RUN directive is used for running any command during the time of building the image, the output generated by the RUN directive will be written as a layer ontop of the image always.
+Dockerfile
+-----------
+FROM ubuntu:20.04
+RUN apt update -y
+RUN apt install -y net-tools
+
+#7. COPY directive
+COPY directive is used for copying the files from docker build context to the docker image.
+Dockerfile
+-----------
+FROM ubuntu:20.04
+RUN apt update -y
+RUN apt install openjdk-11-jdk
+RUN mkdir /u01
+COPY target/tokengenerator-1.0.jar ~/tg.jar
+
+#8. ADD directive
+ADD is similar to COPY directive only, but the only difference between the ADD and COPY is
+	COPY: only copies the files from docker build context to the image
+but ADD can
+	1. copy files from docker build context to the image and
+	2. it download the files from remote system based on URL and can add into the docker image as well
+
+#9. WORKDIR directive
+-----------------------
+The COPY, ADD, CMD, ENTRYPOINT, RUN directives works based relative from WORKDIR location
+
+VOLUME directive
+----------------
+Volumes vs Bind Mounts
+The volumes are stored in /var/lib/docker/ volumes.
+A bind mount can reside anywhere on a host computer.
+The application that is running within the docker container may generate some data as an output during its execution. By default the application generated data will be written onto the Container Writable Layer of that container, keeping the docker image immutable/read-only (by design), it greatly reduces the diskusage in running multiple containers of the same image
+The docker has provided 2 ways of managing stateful containers in storing the data
+1. bind mounts
+2. docker volumes
+
+#1. Docker volumes:
+----------------
+a specific directory on the host machine is mounted into the container. Changes made in the container are reflected on the host, and vice versa. This type of volume is useful for sharing data between the host and the container.
+docker container run -it -v /u01/data:/u01/data:Z ubuntu:20.04 bin/bash
+
+#2.bind mounts
+-----------
+bind mounts are used for mouting the host computer directory on to the docker container. while running statefull applications within a container, to ensure the data is not lost incase of container crash or destroyed we use bind mounts.
+
+ --mount (new style)
+syntax:- key/value pair, and is more abbrevative form of mouting the bind mounts
+--mount type=bind,source=sourcedir,target=targetdir,propagationSettings
+COMMANDS:
+#1. How to create docker volume through the docker cli
+1.1 docker volume create volumename 
+1.2 docker volume ls = to list all the volume s on that docker host
+1.3 docker volume inspect volumename = to see the details of the volume
+1.4 docker volume rm volumename = deletes the volume
+
+#10 EXPOSE directive
+EXPOSE directive doesnt exposes any port of the docker container to the guest, its just for the sake of documentation stating the containerized application is running on which port so that the user who is launching the container can expose that port
+$ docker container run -it --name CN -p 8080 image:tag
+
+#11. CMD directive
+The main purpose of a CMD is to provide defaults for an executing container. or 
+The CMD describes the default container commonds. The user can easily override the default commands when you us this.
+
+CMD after entrypoint
+FROM ubuntu:22.04
+ENTRYPOINT "[ls]"
+CMD "[-l]"
+to printt ls -l
+
+CMD before ENTRYPOINT
+FROM ubuntu
+CMD "[ls]"
+ENTRYPOINT "[L]"
+it is print ls only
+
+#12. ENTRYPOINT
+An ENTRYPOINT helps you to configure a container that you can run as an executable.
+
+NETWORKING:
+Docker takes care of the networking aspects so that the containers can communicate with other containers and also with the Docker Host.
+
+What is Docker Networking?
+Docker networking enables a user to link a Docker container to as many networks as he/she requires. Docker Networks are used to provide complete isolation for Docker containers.
+
+Note: A user can add containers to more than one network.
+Network Drivers
+Docker supports networking for its containers via network drivers. These drivers have several network drivers.
+1.Bridge
+2.Host
+3.None
+4.Overlay
+5Macvlan
+
+1.Bridge Network:
+Docker creates a default bridge network called bridge when installed. Containers connected to the bridge network can communicate with each other.
+The bridge network is suitable for standalone containers that need to communicate with each other on the same host.
+
+2. Host
+It is a public network.
+It effectively disables network isolation between the docker host and the docker containers, 
+which means using this network driver a user will be unable to run multiple containers on the same host
+
+3. None
+In this network driver, the Docker containers will neither have any access to external networks nor will it be able to communicate with other containers
+This option is used when a user wants to disable the networking access to a container 
+In simple terms, None is called a loopback interface, which means it has no external network interfaces 
+ 
+4. Overlay
+Overlay networks are used for communication between containers across multiple Docker hosts. They are part of Docker Swarm mode and allow for multi-host networking.
+Overlay networks use the VxLAN protocol to provide a secure and isolated network across hosts.
+
+5.Macvlan
+It simplifies the communication process between containers
+This network assigns a MAC address to the Docker container. With this Mac address, the Docker server (daemon) routes the network traffic to a router
+Note: Docker Daemon is a server which interacts with the operating system and performs all kind of services
+It is suitable when a user wants to directly connect the container to the physical network rather than the Docker host
+
+COMMANDS:
+1.How to create a docker network
+docker network create networkname
+2.List down the Networks associated with Docker 
+docker network ls 
+3.Connect a Running Container to a Network
+$ docker network connect multi-host-network container
+4.Disconnect a Container from a Network
+$ docker network disconnect multi-host-network container1
+5.Remove a Network
+$ docker network rm network_name
+6.Remove all Unused Networks
+$ docker network prune
+
+what is Docker file or image ?
+Docker images act as a set of instructions to build a Docker container, like a template. 
+docker file :its consists of software application, dependencies libraries, libs/bins.
+
+
+What can you tell about Docker Compose?
+It is a YAML file consisting of all the details regarding various services, networks, and volumes that are needed for setting up the Docker-based application. So, docker-compose is used for creating multiple containers, host them and establish communication between them. For the purpose of communication amongst the containers, ports are exposed by each and every container.
+
+How many Docker components are there?
+There are three docker components, they are - Docker Client, Docker Host, and Docker Registry.
+
+Docker Client: This component performs “build” and “run” operations for the purpose of opening communication with the docker host.
+Docker Host: This component has the main docker daemon and hosts containers and their associated images. The daemon establishes a connection with the docker registry.
+Docker Registry: This component stores the docker images. There can be a public registry or a private one. The most famous public registries are Docker Hub and Docker Cloud.
+
+What is a .dockerignore file?
+A .dockerignore is a configuration file that describes files and directories that you want to ignore when building a Docker image.
+
+what is docker multi stage image?
+Docker multi-stage builds are a feature that allows you to use multiple FROM statements in a single Dockerfile. This feature is designed to help you create smaller, more efficient Docker images by separating the build environment from the runtime environment. It's particularly useful when building applications with multiple build dependencies where not all of these dependencies are needed in the final runtime image.
+# Stage 1: Build Stage
+FROM node:14 as builder
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build
+
+# Stage 2: Production Stage
+FROM node:14-alpine
+WORKDIR /app
+COPY --from=builder /app/dist /app  / here only copy necessary information ftom build stage to prod
+CMD ["npm", "start"]

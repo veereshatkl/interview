@@ -1,0 +1,110 @@
+github:
+username: daleveeresh
+passord: 9652241030
+
+what is git
+------------
+Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
+Git is used to tracking changes in the source code, enabling multiple developers to work together on non-linear development.
+
+Features of Git
+-----------------
+Tracks history
+Free and open source
+Supports non-linear development
+Creates backups
+Scalable
+Supports collaboration
+Branching is easier
+Distributed development
+
+1.git init
+The command git init is used to create an empty Git repository.-----git init
+
+2. git add 
+Add command is used after checking the status of the files, to add those files to the staging area.------git add .
+
+3. git commit
+The commit command makes sure that the changes are saved to the local repository.----git commit -m “commit message”
+
+4.git status
+The git status command tells the current state of the repository.------git status
+
+5. git config
+The git config command is used initially to configure the user.name and user.email. ----git config --global user.name “any user name” git config --global user.email <email id>
+
+6.git log
+The git log command shows the order of the commit history for a repository------ git log
+
+7. git branch
+The git branch command is used to determine what branch the local repository is on.
+The command enables adding  new branch ----- git branch branchname
+and deleting a branch---- git branch -d branchname
+
+8. git checkout
+The git checkout command is used to switch branches, whenever the work is to be started on a different branch.------git checkout <branch_name>
+
+9. git merge
+The git merge command is used to integrate the branches together. The command combines the changes from one branch to another branch.------ git merge <branch_name>
+
+10..What Is Git Rebase?
+Rebase is one of two Git utilities designed to integrate changes from one branch into another. Rebasing is the process of combining or moving a sequence of commits on top of a new base commit. Git rebase is the linear process of merging.
+ 
+11. git clone
+the command downloads the remote repository to the computer. -----git clone <remote_URL>
+
+12.git pull 
+The git pull command is used to fetch and merge changes from the remote repository to the local repository.
+The command "git pull origin master" copies all the files from the master branch of the remote repository to the local repository.-----git pull <branch_name> <remote URL>
+
+13. git push
+The command git push is used to transfer the commits or pushing the content from the local repository to the remote repository.------git push -u origin master
+
+14.git fetch
+The Git fetch command only downloads new data from a remote repository.----- git fetch -all
+ 
+15. git stash
+The git stash command takes your modified tracked files and saves it on a pile of incomplete changes that you can reapply at any time. To go back to work, you can use the stash pop.
+The git stash command will help a developer switch branches to work on something else without committing to incomplete work.
+# Store current work with untracked files
+  git stash -u
+
+# Bring stashed work back to the working directory
+  git stash pop
+
+16. What do you understand about the Git merge conflict?
+A Git merge conflict is an event that occurs when Git is unable to resolve the differences in code between the two commits automatically. 
+
+Git is capable of automatically merging the changes only if the commits are on different lines or branches.
+
+17. How do you resolve conflicts in Git?
+Here are the steps that will help you resolve conflicts in Git:
+
+Identify the files responsible for the conflicts.
+Implement the desired changes to the files 
+Add the files using the git add command.
+The last step is to commit the changes in the file with the help of the git commit command.
+
+18.  What is the functionality of git clean command? 
+The git clean command removes the untracked files from the working directory.
+
+20. What exactly is git cherry-pick?
+A command typically used to move specific commits from one branch of a repository to another.
+$git cherry-pick commit-id
+
+21. What is conflict in Git?
+Resolving a conflict can be done by manually editing the file to choose which changes should be kept, or by using a tool like Git's merge command to automatically merge the changes.
+
+22. What is the command used to fix a broken commit?
+To fix a broken commit in Git, you may use the “git commit --amend” command, which helps you combine the staged changes with the previous commits instead of creating an entirely new commit.
+
+24). Types of version control systems: 
+Local version control systems have a database that maintains all the file changes on disk under revision control in a special format.
+Centralized version control systems contain one repository, and each user gets their own working copy.
+Distributed version control systems contain multiple repositories, each accessible to separate users with their own working copy.
+
+25). Difference between git and svn ?
+Git has a distributed architecture, while SVN is centralized. Both are enterprise-grade version control systems, with Git positioned as more of a source code management (SCM) tool while SVN acts more as a revision control system.
+
+26). what is .gitignore file
+The .gitignore file is a text file that tells Git which files or folders to ignore in a project.

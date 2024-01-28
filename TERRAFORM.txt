@@ -1,0 +1,417 @@
+TERRAFORM:
+Terraform is an IAC tool, used primarily by DevOps teams to automate various infrastructure tasks. The provisioning of cloud resources, for instance, is one of the main use cases of Terraform.
+The primary goal of Terraform is to automate the process of creating, updating, and managing infrastructure resources across various cloud providers and on-premises environments.
+What is Terraform used for?
+---------------------------
+1.One of the main functions of Terraform is for public cloud provisioning on one of the major providers.
+2.The second main use for Terraform is to facilitate multi-cloud deployments. 
+3.The third most common use of Terraform is deploying, managing, and orchestrating resources with custom cloud providers.
+
+@.The first commande is “Terraform refresh“, that reads the current settings from all managed remote objects and updates the Terraform state to match.
+
+@.Eventually, you should run “Terraform Plan” where terraform figures out what needs to be done, by creating an execution plan.
+ By default, creating a plan consists of:
+
+Reading the current state of any already-existing remote objects to make sure that the Terraform state is up-to-date.
+Comparing the current configuration to the prior state and nothing any differences.
+Proposing a set of change actions that should, if applied, make the remote objects match the configuration.
+
+@.and for the last part you have to run  “Terraform Apply”, which executes the actions suggested in a Terraform plan. 
+@.by using the command “Terraform Destroy”  which is a convenient way to destroy all remote objects managed by a particular Terraform configuration.
+
+Terraform Core Concepts:
+--------------------------
+Below are the core concepts/terminologies used in Terraform:
+Variables: Also used as input-variables, it is a key-value pair used by Terraform modules to allow customization.
+Provider: It is a plugin to interact with APIs of service and access its related resources.
+Module: It is a folder with Terraform templates where all the configurations are defined
+State: It consists of cached information about the infrastructure managed by Terraform and its related configurations.
+Resources: It refers to a block of one or more infrastructure objects (compute instances, virtual networks, etc.), which are used in configuring and managing the infrastructure.
+Data Source: It is implemented by providers to return information on external objects to terraform.
+Output Values: These are return values of a terraform module that can be used by other configurations.
+Plan: It is one of the stages where it determines what needs to be created, updated, or destroyed to move from the real/current state of the infrastructure to the desired state.
+Apply: It is one of the stages where it applies the changes in the real/current state of the infrastructure in order to move to the desired state.
+
+Ansible, Chef and Puppet are configuration management tools which means they are primarily designed to install and manage software on existing servers
+Terraform and CloudFormation are infrastructure orchestration tools which are designed to provision servers and infrastructure themselves.
+
+1. Define IAC?
+IAC or Infrastructure as Code allows you to build, change, and manage your infrastructure through coding instead of manual processes.
+
+2: What are the reasons for choosing Terraform for DevOps?
+Answer: Below are the reasons for choosing Terraform for DevOps:
+It can do complete orchestration and not just configuration management (like Ansible and Puppet).
+Has amazing support of almost all the popular cloud providers like AWS, Azure, GCP, DigitalOcean etc.
+Easily manages the configuration of an immutable (dynamic) infrastructure.
+Provide immutable infrastructure where configuration changes smoothly.
+Works on HCL (HashiCorp configuration language), which is very easy to learn and understand.
+Easily portable from one provider to another.
+Easy Installation.
+
+3. What are the most useful Terraform commands?
+Some of the most useful Terraform commands are:
+
+terraform init - initializes the current directory
+terraform refresh - refreshes the state file
+terraform output - views Terraform outputs
+terraform apply - applies the Terraform code and builds stuff
+terraform destroy - destroys what has been built by Terraform
+terraform graph - creates a DOT-formatted graph
+terraform plan - a dry run to see what Terraform will do
+terraform validate - Validates the syntax and format of your Terraform configuration files without executing them.
+terraform import: Imports existing infrastructure into Terraform.
+
+
+4. What is Terraform init?
+This command is used to set up the working directory for Terraform configuration files.
+
+5. How does Terraform work?
+Answer: Terraform creates an implementation plan, defines what it will do to achieve the desired state, and then executes it to build the infrastructure described. Terraform is capable of determining what changed and generating incremental execution plans that are practical as the configuration changes.
+
+7. What is Terraform D?
+Terraform D is a plugin used on most in-service systems and Windows. Terraform init by default searches next directories for plugins.
+
+10. Where operations are performed 
+Where the state is stored (Terraform keeps track of all the resources created in a state file)
+
+11. What are modules in Terraform?
+A jug for numerous resources that are used jointly is known as a module in Terraform. The root module includes resources mentioned in the .tf files and is required for every Terraform.
+
+12. What is a Private Module Registry?
+A Private Module Registry is a feature from Terraform Cloud that allows you to share Terraform modules across the organization. You can enforce rules or “sentinel policies” on the registry that specify how many members of your organization can use the modules.
+
+13. Is Terraform usable for an on-prem infrastructure?
+Yes, Terraform can be used for on-prem infrastructure. As there are a lot of obtainable providers, we can decide which suits us the best. All that we need is an API.
+Interested in becoming a cloud architect? Join our Cloud Architect Master’s Program and learn AWS, Microsoft Azure, and Google Cloud Platform from the ground up!
+
+14. Does Terraform support multi-provider deployments?
+Yes, multi-provider deployments are supported by Terraform, which includes on-prem like Openstack, VMware, and we can manage SDN even using Terram too.
+Also Read: VMware vSphere Best Practices
+
+15. How is duplicate resource error ignored during terraform apply?
+We can try the following options:
+Delete those resources from the cloud provider(API) and recreate them using Terraform
+Delete those resources from Terraform code to stop its management with it
+Carry out a terraform import of the resource and remove the code that is trying to recreate them
+
+16. Which command destroys Terraform managed infrastructure?
+terraform destroy [options] [dir]
+
+17. Can you provide a few examples where we can use for Sentinel policies?
+Sentinels are a powerful way to implement a variety of policies in Terraform. Here are a few examples:
+Enforce explicit ownership in resources
+Restrict roles the cloud provider can assume
+Review an audit trail for Terraform Cloud operations
+Forbid only certain resources, providers, or data sources
+Enforce mandatory tagging on resources 
+Restrict how modules are used in the Private Module Registry
+
+18. How to Store Sensitive Data in Terraform?
+Terraform requires credentials to communicate with your cloud provider's API. But most of the time, these credentials are saved in plaintext on your desktop. GitHub is exposed to thousands of API and cryptographic keys every day. Hence, your API keys should never be stored in Terraform code directly.  You should use encrypted storage to store all your passwords, TLS certificates, SSH keys, and anything else that shouldn't be stored in plain text.
+
+19. Explain State File Locking?
+State file locking is Terraform mechanism in which operations on a specific state file are blocked to avoid conflicts between multiple users performing the same process. When one user releases the lock, then only the other one can operate on that state. This helps in preventing state file corruption. This is a backend operation.
+
+20. What do you understand by a Tainted Resource?
+A tainted resource is a resource that is forced to be destroyed and recreated on the next apply command. When a resource is marked as tainted, the state files are updated, but nothing changes on infrastructure. The terraform plan out shows that help will get destroyed and recreated. The changes get implemented when the next apply happens.
+
+21. How to lock Terraform module versions?
+A proven way of locking Terraform module version is using the Terraform module registry as a source. We can use the ‘version’ attribute in module of the Terraform configuration file. As the Github repository is being used as a source, we need to specify versions, branch, and query string with ‘?ref’.
+
+22. What is Terraform Core? Tell us some primary responsibilities of it.
+Terraform Core is a binary written statically compiled by using the Go programming language. The compiled binary offers an entry point for the users of Terraform. The primary responsibilities include:
+Reading and interpolation of modules and configuration files by Infrastructure as code functionalities
+Resource Graph Construction
+Plugin communication through RPC
+Plan execution
+Management of resource state
+
+24. How will you upgrade plugins on Terraform?
+Run ‘terraform init’ with ‘-upgrade’ option. This command rechecks the releases.hashicorp.com to find new acceptable provider versions. It also downloads available provider versions. “.terraform/plugins/<OS>_<ARCH>” is the automatic downloads directory.
+
+26. Differentiate between Terraform and Ansible.
+Answer: Ansible is a deceptively simple IT automation tool. Configuration management, application deployment, cloud provisioning, ad-hoc job execution, network automation, and multi-node orchestration are all handled by this software. Ansible simplifies complex changes such as zero-downtime rolling updates with load balancers. The following table compares and contrasts Ansible and Terraform:
+Terraform	Ansible
+Terraform is a tool for provisioning.					Ansible is a tool for managing configurations.
+It uses a declarative Infrastructure as Code methodology.				It takes a procedural method.
+It’s ideal for orchestrating cloud services and building cloud infrastructure from the ground up.				It is mostly used to configure servers with the appropriate software and to update resources that have previously been configured.
+By default, Terraform does not allow bare metal provisioning.						The provisioning of bare metal servers is supported by Ansible.
+In terms of packing and templating, it does not provide better support.					It includes complete packaging and templating support.
+It is strongly influenced by lifecycle or state management.					It doesn’t have any kind of lifecycle management. It does not store the state.
+
+terraform state file:
+When you run terraform apply command to create an infrastructure on cloud, Terraform creates a state file called “terraform.tfstate”. This State File contains full details of resources in our terraform code. When you modify something on your code and apply it on cloud, terraform will look into the state file, and compare the changes made in the code from that state file and the changes to the infrastructure based on the state file.  
+
+null resources
+If you need to run provisioners that aren't directly associated with a specific resource, you can associate them with a null_resource.
+
+
+how to create a ec2 instance ?
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_key_pair" "mykp" {
+  key_name = "mykp"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4DnPj0nvmL6PZdWKQPXUVoMwO0AJ2Ir6dHS35AcC0SxyGBX+JpdDxxSvtIsLNAlgTRmCD3IQXH+4cKStoHZ2HMSUJEVtBwKGkOCaYmdizrhmbtVWgIbPGdtiDqkw0e2N/f2MAg4Fwu7K9Wf/Xs5FWRAWPRgKIRiARG8Dx0iKrVmMY85Z4c/Wabe6MbfeKO8vgmo9sIxwQ3ON6TTzZV2oH/z+CY2pXU6RIPt18Uckm7pOUrXGQexfzlrYbQKnIqmolA2DQ4GQQvzHgp/9W82kBIE9wq9PTqY1QMXKCD6nhi6WYmw62wYZ/xEzV3sEUjn6h3W5jSryY2Vz40fYi5VqbH1+BkwblRmXOJTGYZg1Htdjzz+9DZ0h9RY/6i14O4F6GLDqbsKpn5LGlqPJx7xEvgz5dnD+0Er2ko7dhWkA0ZxwOiWf4Yl5zeb+FKb4Xq3eDYhvnJuaAmFkX7kOEbDV7I6+oaz3fCh/ChqA3IIGo6CbPMBYtTqlkxeV5v/fwYyM= veere@DESKTOP-DSDIFA3"
+}
+resource "aws_vpc" "myvpc" {
+    cidr_block = "10.0.0.0/16"
+  tags = {
+    "Name" = "myec2"
+  }
+}
+resource "aws_subnet" "mysub" {
+  cidr_block = "10.0.1.0/24"
+  vpc_id = aws_vpc.myvpc.id
+  availability_zone = "ap-south-1a"
+  tags = {
+    "Name" = "mysub"
+  }
+}
+resource "aws_internet_gateway" "myig" {
+  vpc_id = aws_vpc.myvpc.id
+  tags = {
+    "Name" = "myig"
+  }
+}
+resource "aws_route_table" "mirt" {
+  vpc_id = aws_vpc.myvpc.id
+  route {
+    gateway_id = aws_internet_gateway.myig.id
+    cidr_block = "0.0.0.0/0"
+  }
+}
+resource "aws_route_table_association" "myrtas" {
+  route_table_id = aws_route_table.mirt.id
+  subnet_id = aws_subnet.mysub.id
+}
+resource "aws_security_group" "mysg" {
+  vpc_id = aws_vpc.myvpc.id
+
+  ingress {
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["10.0.0.0/16"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}
+
+
+resource "aws_instance" "myec2" {
+  ami = "ami-0caf778a172362f1c"
+  instance_type = "t2.micro"
+  subnet_id = aws_subnet.mysub.id
+  associate_public_ip_address = "true"
+}
+----------------------------------------------------------------------------------
+What is datasource, how to work with it?
+Datasource is used for querying the resources that are part of our aws account.	These are used for provisioning the resources on an existing infra
+
+first to create vpc and subnet:
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_key_pair" "mykp" {
+  key_name = "mykp"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4DnPj0nvmL6PZdWKQPXUVoMwO0AJ2Ir6dHS35AcC0SxyGBX+JpdDxxSvtIsLNAlgTRmCD3IQXH+4cKStoHZ2HMSUJEVtBwKGkOCaYmdizrhmbtVWgIbPGdtiDqkw0e2N/f2MAg4Fwu7K9Wf/Xs5FWRAWPRgKIRiARG8Dx0iKrVmMY85Z4c/Wabe6MbfeKO8vgmo9sIxwQ3ON6TTzZV2oH/z+CY2pXU6RIPt18Uckm7pOUrXGQexfzlrYbQKnIqmolA2DQ4GQQvzHgp/9W82kBIE9wq9PTqY1QMXKCD6nhi6WYmw62wYZ/xEzV3sEUjn6h3W5jSryY2Vz40fYi5VqbH1+BkwblRmXOJTGYZg1Htdjzz+9DZ0h9RY/6i14O4F6GLDqbsKpn5LGlqPJx7xEvgz5dnD+0Er2ko7dhWkA0ZxwOiWf4Yl5zeb+FKb4Xq3eDYhvnJuaAmFkX7kOEbDV7I6+oaz3fCh/ChqA3IIGo6CbPMBYtTqlkxeV5v/fwYyM= veere@DESKTOP-DSDIFA3"
+}
+resource "aws_vpc" "myvpc" {
+    cidr_block = "10.0.0.0/16"
+  tags = {
+    "Name" = "myec2"
+  }
+}
+resource "aws_subnet" "mysub" {
+  cidr_block = "10.0.1.0/24"
+  vpc_id = aws_vpc.myvpc.id
+  availability_zone = "ap-south-1a"
+  tags = {
+    "Name" = "mysub"
+  }
+}
+---------------------------------------
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_key_pair" "mykp" {
+  key_name   = "mykp"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4DnPj0nvmL6PZdWKQPXUVoMwO0AJ2Ir6dHS35AcC0SxyGBX+JpdDxxSvtIsLNAlgTRmCD3IQXH+4cKStoHZ2HMSUJEVtBwKGkOCaYmdizrhmbtVWgIbPGdtiDqkw0e2N/f2MAg4Fwu7K9Wf/Xs5FWRAWPRgKIRiARG8Dx0iKrVmMY85Z4c/Wabe6MbfeKO8vgmo9sIxwQ3ON6TTzZV2oH/z+CY2pXU6RIPt18Uckm7pOUrXGQexfzlrYbQKnIqmolA2DQ4GQQvzHgp/9W82kBIE9wq9PTqY1QMXKCD6nhi6WYmw62wYZ/xEzV3sEUjn6h3W5jSryY2Vz40fYi5VqbH1+BkwblRmXOJTGYZg1Htdjzz+9DZ0h9RY/6i14O4F6GLDqbsKpn5LGlqPJx7xEvgz5dnD+0Er2ko7dhWkA0ZxwOiWf4Yl5zeb+FKb4Xq3eDYhvnJuaAmFkX7kOEbDV7I6+oaz3fCh/ChqA3IIGo6CbPMBYtTqlkxeV5v/fwYyM= veere@DESKTOP-DSDIFA3"
+}
+data "aws_vpc" "myvpc" {
+  cidr_block = "10.0.0.0/16"
+}
+
+data "aws_subnet" "mysub" {
+  cidr_block = "10.0.1.0/24"
+  vpc_id = data.aws_vpc.myvpc.id
+  availability_zone = "ap-south-1a"
+  tags = {
+    "Name" = "mysub"
+  }
+}
+
+resource "aws_instance" "myec2" {
+  ami = "ami-0caf778a172362f1c"
+  instance_type = "t2.micro"
+  subnet_id = data.aws_subnet.mysub.id
+  associate_public_ip_address = "true"
+  tags = {
+    "Name" = "my"
+  }
+}
+
+Working with variables in Terraform?
+Variables are the placeholders in which we can store the data or values. so that in the programs rather than using hardcoded values, we can refer variables that improves code readability and maintainability. Like any other programming language terraform also supports working with declaring variables, assigning values to them and referencing them in the terraform configuration file
+There are 3 parts of working with variables are there
+1. declare variables
+2. refer the variables in terraform configuration file instead of hardcoding
+3. passing the values 
+a variable declaration contains 3 parts
+1. type = which type of data the variable holds is indicated through dataType. when we supply the value for the variable terraform validates it against the dataType before applying the configuration
+2. description = indicates the purpose or usage of the variable
+3. default = indicates the defaultValue to be used incase user has not supplied any value for the variable
+
+Following are the supported dataTypes for a variable declaration
+1. string
+2. list
+3. map 
+4. bool
+5. number
+6. set
+7. object
+
+#1. list variable
+variable "cidr_blocks" {
+	type = list
+	description = "cidrs for security group"
+	default = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
+#2. map variable
+variable "tags" {
+	type = map
+	default = {
+		Name = tomcatserver
+		Env = dev
+		App = fithealth2
+	}
+}
+
+#3. object variable
+variable "ec2instanceconf" {
+	type = object({
+		instance_type = string
+		ami = string
+	})	
+	default = {
+		instance_type = "t2.micro"
+		ami = "ami-39393"
+	}
+}
+
+#4. number variable
+variable "port" {
+	type = number
+	description = "port no"
+	default = 22
+}
+
+ex1; to create a vars.tf file
+variable "vpc_cidr" {
+  type = string
+  description = "vpc cidr block"
+  # default = "10.0.0.0/16"
+}
+
+variable "subnet_cidr" {
+  type = string
+  # default = "10.0.1.0/24"
+}
+
+variable "ec2" {
+    type = object({
+        ami=string
+        instance_type=string
+    })
+    # default = {
+    #     ami="ami-0caf778a172362f1c"
+    #     instance_type="t2.micro"
+    # }
+}
+to create a main.tf
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"
+    }
+  }
+}
+provider "aws" {
+  region = "ap-south-1"
+  profile = "default"
+}
+
+resource "aws_key_pair" "mykp" {
+  key_name = "mykp"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4DnPj0nvmL6PZdWKQPXUVoMwO0AJ2Ir6dHS35AcC0SxyGBX+JpdDxxSvtIsLNAlgTRmCD3IQXH+4cKStoHZ2HMSUJEVtBwKGkOCaYmdizrhmbtVWgIbPGdtiDqkw0e2N/f2MAg4Fwu7K9Wf/Xs5FWRAWPRgKIRiARG8Dx0iKrVmMY85Z4c/Wabe6MbfeKO8vgmo9sIxwQ3ON6TTzZV2oH/z+CY2pXU6RIPt18Uckm7pOUrXGQexfzlrYbQKnIqmolA2DQ4GQQvzHgp/9W82kBIE9wq9PTqY1QMXKCD6nhi6WYmw62wYZ/xEzV3sEUjn6h3W5jSryY2Vz40fYi5VqbH1+BkwblRmXOJTGYZg1Htdjzz+9DZ0h9RY/6i14O4F6GLDqbsKpn5LGlqPJx7xEvgz5dnD+0Er2ko7dhWkA0ZxwOiWf4Yl5zeb+FKb4Xq3eDYhvnJuaAmFkX7kOEbDV7I6+oaz3fCh/ChqA3IIGo6CbPMBYtTqlkxeV5v/fwYyM= veere@DESKTOP-DSDIFA3"
+}
+
+resource "aws_vpc" "myvpc" {
+  cidr_block = var.vpc_cidr
+}
+resource "aws_subnet" "mysub" {
+  vpc_id = aws_vpc.myvpc.id
+  cidr_block = var.subnet_cidr
+  availability_zone = "ap-south-1a"
+}
+
+resource "aws_instance" "myec2" {
+  subnet_id = aws_subnet.mysub.id
+  ami = var.ec2.ami
+  availability_zone = "ap-south-1a"
+  instance_type = var.ec2_instance_type
+  key_name = aws_key_pair.mykp.id
+  associate_public_ip_address = true
+}
+
+
+
+

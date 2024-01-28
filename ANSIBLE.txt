@@ -1,0 +1,868 @@
+ANSIBLE:
+Ansible is an open-source automation tool, or platform, used for IT tasks such as configuration management, application deployment, intraservice orchestration, and provisioning. 
+Ansible: Ansible is a configuration management tool that focuses on automating the provisioning and configuration of software applications. It is agentless, meaning it doesn't require any software to be installed on the target machines. 
+Terraform: Terraform is an Infrastructure as Code (IaC) tool that is designed for provisioning and managing infrastructure resources across various cloud providers and on-premises environments. 
+
+Benefits of Ansible:
+Free: Ansible is an open-source tool.
+Very simple to set up and use: No special coding skills are necessary to use Ansible’s playbooks (more on playbooks later).
+Powerful: Ansible lets you model even highly complex IT workflows. 
+Flexible: You can orchestrate the entire application environment no matter where it’s deployed. You can also customize it based on your needs.
+Agentless: You don’t need to install any other software or firewall ports on the client systems you want to automate. You also don’t have to set up a separate management structure.
+Efficient: Because you don’t need to install any extra software, there’s more room for application resources on your server.
+
+Ansible Features:
+1. Configuration Management
+2. Application Deployment
+3. Orchestration
+4. Security and Compliance
+5. Cloud Provisioning
+
+Ansible architecture
+Ansible is an software configuration management tool that automates the job of installing and configuring the softwares on the target machine. It has 5 core components in it
+1. Ansible Modules
+2. Ansible Control Node Server [Master]
+3. Ansible Managed Node
+4. Ansible Playbook
+5. Inventory File
+
+1. Ansible Module
+Ansible modules are the code-blocks written in python language by the ansible developers and distributed aspart of the ansible install. Each module has been pre-coded to perform a stipulated task or an operation, and all the modules provided by the ansible has been written to enforce the principle of idempotancy.
+These modules are designed to take data as an input to perform the operation and produces the output. For eg.. an copy module is used from copying an file/folder from source to destination, and it takes input as file/folder to be copied and destination dir where you want to copy.
+The output might produce indicating the number of files being copied and status
+
+2. Ansible Control Node Server
+Ansible Control Node server is the engine of Ansible. Any machine on which the Ansible software has been installed will acts as an Ansible Control Node Server. The Control Node Server takes the Ansible Module/Playbook as an input and transfers the each module from Control NodeServer to the Managed Nodes along with their inputs. Executes the Module on the remote System and transfers the outcome of execution back to the ControlNode Server in JSON format and displays the outcome of execution to the enduser
+1. The Control Node Server is completely stateless, no information about any of the nodes of the cluster will no be stored on Control Node Server
+2. The Ansible Developer or DevOps engineer can use any machine as Control Node Server since it is stateless, only requirement for a machine to act as ControlNode Server is install ansible software
+3. All the Machines on the Ansible cluster communicates with each other over SSH, so the nodes on cluster should be configured by enabling ssh access
+4. Ansible has provided CLI tool through which the ansible developer/ops engineer can talk to the Control Node Server
+
+3. Ansible Managed Node
+Ansible Managed Node is a Server or a Computer within the organization whom we wanted to manage/install and configure the software so that is can be used for deploying and running the application.
+1. The user on all the Managed nodes should be configured with password-less sudo access
+2. SSH server should be installed and enable password-less authentication by adding a public key to the user
+3. optionally install python on ansible managed node
+
+4. Playbook
+Ansible Playbooks are lists of tasks that automatically execute against hosts.
+Each module within an Ansible Playbook performs a specific task
+
+5. Inventory File
+The Control Node Server is completely stateless, it doesnt carry any information related to the Fleet/Managed Nodes of the cluster. The ansible developer has to write the list of servers/computers on whom we wanted to apply the playbook/module by writing in a File called InventoryFile.
+Now along with the playbook pass the inventoryFile as an input to ControlNode Server asking him to execute the modules
+
+6. ansible module
+Ansible modules are units of code that can execute system commands
+
+What is a Play?
+A play is set of tasks we wanted to apply on group/host to achieve the desired state of the system.
+Within a playbook file we can write multiple plays or we can write each play in a separate playbook file.
+
+What is a Task?
+A task represents an operation or an action we wanted to accomplish on a target/ansible host machine. A task comprises of a module declaration attached with arguments to it
+We can think of a task as a named execution of a module to perform an action.
+Additionally we can attach conditions/loops in controlling the way we wanted to apply the module on the fleet
+
+The devops engineer can ask the ansible control node server to execute a module on the managed node in 2 ways
+1. adhoc commands
+2. playbook
+
+#1. adhoc commands
+to perform an one-time operation in running an ansible module on the fleet servers rather than writing an playbook describing all the details, we can use adhoc commands in ansible.
+adhoc commands are the quick and easy way of running an ansible module directly on fleet servers since these operations are one-time and does not require any archestration during execution
+
+syntax:-
+ansible [group] [-i inventoryFile] -m moduleName [-a arguments]
+[] = optional
+
+ansible has provided lot of modules out of which one module is 
+1. ping = used for checking whether an node is reachable or not, ping module doesnt take an input so the are no arguments while invoking the ping module
+ansible all -m ping
+2. shell = shell module is used for executing directly a shell-command on the managed server/fleet. The shell modules requires the command to be executed as an argument
+ansible all -m shell -a "echo Good evening"	
+When to use adhoc commands?
+1. if we wanted to perform an one-time activity that is not reusable or may have to be executed in future on a different machines 
+
+Ansible Inventory File
+-----------------------
+The Ansible Control Node server is stateless and doesnt have any information about the fleet servers on whom we wanted to apply the automation. The opsengineer has to write the ansible inventory file describing the details of the fleet servers of the organization on whom we wanted to apply automation
+By default Ansible uses the inventoryFile at location /etc/ansible/hosts while applying the modules/playbooks. we can override the default ansible inventoryFile with our own by creating one and supplying using -i switch
+ansible [group] -i inventoryFile -m module
+	
+There are 2 formats in which we can write an inventoryFile
+1. INI Format
+2. YAML Format
+By default there are 2 groups are there in every inventoryFile we create
+1. all = every host declared in the inventoryFile comes under all group
+2. ungrouped = if a host has not been assigned to any group other than all then it becomes ungrouped
+
+How to declare groups in inventoryFile?
+#1. INI Format
+groups are declared in INI format with square bracket headings
+~/hosts2
+192.168.10.11
+[javaservers]         
+192.168.10.12
+192.168.10.13
+[dbservers]
+192.168.10.15
+192.168.10.16
+	
+In the above inventoryFile there are 4 groups are there
+1. ungrouped = 192.168.10.11
+2. all 
+3. javaservers
+4. dbservers
+
+#2. In YAML 
+---
+all:
+  hosts:
+    192.168.10.11:
+		192.168.10.13:
+	childrens:
+    javaservers:
+      hosts:
+        192.168.10.20:
+			  192.168.10.30:
+		dbservers:
+      hosts:
+        192.168.10.50:
+				192.168.10.60:
+
+How to declare variables in inventoryFile?
+How many types of variables can be declared in Ansible?
+There are 8 types of variables of different scopes can be used in ansible automation
+1. ansible global settings
+2. ansible pre-defined variables at inventoryFile
+3. user-defined variables at inventoryFile
+	- host
+	- group
+4. playbook variables
+5. vars_files
+6. --extra-vars
+7. register variables
+8. magic variables
+
+*1. ansible pre-defined variables
+these are pre-defined variables provided by ansible, through which we can control the behaviour of how the controlnode server connects to the ansible host
+For eg.. the control node server connects to the ansible host using default sshport: 22, but if the managed servers are configured to listen on a different ssh port then we can define a variable at the inventoryFile at host-level or groupLevel dictating the usage of the SSH port for that machine
+There are bunch of pre-defined variables that dictates the behaviour of how ansible control node server should connect to managed nodes	few of them are below and for more inputs [refer to ansible documentation]
+
+connection variables
+1. ansible_host = hostname or ip address
+2. ansible_port = ssh port to be used
+3. ansible_user = ssh username to be used while connecting to the ansible hosts
+4. ansible_password = ssh password to be used for connecting to the host (if passwordAuthentication: yes)
+	
+ssh variables
+5. ansible_ssh_private_key_file = the keyfile to be used for ssh into the nodes
+
+privilege escalation variables
+6. ansible_become: true = for the host or group execute the playbook/modules using sudo permission
+7. ansible_become_user: allows us to switch to a different user for privilege escalation to execute a module/playbook
+9. ansible_become_password: passwordto be used to switch
+	
+remote host environment variables:
+10: ansible_shell_type: by default ansible uses sh shell-type for executing modules, we can specify a different shell to be used for running the modules
+
+*2. We can declare our own user defined variables in the inventoryFile
+~/hosts
+ipaddress/hostname variableName=value variableName=value
+for eg..
+	
+~/hosts
+192.168.10.11 tomcat_port=8080 applicationName=fithealth
+
+we can declare variables at group level also as below
+~/hosts
+[javaservers]
+192.168.10.11
+192.168.10.12
+	
+	
+[javaservers:vars]	
+tomcat_port=2022
+tomcat_admin_user=tomcat
+tomcat_admin_password=welcome1
+
+~/hosts.yml	
+javaservers:
+  hosts:
+    192.168.10.11:
+    192.168.10.12:
+  vars:
+	  tomcat_port: 8080
+		tomcat_admin_user: tomcat
+		tomcat_admin_password: welcome1
+
+
+*3.Playbook
+To perform an automation on the fleet servers we need to execute a bunch of ansible modules sequentially by orchestrating them. manually executing the ansible modules on fleet is a tough job
+Instead we can declare the modules we wanted to execute on the ansible managed nodes and archestrate them by using playbooks.
+	
+Playbooks are written in YAML file format
+How does the playbook file looks like?
+syntax/structure of playbook file:
+
+playbook.yml
+---
+- name: play1
+	hosts: groupName 
+	tasks:
+		- name: task1
+			module:
+				argName: argValue
+				argName: argValue
+	  - name: task2
+			module:
+				argName: argValue
+				argName: argValue
+	
+- name: play2
+  hosts: groupName
+...
+
+
+
+Playbook
+-------------
+---
+- name: playName
+  hosts: group
+	tasks:
+		- name: taskName
+			module:
+				argName: argValue
+				argName: argValue
+		- name: taskName
+			module:
+				argName: argValue
+				argName: argValue
+
+There are 5 possible statuses in which a task can be there and it is reported per each managed node
+1. ok(n)           = for how many task executions the control node is able to successfully connect to the managed nodes
+2. changed(n)      = indicates how many tasks of the playbook executions has changed the state of the managed node
+3. unreachable(n)  = how many task executions of the playbook failed due to unable to connect to the managed node
+4. failure(n)      = how many task executions of the playbook resulted in failure of execution
+5. skipped(n)      = how many task executions are omitted on the managed node The reasons can be 
+                     - unmatched condition
+										 - due to previous failures	
+										 
+Modules
+--------
+Modules represents a unit of work that can be applied on managed nodes. The ansible modules are written in Python language, they take input as arguments and produces the output as json format including the status of the action being performed on a node
+
+1. command module = doesnt uses the shell capabilites for executing the linux commands on the node, so we cannot use shell capabilities like (pipes) | and redirections (>, <, >>,  <<) 
+1.1 command module
+syntax:
+1. command module with command for execution
+- name: task
+  command: command to be executed
+	
+2. command module execute by changing into a directory
+- name: task
+  command: command to be executed
+	args:
+    chdir: directory
+			 
+3. command module execute if the file path specified doesnt exits
+- name: task
+	command: command to be executed
+	args:
+		creates: pathToTheFile
+
+2. shell module = by default uses /bin/sh for executing the linux commands so we can use both pipes and redirections
+------------
+syntax:-
+	
+#1. shell module with linux command to be executed
+- name: task
+	shell: shellcommand
+	
+#2. shell module by switching to a directory
+- name: task:
+	shell: shellcommand
+	args:
+		chdir: directory
+		
+#3. shell module with creates option (if file doesnt exists then only execute)
+- name: task
+	shell: shellcommand
+	args:
+		creates: pathToTheFile
+		
+#4. shell module with removes option (command also we can use remove option), executes the module if the file exists
+- name: task
+	shell: shellcommand
+	args:
+    removes: pathToTheFile
+
+#2. File Category				
+To work with performing operations on files/directories on the filesystem use File category modules rather than using command/shell module. We can perform various different file/directory operations like
+1. copying files
+2. creating/deleting files/folders
+3. changing the ownership of the files/folders
+4. inline edit (similar to sed)
+al the above operations can be done with idempotancy by using file category modules
+
+2.1 copy module
+copy module is used for copying files/folders from ansible control node server to the managed nodesof the cluster. by default copy module looks for the source files specified on the local filesystem of the controlnode server and copies them to the destination directory of the managed nodes.
+if we have the file to be copied in managed node itself, then we specify the remote_src: true indicating the source file is also in the managed node itself
+
+1. copy file from source to destination directory
+- name: task
+	copy:
+		src: filelocation
+		dest: directoryLocation
+
+2. copy file/folder from source to destination with given owner/group permissions
+- name: task
+	copy:
+		src: file/directory Location
+		dest: directoryLocation
+		owner: 'owner'
+		group: 'owner'
+		mode: '0777'	
+			
+3. we can enforce validations while copying the file from source to destination
+- name: task
+	copy:
+		src: file/directory location
+		dest: directoryLocation
+		validate: "/usr/bin/visudo -csf %s"
+
+#2. File Category
+2.2 File Module
+The File module is used for creating a new file/folder or changing the permissions of an existing file/folder or removing 
+
+#1. create a new file
+- name: task
+  file:
+    path: 
+    state: touch
+		
+#2. create a new directory
+- name: task
+  file:
+    path: 
+    state: directory
+
+#3. how to create a symlink file to an existing file
+We create symlink pointing to the existing file/directory on the Filesystem. there are 2 types of symlinks are there 
+1. softlink
+2. hardlink
+
+- name: task
+  file:
+    src: sourcefilelocation
+		dest: symlnkfileNameWithlocation
+		owner: 
+    group:
+    state: link | hard
+Note: for softlink the owner and group is not applicable, only for the hardlinks it is applicable
+
+#4. How to change the owner and group of an existing file
+- name: task
+  file:
+    path:
+    group:
+    owner:
+    mode:
+
+#3. Packaging category
+The ansible has provided several modules under packaging category using which we can perform software package installations and upgradations
+#1. install a specific software package
+- name: task
+	apt:
+   name: packageName
+	 state: [present, latest, absent]
+	 update_cache: yes|no
+	 
+1. present = the specified package is installed and available on the fleet (ignore version)
+2. latest = ensure the latest available version of the specified software package in installed on the fleet
+		 if older version is there it will upgrade
+3. absent = if present it will remove/uninstall
+#2 How to uninstall a software package?
+- name: task
+	apt:
+		name: packageName
+		state: absent
+		purge: true
+			
+#3 how to install the latest version of the software package?
+- name: task
+	apt:
+		name: packageName
+		state: latest
+		update_cache: yes
+
+#4 remove unwanted packages on the system
+- name: task
+  apt:
+    autoremove: true
+			
+#5. remove unwanted packages on the local cache
+- name: task
+	apt:
+		autoclean: yes
+		
+#6. How to install multiple software packages?
+- name: task
+	apt:
+		name:
+			- package1
+			- package2
+			- package3
+		update_cache: yes
+
+#1. user module
+adding a new user or modifying an existing user of the linux operating system can be done using user module
+
+#1. add auser with specific uid and gid
+- name: task
+	user:
+		name: userName
+		uid: id
+		groupid: gid
+		
+#2. add a user with default shell
+- name: task
+	user:
+		name: username
+		uid:
+		groupid:
+		shell: /bin/bash
+
+#3. add a user with home directory
+- name: task
+	user:
+		name: username
+		create_home: yes|no 
+		password: login password
+		generate_ssh_key: true|false 
+		remove: yes (removes an existing user)
+		
+adduser-playbook.yml
+---
+- name: adduser play
+	hosts: all
+	tasks:
+	- name: add user joe
+		user:
+			name: joe
+			password: welcome1
+			create_home: yes
+		become: yes
+	- name: promote user as sudoer
+		lineinfile:
+			path: /etc/sudoers
+			insertAfter: '^root ALL.*'
+			line: 'joe ALL=(ALL) NOPASSWD:ALL'
+			validate: '/usr/sbin/visudo -csf %s'		
+		become: yes
+...
+
+
+#2. service module
+we can stop, start, reload or restart an initd service system service using Service module
+
+- name: task
+	service:
+		name: servicename
+		state: started | stopped | restarted | reloaded
+		
+- name: task
+	service:
+		name: servicename
+		enabled: yes|no
+
+There are 3 ways we can pass dynamic values as input while running a playbook
+1. vars_files
+2. extra-vars (through command-line)
+3. variable declaration locally inside the playbook
+
+*4. extra-vars
+while running a playbook we can pass dynamic values as input for he variables using extra-vars from command-prompt
+
+newfile-playbook.yml
+---
+- name: file play
+	hosts: all
+	tasks:
+	- name: create file
+		file:
+			name: x.txt
+			owner: vagrant
+			group: vagrant
+			mode: 0755
+			state: touch
+
+newfile-playbook.yml
+---
+- name: file play
+	hosts: all
+	tasks:
+	- name: create file
+		file:
+			name: "{{filename}}"
+			owner: "{{ownerName}}"	
+			group: "{{groupName}}"
+			mode: "{{perm}}"
+			state: touch
+...
+ansible-playbook -i inventoryFile --extra-vars filename=ansible-extravars.txt --extra-vars ownerName=vagrant --extra-vars groupName=vagrant --extra-vars perm=0755 newfile-playbook.yml
+
+#2. declaring local variables within the playbook
+within a program we wanted to use a value which seems to be needed at several places, instead of hardcoding the value across the program we can declare a local value by assigning the value and reuse the variable across all the places, so in future if we wanted to modify the value we can change the variable rather than program
+the same concept applies even to local variables of a playbook
+
+newfile-playbook.yml
+---
+- name: copy play
+	hosts: all
+	vars:
+		ownerName: vagrant
+		groupName: vagrant
+		perm: 0644
+	tasks:
+	- name: create file
+		file:
+			name: "{{filename}}"
+			owner: "{{ownerName}}"
+			group: "{{groupName}}"
+			mode: "{{perm}}"	
+			state: touch	
+...
+
+*5. using vars_file
+we can define he variables in an vars yml file and refer it inside the playbook.
+mysql_user_vars.yml
+mysql_user: fithealthsqluser
+mysql_password: welcome1
+perm: '*.*:ALL'
+login_user: root
+login_password: root
+
+mysql-user-playbook.yml
+---
+- name: mysql user play
+	hosts: all
+	vars_file:
+		- mysql_user_vars.yml
+	tasks:
+	- name: create mysql user
+		mysql_user:
+			name: "{{mysql_user}}"
+			password: "{{mysql_password}}"
+			priv: "{{perm}}"
+			login_user: "{{login_user}}"
+			login_passowrd: "{{login_password}}"
+			state: present
+...
+
+*6. register variables
+The output of a command module has been stored in a variable and passed as an input to the debug module using register variable.
+				
+register variables are dynamic variables that are created during the playbook execution	unlike the other variables we declare in ansible
+---
+- name: play
+	hosts: all
+	tasks:
+	- name: task1
+		command: uname -a
+		register: osname
+	- name: print osname
+		debug:
+			msg: "{{osname}}"
+...
+
+*.7Ansible facts or Ansible Magic Variables
+By default when we run a playbook on the managed node, the control node server implicitly executes the gather_facts module which takes considerable amount of time in populating the env information for each fleet server on the cluster. If in case we are not going to use these env information in our playbooks we can explicitly turn off the gather_facts module execution to improve the performance of the playbook execution
+
+---
+- name: play1
+	hosts: all
+	gather_facts: no
+	tasks:
+	- name: task1
+		debug:
+			msg: no gather facts
+...
+it can be done by manually running the module on the fleet using adhoc task
+ansible -i inventoryFile group -m moduleName
+ansible -i gatherFactsHosts all -m gather_facts
+
+
+failed_when & changed_when
+--------------------------
+By default ansible control node server marks an module execution as failed or changed based on the exitcode of the module execution, but if we want to mark the failed or changed status of a module based on evaluating a condition on the module outcome then we need to use failed_when & changed_when.
+	
+For eg.. we want to verify sufficient disk_space is available before installing an software. we can execute an shell command to grab the diskspace but upon executing the shell it marks the module as changed, but we want to evaluate an conditional check on the outcome of the module and want to mark as failed if sufficient diskspace is not available. this can be achieved by using failed_when
+
+- name: check diskspace
+	shell: "df /dev/sda1 | tail -1 | awk '{print $4}'"
+	register: diskspace
+	failed_when: "diskspace.stdout | float < 348585"
+
+changed_when:
+Ansible control node server marks an module execution as "changed" when the module has return the exitcode as "0", but few times we wanted to evaluate the condition based on the outcome to mark an module has been changed or not, this can be done by using changed_when
+
+Ansible control statements
+when we pass the playbook as an input to the ansible control node server, it executes the playbook modules/tasks from top to the bottom linearly. if we want to control the flow of execution, for eg.. we want to skip executing a task/module based on condition or wanted to execute a module repeatedly then we need to use control statements of ansible
+
+There are 2 types are there
+1. when
+2. loop
+
+#1. when condition
+based on conditional evaluate we want to execute task/module of a playbook then we need to use when: conditional statement at task level
+EX: install a direct downloadable packaged distribution based on operating system distro
+
+install-vscode-playbook.yml
+---
+- name: vscode play
+	hosts: all
+	tasks:
+	- name: download vscode  debain
+		get_url:
+			url: https://code.visualstudio.com/docs/?dv=linux64_deb
+			dest: /tmp
+		when: ansible_facts['os_family']	== "Debain"
+	- name: download vscode redhat
+		get_url:
+			url: https://code.visualstudio.com/docs/?dv=linux64_rpm
+			dest: /tmp
+		when: ansible_facts['os_family'] == "RedHat"
+	- name: install vscode on debain
+		apt:
+			deb: /tmp/code_1.71.2-1663191218_amd64.deb
+		become: yes
+		when: ansible_facts['os_family']	== "Debain"
+	- name: install vscode on redhat
+		yum:
+			name: /tmp/code-1.71.2-1663191299.el7.x86_64.rpm
+			state: present
+		become: yes
+		when: ansible_facts['os_family'] == "RedHat"
+
+#2. loop control statements
+loop control statements are used for repeatedly executing an ansible module/task over a fixedset of inputs or occurrences
+
+1. loop over a simple list of values
+we want to install bunch of software packages as part of our project setup
+1. jdk11
+2. maven
+3. git
+4. tree
+5. nettools
+6. vim
+
+how to write a playbook for installing the above software packages?
+---
+- name: loop play
+	hosts: all
+	tasks:
+	- name: install jdk
+		apt: 
+			name: "{{item}}"
+			state: present
+			update_cache: yes
+		become: yes
+		loop:
+			- openjdk-11-jdk
+			- maven
+			- git
+			- vim
+			- tree
+			- nettools
+
+Ansible Vault
+--------------
+that helps you encrypt confidential information without compromising security.
+
+1. How to create an encrypted playbook?
+ansible-vault create playbook.yml 
+the above command opens an vim/text editor and allows us to write the playbook/inventoryFile into it. once we save and closed the editor, it asks for password. upon entering the passwords using the password it encrypts the contents and stores the encrypted playbook/inventoryFile onto the Filesystem
+
+2. How to encrypt an existing playbook?
+ansible-vault encrypt playbook/inventoryFile.yml
+it prompts for password, ecrypts the contents and generates the encrypted files onto the disk
+
+3. How to view the contents of an encrypted file?
+ansible-vault view playbook/inventoryFile.yml
+prompts for password and displays the filecontents in an editor
+
+4. How to run an encrypted playbook or an inventoryFile ?
+There are 2 ways we can execute
+[development]
+decrypt the playbook or inventoryFile onto the disk and pass them as an input to the control node server asking to execute
+ansible-vault decrypt playbook/inventoryFile.yml
+prompts for password decrypts onto the disk
+
+then execute them asusual
+
+while running the playbooks or inventoryFile during production we should not decrypt them since they contain sensitive information and prone to security breach. instead we can ask control node server to decrypt onfly and execute them using
+
+ansible-playbook -i inventoryFile --ask-vault-pass playbook.yml
+while execution it prompts for password then decyrpts in-memory and executes the playbook/inventoryFile
+
+There is a problem with this approach, we cannot achieve non-interactive or touchless automation so to overcome this problem ansible has provided an solution
+1. create a password file and write password to decrypt the playbook/inventoryFile
+2. keep the passwordFile in the same location of the playbook
+3. give the permissions of the file as 0600 (no one else can see)
+	
+now while running the playbook instead of prompting for password pass the password file as an input
+ansible-playbook -i inventoryFile --vault-password-file=passwordFile playbook.yml
+
+Ansible Handlers:
+------------------
+by default all the tasks/modules written inside the playbook are executed sequentially from top-bottom on the fleet servers. few times we wanted to execute a task or a module based on the outcome of executing an parent/other module of the playbook, that means immediately upon successful execution of a task/module we want to execute another module, this can be achieved through handlers
+
+For eg.. when we modified the configuration of a server on the fleet we want to immediately restart the server to make the changes reflected, this can be done through handlers
+
+Handlers are the special type of tasks, but these handler tasks by default will not be executed during the playbook execution like other tasks, these handlers only gets executed when an task has notified for execution
+
+---
+- name: handlers playbook
+	hosts: all
+	tasks:
+	- name: task1
+		module:
+			arg1: val1
+			
+			arg2: val2
+	- name: task2
+		module:
+			arg1: val1
+			arg2: val2
+		notify:
+			- handler1
+	handlers:
+	- name: handler1
+		module:
+			arg1: val1
+
+In the above playbook all the tasks will be executed sequentially from top to bottom, but the handlers will not be executed by default unless an task has notifies the handler1 to execute.
+A task can notify multiple handlers to be executed so we can define list of handlers under notify
+note: 
+1. an handler of a task will be executed only when the task has reported the status as : "changed"
+2. all the handlers which are notified are executed at the last after all the tasks in playbook are completed 	
+	
+In-Short
+1. Handlers are also tasks only, but those are only executed upon notifying by a task
+2. an handler gets executed only when a task has "changed" the state of the fleet server
+3. we dont need to duplicate the tasks repeatedly in playbook rather we can reuse the task across the playbook by keeping it as handler and notify across several places
+
+Ansible Jinja2 Template Engine
+Jinja2 template is an python module used for creating configuration files out of a template files by substituting the ansible has strong support and integration with jinja2 template engine. The ansible has provided a template module, using which we can pass substitution values for a template file to the jinja2 engine and generate configuration files quickly.
+
+Ansible Roles
+Ansible Roles is an standardized and organized way of developing playbook or ansible automations and distribute it to ther others, so that people can reuse these roles in accomplishing their automations quickly
+
+Ansible Roles has defined an standardized directory structure into which we need to organize the files of our automation. There are 7 directories into which we organize our playbook/ansible automation in distributing them to other people for reusability
+
+rootdirectory (role)
+|-default
+	|-main.yml
+|-tasks
+	|-main.yml
+|-handlers
+	|-main.yml
+|-files
+|-templates
+|-meta
+	|-main.yml
+|-vars4
+	|-main.yml
+	
+Tasks: This directory contains the main set of tasks that the role will perform. These tasks are written in YAML format and define the actions to be taken on the target hosts.
+
+Handlers: Handlers are tasks that are only run if a task in the role triggers a notify directive. They are typically used to restart services or perform other actions in response to changes.
+
+Variables: This directory holds default variable values for the role. These variables can be overridden in the playbook or inventory files.
+
+Defaults: This directory contains the default values for variables used in the role. If a variable is not defined elsewhere, Ansible will use the default value specified here.
+
+Files: This directory is used for placing static files that need to be transferred to the target hosts during playbook execution.
+
+Templates: This directory is for Jinja2 templates, which can be used to dynamically generate configuration files based on variables.
+
+Meta: This directory includes metadata for the role, such as dependencies on other roles, role name, author, and supported platforms.
+
+How to create a role?
+For creating a role with directory layout ansible has provided an tool called "ansible-galaxy".
+1. create an empty directory 
+2. go inside the directory and type ansible-galaxy init, this will creates the directory layout of the role into which we can write the code
+
+How to reuse a role inside a playbook?
+Ansible searches for references roles in common paths like 
+1. inside the playbook directory under roles/ directory
+2. roles_path in ansible.cfg 
+3. /etc/ansible/roles directory (default)
+
+how to install ansible ?
+$ sudo apt update
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository --yes --update ppa:ansible/ansible
+$ sudo apt install ansible
+
+1. to create a ansible.cfg file under /etc/ansible/ansible.cfg
+2. sudo vim asible.cfg
+	[defaults]
+	private_key_file=~/.ssh/id_rsa
+	host_key_checking=false
+
+3. create a inventory file
+hosts.yml
+enter private ip add
+
+4. to check whether a connect or not?
+ansible -i hosts.ym all -m ping
+
+What are callback plugins in Ansible?
+
+Callback plugins basically control most of the output we see while running cmd programs. But it can also be used to add additional output. For example log_plays callback is used to record playbook events to a log file, and mail callback is used to send email on playbook failures. We can also add custom callback plugins by dropping them into a callback_plugins directory adjacent to play, inside a role
+ 
+ how to intigrate ansiblw with jenkins ?
+
+ansible-modules:
+ping module:
+Command module is used to execute commands on a remote node.
+Shell module is designed to execute shell commands against the target unix based hosts. 
+setup module helps us in gathering data about the target nodes like hostname, ip, os etc. 
+apt package module is used for managing software on debian based linux os.
+ansible.builtin.package: This modules manages packages on a target without specifying a package manager module (lyum, apt, …). ()
+copy module can be used to copy a file from local/remote machine to remote machine.
+fetch module can be used whenever we want to fetch a file from remote machine to a local machine. 
+get_url module can be used to download files form HTTPS/HTTP/FTP servers.
+archive module is used to create a compressed file package of the format of zip, tar, gz, bz2 and xz
+unarchive module is used to unpacks an archive file such as tar, gz, zip. 
+file module is responsible for performing tasks such as creating files and directories, deleting files and directories, creating soft and hard symbolic links, adding and modifying file and directory permissions, and more. For windows machine you could use win_file module.
+find module functions as same as the Linux Find command and helps to find files and directories based on various search criteria.
+replace module is used to replace all the instances of a matching string in a file.
+	  - name: Replace between the expressions and create a backup
+    replace:
+      path: /etc/hosts
+      after: '<VirtualHost [*]>'
+      before: '</VirtualHost>'
+      regexp: 'Unix'
+      replace: 'Linux'
+      backup: yes
+lineinfile module is helpful when you want to add, remove, modify a single line in a file. 
+blockinfile module will insert/update/remove a block of multi-line text.
+service module is used to control service on target nodes, we can start/stop/restart/reload a service through this module.
+user module is used to manage users on the target nodes. 
+debug module is used to print statement during playbook execution and can be useful in debugging variables or expression. 
+include_vars module can be used to dynamically load variable from a file or directory during a task run.
+	- name: include a variable file conditionally
+      include_vars: 
+      file: vars-Debian.yml
+    when: ansible_os_family == 'Debian'
+include_role module: this module dynamically loads and execute a specified role as a task.
+
+
+
+
+

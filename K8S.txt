@@ -1,0 +1,643 @@
+KUBERNETES:
+--------------
+what is k8s ?
+Kubernetes is a container cluster manager, that schedules, monitors and manages the containerized applications on a network cluster of computers
+features:
+Scaling: Kubernetes allows for automatic scaling of applications based on demand. It can scale applications horizontally by adding or removing instances of containers to handle varying workloads.
+Rolling Updates and Rollbacks: Kubernetes supports rolling updates, allowing applications to be updated with minimal downtime by gradually replacing old containers with new ones. If issues arise, rollbacks can be performed to revert to the previous version.
+Self-healing: Kubernetes monitors the health of containers and automatically restarts or replaces failed containers to ensure the desired state is maintained.
+Container Networking: Kubernetes manages networking between containers within a cluster, enabling communication between them. It also supports integration with various container networking solutions.
+
+k8s elements
+A Kubernetes cluster consists of a set of worker machines, called nodes, that run containerized applications. Every cluster has at least one worker node.
+
+1. master node or control plane
+ 1.1 api manager
+api manager acts an front-end of the kubernetes cluster, it is built on http protocol and exposed as httpendpoints to the clients/users of the kubernetes cluster. Through the help of api manager only people can interact with kubernetes cluster/masternode
+ 1.2 kube sheduler
+The kube-scheduler is a core component of the Kubernetes control plane responsible for making decisions about on  which nodes (worker machines) should run specific pods. 
+When you create a pod in Kubernetes, the kube-scheduler determines on which node the pod should be scheduled based on various factors, such as resource requirements, node affinity, anti-affinity, and other scheduling constraints.
+ 1.3conroller manager 
+ controller manager is a daemon process that runs in background on the controlplane of the cluster and ensures always we reach to desired state of the cluster
+There are 5 types of controllers are there
+1. ReplicaSet = ensures the desired number of replicas are running on the cluster
+2. DaemonSet  = ensures the pods are running across all the nodes of the cluster
+3. DeploymentSet = takes care of pod updates
+4. Service = offering network services to all the pods that are running on the kubernetes clsuter and ensures the communication across the pods and to the external networks
+5. Job = We want to run an external program on each node of the cluster cluster to perform some one time activity which will be takecare by the job controller
+
+2. worker nodes
+kubernetes worknode is a computer/machine attached to the kubernetes master/control plane on which a pod is scheduled for execution. A worknode can be scheduled to run one or more pods on it based on the capacity of the workernode
+ 2.1. container runtime
+A workernode should be installed with an container runtime to schedule and execute a pod on it. 
+ 2.2. kubelet
+kubelet is a process runs on each workernode of the cluster, which gathers the information about what are the pods and how many of them on running on each workernode and keeps track of their statuses. We can think of an kubelet as an endprocess to whom always the master reach to for any information about the workernode
+ 2.3.kubectl
+kubectl is an cli tool provided by the kubernetes that enables us to communicate with kubemaster or controlplane in administering, monitoring and managing the kubernetes cluster.
+Through the help of kubectl we can 
+communiate with api manager of the kubernetes cluster and pass instructions asking to perform some operation on the cluster
+ 2.4 kube proxy
+ kube-proxy maintains network rules on nodes. These network rules allow network communication to your Pods from network sessions inside or outside of your cluster.
+3. etcd
+etcd is a key/value pair database where all the objects information that we created on kubernetes cluster will be stored as part of etcd database
+
+pod
+-----
+What is a pod?
+A pod is the smallest entity/unit in the kubernetes cluster where one or more containers are executed together inside it.
+
+Kubernetes Namespaces
+---------------------
+Resource Isolation: Namespaces allow you to create isolated environments within a cluster, preventing resource conflicts between different applications or teams. Each namespace has its own set of resources, such as pods, services, and volumes.
+
+Namespaces are used for creating compartments or logical grouping of objects/resources on the kubernetes cluster.
+For eg.. when we are running multiple projects on the kubernetes cluster we can ensure no 2 people can see the resources of the each of their other projects throught then the help of namespaces.
+(or)
+Allowing teams or projects to exist in their own virtual clusters without fear of impacting each other's work. Enhancing role-based access controls (RBAC) by limiting users and processes to certain namespaces.
+By default as part of the kubernetes install there are 4 namespaces created
+1. default = by default any objects created in kubernetes cluster will be placed under default namespace. by default it is empty. everyone can access the default namespace and should be sufficient for most of the usecases
+2. kube-system = This namespace holds the objects related to kubernetes system like api manager, scheduler and controller manager etc
+3. kube-public = by default it doesnt have any objects and if we place any objects on kube-public those are accessible to anyone without authentication
+4. kube-node-lease = all the kubernetes leased objects are associated to this namespace
+
+Required fields
+In the .yaml file for the Kubernetes object you want to create, you'll need to set values for the following fields:
+
+apiVersion - Which version of the Kubernetes API you're using to create this object
+kind - What kind of object you want to create
+metadata - Data that helps uniquely identify the object, including a name string, UID, and optional namespace
+spec - What state you desire for the object
+
+kubernetes commands
+#1. how to see the kube config file of the cluster?
+kubectl config view
+
+#2. How to see the pod objects that are in specific namespace?
+kubectl get pods -o wide -n namespace
+
+#3. how to create a namespace?
+kubectl create namespace namespacename
+
+#4How to change the namespace of the an kubernetes cluster we want to access
+kubectl config set-context --current --namespace=x
+
+#5How to see the current context we are using?
+kubectl config current-context
+
+#6How to see all the contexts
+kubectl config get-contexts
+
+#7 How to switch the context
+kubectl config use-context contextname
+
+#8. how to create a pod on the cluster?
+kubectl create -f pod.yml -n namespace
+
+#9. how to see the pods on the cluster?
+kubectl get pods -o wide -n namespace
+
+#10. how to see the details of a pod on the cluster?
+kubectl describe pod podName
+
+#11. how to see the logs of the running application inside the pod?
+kubectl logs podName
+kubectl logs -f podName = tail -f
+
+#12. how to delete a pod
+kubectl delete pod podName
+kubectl delete -f pod.yml
+
+livelinessProbe and readinessProbe on pods:--
+Whenever we create an pod object on kubernetes cluster, the controlplane schedules the pod for running, upon bringing up the pod, the kubernetes control plane reports the pod is available for accessing. but the underlying applications running within the pod may not be running and are not accessible, at this time if the pod has been made accessible by the kubernetes the requests that are send by the client would fail. To let the kubernetes identify the application has been ready for usage, our application has to expose readiness endpoint 
+This endpoint has to be configured as part of pod spec letting the kubernetes identify the pod is ready for accessing.
+The readiness check will be done by controlplane at the time of starting up the pod, there after the readiness check will not be performed
+
+
+Both liveness & readiness probes are used to control the health of an application. 
+Failing liveness probe will restart the container, whereas failing readiness probe will stop our application from serving traffic.
+For a pod we can configure readinessProbe and livelinessProbe letting the kubernetes identify when does the pod is available for accessing and determine whether the pod is running or not
+Liveness Probe
+Suppose that a Pod is running our application inside a container, but due to some reason let’s say memory leak, cpu usage, application deadlock etc the application is not responding to our requests, and stuck in error state.
+Liveness probe checks the container health as we tell it do, and if for some reason the liveness probe fails, it restarts the container. We can define liveness probe in 3 ways:
+Readiness Probe
+In some cases we would like our application to be alive, but not serve traffic unless some conditions are met e.g, populating a dataset, waiting for some other service to be alive etc. In such cases we use readiness probe. If the condition inside readiness probe passes, only then our application can serve traffic.
+
+Liveness Probe:
+The liveness probe is responsible for determining whether a container is running and healthy.
+It periodically checks if the application inside the container is responsive and functioning as expected.
+If the liveness probe fails (i.e., the application is not responding as expected), the container is considered unhealthy, and the container runtime or orchestration system may take action, such as restarting the container.
+Readiness Probe:
+The readiness probe checks whether a container is ready to serve traffic.
+It helps avoid sending requests to a container that is not yet ready to handle them.
+If the readiness probe fails, the container is temporarily marked as not ready, and the orchestrator (e.g., Kubernetes) may stop directing traffic to it.
+
+ex:
+sailor-pod.yml
+---------------
+apiVersion: v1
+kind: Pod
+metadata:
+	name: sailorpod
+	labels:
+		appName: sailor
+		version: 1.0
+spec:
+	containers:
+		- name: sailor
+			image: techsriman/sailorrepo:2.0
+			ports:
+				- name: http
+					containerPort: 8080
+					protocol: TCP
+			livenessProbe:
+				httpGet:
+					path: /sailor/actuator/liveness
+					port: 8080
+				initialDelaySeconds: 10
+				timeoutSeconds: 10
+				failureThreshold: 3
+			readinessProbe:
+				httpGet:
+					path: /sailor/actuator/readiness
+					port: 8080
+				initialDelaySeconds: 10
+				timeoutSeconds: 5
+				failureThreashold: 3
+			resources:
+				requests:
+					cpu: "500m"
+					memory: "512Mi"	
+				limits:
+					cpu: "1000m"
+					memory: "1024Mi"	
+
+How to expose a pod?
+kubectl expose pod hangoutpod --name hangoutsvc --port 8080 --type=NodePort
+
+configmap:
+What are ConfigMap, what is the purpose of them?
+ConfigMaps are used for externalizing the application configuration, so that we can pass them as an input while lauching the application in a kubernetes environment.
+
+#1. ConfigMap
+sailor-configmap.yml
+---------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+	name: sailorconfig
+	labels:
+		environment: dev
+data:
+	driverClassname: com.mysql.cj.jdbc.Driver
+	url: jdbc:mysql://localhost:3306/db
+	username: root
+	password: root
+		
+kubectl create -f sailor-configmap.yml
+
+sailor-pod.yml
+--------------
+apiVersion: v1
+kind: Pod
+metadata:
+	name: sailorpod
+	labels:
+		app: sailor
+spec:
+	containers:
+		- name: sailor
+			image: techsriman/sailorrepo:2.0
+			ports:
+				- name: http
+				  containerPort: 8080
+					protocol: TCP
+			env:
+				- name: db.driverClassname
+					valueFrom:
+						configMapKeyRef:
+							name: sailorconfig
+							key: driverClassname
+				- name: db.url
+					valueFrom
+						configMapKeyRef:
+							name: sailorconfig
+							key: url
+
+Persistent Volume and Persistent Volume Claim
+----------------------------------------------
+persistent volume (PV) is the "physical" volume on the host machine that stores your persistent data. 
+A persistent volume claim (PVC) is a request for the platform to create a PV for you, and you attach persistent volumes to your pods via a PVC.
+Static Provisioning (or Pre-provisioned PVs): In this type, a cluster administrator creates and manages the Persistent Volumes in advance. These volumes are then available for users to claim when they need persistent storage.
+Dynamic Provisioning: In dynamic provisioning, the Persistent Volumes are created automatically when a user requests storage. The cluster administrator sets up Storage Classes, which define different types of storage and their provisioning properties. When a user creates a Persistent Volume Claim (PVC), it triggers the dynamic creation of a Persistent Volume (PV) based on the specifications in the PVC.
+
+roadster-pv.yaml
+-----------------
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+	name: roadsterpv
+spec:
+	storageClassname: roadsterstorageclass
+	capacity:
+		storage: 2Gi
+	accessMode:
+		- ReadWriteMultiple
+	hostPath:
+		path: /u01/data
+		
+roadster-pvc.yaml
+------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+	name: roadsterpvc
+spec:
+	storageClassName: roadsterstorageclass
+	accessModes:
+		- ReadWriteOnce
+	resources:
+		requests:
+			storage: 1Gi
+			
+roadster-pod.yaml
+-----------------
+apiVersion: v1
+kind: Pod
+metadata:
+	name: roadsterpod
+	labels:
+		app: roadster
+spec:
+	containers:
+		- name: roadster
+			image: techsriman/roadster:2.0
+			ports:
+				- name: http
+					containerPort: 8082
+					protocol: TCP
+			volumeMounts:
+				- name: roadstervolume
+					mountPath: /u01/mysql					
+	volumes:
+		- name: roadstervolume
+			persistentVolumeClaim:
+				claimName: roadsterpvc
+
+Config Secrets
+---------------
+Kubernetes Secrets let you store and manage sensitive information like passwords, ssh keys, encryption keys that are required by our applications. In general we can store these secrets as part of pod spec or within configmap, but storing these secrets in pod spec or configmap makes them insecure.
+
+kubernetes has provided built-in secret types, which can be used as a type while defining secret
+1. opaque = arbitary data
+2. kubernetes.io/service-account-token  = The service account token, is a kubernetes secret or system secret
+3. kubernetes.io/dockercfg  = The serialized format of doker config file
+4. kubernetes.io/dockerconfigjson = serialized format of docker config json file
+5. kubernetes.io/basic-auth       = username/password
+6. kubernetes.io/ssh-auth         = ssh keys
+7. kubernetes.io/tls              = ssl keys
+
+roadsterdb-configsecrets.yml
+----------------------------
+apiVersion: v1
+kind: Secret
+metadata:
+	name: roadsterdbsecrets
+type: kubernetes.io/basic-auth
+stringData:
+	username: root
+	password: root
+	
+	
+roadster-pod.yml
+-----------------
+apiVersion: v1
+kind: Pod
+metadata: 
+	name: roadsterpod
+	labels:
+		app: roadster
+spec:
+	containers:
+		- name: roadster
+			image: techsriman/roadster:2.0
+			ports:
+				- name: http
+				  containerPort: 8082
+					protocol: TCP
+			env:
+				- name: "spring.datasource.username"
+					valueFrom:
+						secretKeyRef:
+							name: roadsterdbsecrets
+							key: username
+
+				- name: "spring.datasource.password"
+					valueFrom:
+						secretKeyRef:
+							name: roadsterdbsecrets
+							key: password
+	
+	
+	There are 5 types of controllers are there
+1. ReplicaSet
+2. DaemonSet
+3. DeploymentSet
+4. Job
+5. Service
+
+1. ReplicaSet
+A ReplicaSet ensures that a specified number of pod replicas are running at any given time. 
+If the actual number deviates from the desired state, the ReplicaSet automatically takes corrective actions.
+The ReplicaSet controller constantly monitors the cluster for changes and takes action to maintain the desired number of replicas specified in the associated ReplicaSet resource.
+ibanking-replicaset.yaml
+-------------------------
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+	name: ibankingreplicaset
+	labels:
+		app: ibanking
+spec:
+	replicas: 2
+	selector:
+		matchLabels:
+			app: ibanking
+			version: "1.0"
+template: [run 3 replicas of the below template]
+	metadata:
+		labels:
+			app: ibanking
+			version: "1.0"
+	spec:			
+		containers:
+			- name: ibanking
+				image: techsriman/ibanking:1.0
+				ports:
+					- name: ibankingport
+						containerPort: 8082
+						protocol: TCP
+
+How to scale a replicaset?
+#1 kubectl scale replicaset replicasetname --replicas=2
+
+#2edit the replicaset by opening the runtime instance of it
+kubectl edit replicaset replicasetname
+
+ #3. You can then get the current ReplicaSets deployed:
+$kubectl get rs
+
+2.DaemonSet
+A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created.
+ensures the pods are running across all the nodes of the cluster
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-elasticsearch
+  namespace: kube-system
+  labels:
+    k8s-app: fluentd-logging
+spec:
+  selector:
+    matchLabels:
+      name: fluentd-elasticsearch
+  template:
+    metadata:
+      labels:
+        name: fluentd-elasticsearch
+    spec:
+      tolerations:
+      # these tolerations are to have the daemonset runnable on control plane nodes
+      # remove them if your control plane nodes should not run pods
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: fluentd-elasticsearch
+        image: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+		  
+3.Deployments
+A Deployment provides declarative updates for Pods and ReplicaSets.
+			or
+Deployment is another way of deploying containerized application on the kubernetes cluster. Through deployment controller any changes to the pod template can be rolledout in a controlled way.
+They are suitable for stateless applications where the focus is on maintaining a desired number of replicas and managing rolling updates and rollbacks.
+Deployments provide features like rolling updates, scaling, and automated rollback in case of failures. 
+speed-deployment.yaml
+---------------------
+apiVersion: apps/v1
+Kind: Deployment
+metadata:
+	name: speeddeployment
+	labels:
+		app: speed
+spec:
+	replicas: 2
+	selector:
+		matchLabels:
+			app: speed
+			version: "1.0"
+	template:
+		metadata:
+			labels:
+				app: speed
+				version: "1.0"
+		spec:
+			containers:
+				- name: speed
+					image: techsriman/speed:1.0
+					ports:
+						- name: speedport
+							containerPort: 8080
+		
+		protocol: TCP
+							
+How to change the pod template within the deployment?
+kubectl set image deployment/deploymentName label=image --record
+kubectl edit deployment deploymentName
+
+kubectl rollout history deployment deploymentName
+kubectl scale deployment deploymentName --replicas=2
+								
+kubectl rollout undo deployment deploymentName --to-revision=1
+
+To see the Deployment rollout status, run
+kubectl rollout status deployment <deploymentname>
+
+StatefulSet: It is used for stateful applications and maintains a sticky identity for each pod. It ensures stable network identifiers and persistent storage.
+
+4.Jobs
+A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate. As pods successfully complete, the Job tracks the successful completions. When a specified number of successful completions is reached, the task (ie, Job) is complete. Deleting a Job will clean up the Pods it created. Suspending a Job will delete its active Pods until the Job is resumed again.
+ We want to run an external program on each node of the cluster, cluster to perform some one time activity which will be takecare by the job controller
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl:5.34.0
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never
+  backoffLimit: 4
+  
+5.Service
+Service is about networking the pods that are running on the kubernetes cluster. By default the pods are accessible within the node on which there are created, but we might wanted a pod to be exposed	
+	1. To other pods that are running on the cluster
+	2. to be exposed to the external world
+	3. to be load balanced the request across the multiple replicas of the pod	
+these can be achieved through the help of service
+There are 5 types of services are supported by kubernetes cluster
+1. ClusteredIp
+2. NodePort
+3. Loadbalancer
+4. Ingress
+5. Headless Service
+
+1.Services of type ClusterIP
+When you create a Service of type ClusterIP, Kubernetes creates a stable IP address for services that is accessible from nodes in the cluster.
+You cannot make requests to service (pods) from outside the cluster.
+
+Here is a manifest for a Service of type ClusterIP:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-cip-service
+spec:
+  selector:
+    app: metrics
+    department: sales
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+  
+    port: 80
+    targetPort: 8080
+You can create the Service by using kubectl apply -f [MANIFEST_FILE]. After you create the Service, you can use kubectl get service to see the stable IP address:
+
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)
+my-cip-service   ClusterIP   10.11.247.213   none          80/TCP
+
+2.Service of type NodePort
+When you create a Service of type NodePort, Kubernetes gives you a nodePort value. Then the Service is accessible by using the IP address of any node along with the nodePort value.
+
+Here is a manifest for a Service of type NodePort:
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-np-service
+spec:
+  selector:
+    app: products
+    department: sales
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+After you create the Service, you can use kubectl get service -o yaml to view its specification and see the nodePort value.
+
+3.Ingress
+defines rules for routing HTTP(S) traffic to applications running in a cluster. 
+
+4.What is the LoadBalancer in Kubernetes? 
+The LoadBalancer service is used to expose services to the internet. A Network load balancer, for example, creates a single IP address that forwards all traffic to your service. 
+
+INTERVIEW QUESTIONS:
+1.What are the main differences between the Docker Swarm and Kubernetes?
+Docker Swarm can’t do auto-scaling (as can Kubernetes); however, Docker scaling is five times faster than Kubernetes 
+Docker Swarm doesn’t have a GUI; Kubernetes has a GUI in the form of a dashboard 
+Docker Swarm does automatic load balancing of traffic between containers in a cluster, while Kubernetes requires manual intervention for load balancing such traffic  
+
+2.What are the main components of Kubernetes architecture?
+There are two primary components of Kubernetes Architecture: the master node and the worker node.
+
+3.. What is Minikube?
+With the help of Minikube, users can Kubernetes locally. This process lets the user run a single-node Kubernetes cluster on your personal computer, including Windows, macOS, and Linus PCs. With this, users can try out Kubernetes also for daily development work.
+
+What is a headless , stateless nd statefull service?
+A headless service is used to Direct access to each pod. It is useful when neither load balancing nor a single Service IP is required. 
+Stateless applications do not keep a record of each interaction/state. Each request is handled completely as a new request. 
+Stateful applications stores information locally or on the remote storage. 
+
+StatefulSet: StatefulSets are used for deploying stateful applications, such as databases. They provide guarantees about the ordering and uniqueness of pods, which is essential for applications that require stable network identities and persistent storage.
+
+
+how to setup a eks cluster?
+1. to create a cluster role
+	goto iam and to select a role chose eks cluster role
+2.to create a workernode role
+	goto iam and select role chose ec2
+		1.AmazonEKSWorkerNodePolicy
+		2.AmazonEC2ContainerRegistryReadOnly
+		3.AmazonEKS_CNI_Policy
+#1. we need vpc, subnets within the aws account
+There are 3 ways we can host an eks cluster
+	1. public = experimental / development
+	2. private & public = typical organization env, where a team manages kubernetes deployments in non-production environments
+	3. private = production environment
+	
+#2. To provision an eks cluster atleast we need 2 subnets under 2 different availability zones of a vpc for HA
+#3. and enable a public ip address
+3. goto eks cluster and to create a cluster
+4. in eks cluster to chhose a compute and create a worker node
+
+differences between monolothic and micro services applications
+
+what is node taints and tolerations
+In Kubernetes, taints and tolerations are mechanisms used to control which nodes can run specific pods. Taints are applied to nodes, and tolerations are applied to pods. When a node has a taint, it means that pods without the corresponding toleration will not be scheduled on that node.
+
+how to run a specific pod on specific node ?
+To schedule a specific pod on a specific node in Kubernetes, you can use node affinity rules. Node affinity is a feature that allows you to constrain the scheduling of a pod based on conditions that must be met by nodes in the cluster.
+Here's how you can set up node affinity to run a specific pod on a specific node:
+
+Label the Node:
+First, label the node that you want to use. For example, let's say you want to label a node with the key-value pair node-type=special.
+kubectl label nodes <node-name> node-type=special
+
+Define Node Affinity in Pod Spec:
+Modify your pod specification to include node affinity rules. Add the affinity section to the pod spec, specifying nodeAffinity with the required requiredDuringSchedulingIgnoredDuringExecution rules.
+yaml
+Copy code
+apiVersion: v1
+kind: Pod
+metadata:
+  name: your-pod-name
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-type
+            operator: In
+            values:
+            - special
+  containers:
+  - name: your-container
+    image: your-image
+In this example, the pod is configured to be scheduled on nodes with the label node-type=special.
+
+

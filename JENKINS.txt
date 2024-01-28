@@ -1,0 +1,369 @@
+JENKINS:
+Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. 
+there are few stages are there in jenkins process
+1. CONTINUOUS DOWNLOAD
+2. CONTINUOUS BUILD
+3. CONTINUOUS DEPLOYMENT
+4. CONTINUOUS TESTING
+5. CONTINUOUS DELIVARY
+
+#1 Continous Integration
+Whenever a developer merges his features into the develop/master branch, immediately the ops engineer has to perform the various different quality checks in certifying the code and making the artifact available for testing, like
+	1 pull the code from the git repository (from develop branch)
+	2 run the unit testcases
+	3 run the code quality/code coverage tools like sonarcube and verify the code meets the benchmark standards are not
+	4 then build the project
+	5 push the artifact into artifactory repository 
+	6 if it is an containerized application, build the image out of the artifact and push to the container repository
+	
+#2 Continous Deployment
+At this stage the artifact produced during the continous integration stage has to be deployed and made available for qa engineer for testing, the qa engineer identifies the feature and pickups the latest build in which the feature is included and ask the ops engineer to setup the environment with that build for testing. To make the build available for testing, the ops engineer has to perform various activities
+based on the type of application:
+	1 setup the test infrastructure
+		- vagrant in a virtualization env 
+		- terraform in a cloud env		
+	2 install the required software packages and libraries
+	3 pull the artifact from artifactory repository
+	4 deploy the application on the target env
+	5 run the qa automation testcases on the deployed env and generate the report and publish it
+	6 if there are no failures release the env to qa for further testing
+
+ #3 Continous Delivery
+ Depends on the nature of the project the delivery process vary
+ #1 if it is a cloud application then 
+ 	all the cloud env in which application is running will be refereshed with latest artifact
+ #2 if it is a binary delivery to the user, then the test and ceritfied artifact will be released to the public 
+	 
+The devops engineer has to perform relevant activities at different stages in building, testing, deploying and delivering the project repeatitively, which is an tedious job, to carry out all of these activities through automation the ops engineer requires ci/cd tools like jenkins
+
+Jenkins is a continous integration/delivery tool that orchestrates all the above activities that has to be carried out in delivering the software application. The jenkins has provided various different plugins that can be used for performing majority of the build activities automatically
+
+Jenkins Architecture
+---------------------
+Jenkins follows master and slave architecture, where the jenkins will be installed on a central server environment and configured with slave nodes attached to it. whenever we ask the master to perform any build, the master executes the builds on these slave nodes
+
+To ensure the scalability of the builds for various different projects, master node distributes them across all the slaves 
+
+There are 2 types of jenkins projects are there
+	1. free-style project
+	Jenkins will provide an user interface allowing the opsengineer to define the steps that has to be applied in build the project. The jenkins takes the code and persist in its own persistence storage.
+	The entire activities we want to perform for a project are put together without any classification, so that we cannot differentiate the progress of the project.
+	There are lot of problems with free-style project
+		1. There is no versioning of the build activities
+		2. we cannot keep the realtime project of the build execution
+		3. it is hard to identify the failure and debug
+		
+	2. pipeline project
+		Pipeline project is defined as an sequence of steps/stages in which the build activities has to be carried sequentially are written
+		There are 3 ways in which we can create a pipeline project script
+		1. we can directly write pipeline code in jenkins GUI interface
+		2. we can write in a Jenkinsfile and pass it as an input to master to execute
+		3. we can write it in Blueocean and link it to jenkins to execute
+		There are 2 types of pipeines are there
+		1. declarative pipeline = jenkins has provided few declarative tags/constructs based on DSL language using which devops engineer can write pipeline code
+		
+		2. scripted pipeline
+		are advanced pipelines that requires groovy language for writing the pipeline
+
+#1. declarative pipeline
+declarative pipelines are written in DSL language (domain specific language) which is quite expressive and easy to understand and doesnt needs any programming language knowledge to work.
+Here the entire build process is broken down into stages and each stage will have steps to perform the operation
+
+syntax:-
+
+pipeline {
+	agent {
+		label 'agentnode1'
+	}
+	stages {
+		stage('pull scm') {
+			steps {
+				echo "pull code from scm repository"
+			}
+		}
+		stage('build') {
+			steps {
+				echo "mvn clean verify"
+			}
+		}
+		stage('deploy') {
+			steps {
+				echo "push artifact to the repository"
+			}
+		}
+	}
+}
+
+#2. scripted pipeline
+The scripted pipelines are advanced jenkins pipelines in which the groovy script will be written as part of pipeline code. since we write groovy script we have a better programmatic control in writing the build scripts, but the jenkins developer has to have a strong groovy knowledge to write these pipelines
+
+syntax:-
+node('agentnode1')	{
+	stage('git checkout') {
+		echo "git checkout url"
+	}
+	stage('build') {
+		echo "maven build"
+	}
+}
+
+How to working with parameters in jenkins pipeline?
+parameterizing the jenkins pipeline is nothing but taking the data during the time of launching build and passing it as an input to the jenkins pipeline is called parameters of jenkins build.
+There are 2 ways we can configure parameters in jenkins pipeline
+1. static
+Through jenkins GUI we configure parameters to be used for that project. there is an drawback, if we move the jenkins project from one env to another we need to again recreate the project in another jenkins UI by manually setting up the parameters	
+2. dynamic
+In the jenkins pipeline itself we declare parameters with which we wanted to build the project, so when we migrate from one jenkins env to another all the parameters will be created automatically.
+
+interview questions:
+Q #1) What is Jenkins?
+Answer: Jenkins is a free open source Continuous Integration tool and automation server to monitor continuous integration and delivery. It is written in Java.
+
+) Mention some of the important plugins in Jenkins?
+Answer: Plugins in Jenkins includes:
+Gits
+Maven 2 Project
+HTML Publisher
+Copy Artcraft
+Join
+Green Balls
+Amazon EC2
+Deploy to container
+s3 publisher
+role based authentication
+sonarqubescanner
+ssh2 easy
+
+
+Q #2) What is Continuous Integration in Jenkins?
+Answer: Continuous integration is the process of continuously checking-in the developer’s code into a version control system and triggering the build to check and identify bugs in the written code.
+
+Q #3) What is Groovy in Jenkins?
+Answer: Groovy is the default scripting language 
+
+Q #4) Which command is used to start Jenkins?
+Java –jar Jenkins.war
+
+Q #5) What is Jenkinsfile?
+Answer: The text file where all the definitions of pipelines are defined is called Jenkinsfile.
+
+Q #6) What is the difference between Continuous Integration, Continuous Delivery, and Continuous Deployment?
+
+Answer: The diagrammatic representation given below can elaborate on the differences between Continuous Integration, Continuous Delivery, and Continuous Deployment more precisely.
+
+Continuous Integration:
+
+Continuous Integration in Jenkins
+
+(It involves keeping the latest copy of the source code at a commonly shared hub where all the developers can check to fetch out the latest change in order to avoid conflict.)
+
+Continuous Delivery:
+
+Continuous Delivery in Jenkins
+
+(Manual Deployment to Production. It does not involve every change to be deployed.)
+
+Continuous Deployment:
+
+Continuous Deployment in Jenkins
+
+(Automated Deployment to Production. Involves every change to be deployed automatically.)
+
+Q #8) Which Environmental Directives are used in Jenkins?
+Answer: Environmental Directives is the sequence that specifies pairs of the key-values called Environmental Variables for the steps in the pipeline
+
+Q #9) What are Triggers?
+Answer: Trigger in Jenkins defines the way in which the pipeline should be executed frequently. PollSCM, Cron, etc are the currently available Triggers.
+
+Q # 21) what is pollscm and Build periodically ?
+polls SCM : Periodically to check whether changes were made (commits), and triggers the job if new commits where pushed.
+Build periodically: Triggers the job periodically even if nothing is changed.
+  
+Q #10) How will you define Post in Jenkins?
+Answer: Post is a section that contains several additional steps that might execute after the completion of the pipeline. The execution of all the steps within the condition block depends upon the completion status of the pipeline.
+The condition block includes the following 
+conditions – changed success, always, failure, unstable and aborted.
+
+Q #11) What are Parameters in Jenkins?
+Answer: Parameters are supported by the Agent section and are used to support various use-cases pipelines. Parameters are defined at the top-level of the pipeline or inside an individual stage directive.
+
+Q #12) How you can set up a Jenkins job?
+Step 1: Go to the Jenkins Dashboard and log in with your registered login credentials
+Step 2: Click on the New Item that is shown in the left panel of the page.
+Step 3: Click on the Freestyle Project from the given list on the upcoming page and specify the item name in the text box.
+Step 4: Add the URL to the Git Repository.
+Step 5: Go to the Build section and click on the Add build step => Execute Windows batch command.
+Step 6: Enter the command in the command window as shown below.
+Step 7: After saving all the settings and changes click on Build Now.
+
+Q #13) What are the two components (pre-requisites) that Jenkins is mainly integrated with?
+Answer: Jenkins integrates with:
+Build tools/ Build working script like Maven script.
+Version control system/Accessible source code repository like Git repository.
+
+Q #14) How can You Clone a Git Repository via Jenkins?
+Answer: To create a clone repository via Jenkins you need to use your login credentials in the Jenkins System.
+To achieve the same you need to enter the Jenkins job directory and execute the git config command.
+
+Q #15) How can you secure Jenkins?
+Answer: Securing Jenkins is a little lengthy process, and there are two aspects of securing Jenkins:
+(i) Access Control which includes authenticating users and giving them an appropriate set of permissions, which can be done in 2 ways.
+Security Realm determines a user or a group of users with their passwords.
+Authorization Strategy defines what should be accessible to which user. In this case, there might be different types of security based on the permissions granted to the user such as Quick and simple security with easy setup, Standard security setup, Apache front-end security, etc.
+(ii) Protecting Jenkins users from outside threats.
+
+Q #16) How to create a backup and copy files in Jenkins?
+Answer: In Jenkins, all the settings, build logs and configurations are stored in the JENKINS_HOME directory. Whenever you want to create a backup of your Jenkins you can back up JENKINS_HOME directory frequently.
+
+It consists of all the job configurations and slave node configurations. Hence, regularly copying this directory allows us to keep a backup of Jenkins.
+
+You can maintain a separate backfile and copy it whenever you need the same. If you want to copy the Jenkins job, then you can do so by simply replicating the job directory.
+
+Q #17) What is the use of Backup Plugin in Jenkins? How to use it?
+Answer: Jenkins Backup Plugin is used to back up the critical configurations and settings in order to use them in the future in case of any failure or as per the need of time.
+The following steps are followed to back up your settings by using the Backup Plugin.
+Step 1: Go to the Jenkins Dashboard and click on Manage Jenkins.
+Step 2: Click on Manage Plugins that appears on the next page.
+Step 3: Go to Available Tab on the next page and search for ThinBackup.
+Step 4: Once you choose the available option, it will start installing.
+Step 5: Once it is installed the following screen will appear, from there choose Settings.
+Step 6: Enter the necessary details like backup directory along with other options as shown on the below screen and save the settings. The backup will be saved to the specified Backup Directory.
+Step 7: Go to the previous page to test whether the backup is happening or not by clicking on Backup Now as shown in the below image
+Step 8: At last, you can check the Backup Directory specified in the ThinBackup Settings. (Step 6) to check the whole backup
+
+Q #18) What is Flow Control in Jenkins?
+Answer: In Jenkins, flow control follows the pipeline structure (scripted pipeline) that are being executed from the top to bottom of the Jenkins file.
+
+Q #19) what is shared library?
+A shared library or shared object is a file that is intended to be shared by multiple programs. 
+
+Q #20) if you forgot a jenkins admin password how to resolve?
+open the ec2 intance wherever jenkins install and edit the /var/lib/jenkins/config.xml select unsecurity to change true to false.
+
+Declarative pipeline start with ------pipeline
+scripted pipeline start with ------------ node
+
+how to upgrade a jenkins?
+Go to services and stop the Jenkins service
+Go to the location where your Jenkins instance is installed
+→ Rename the war folder to war.old
+→ Rename jenkins.war file to jenkins.war.old
+Copy the new jenkins.war you downloaded into your Jenkins installation directory
+Start Jenkins service
+→ Observe the creation of a new war directory which will now contain the contents of the new jenkins.war archive
+
+Difference between scripted and declarative pipeline?
+Syntax: The syntax for Scripted Pipeline is based on Groovy scripting language, while the syntax for Declarative Pipeline is based on YAML syntax. 
+Flexibility: Scripted Pipeline provides more flexibility and control over the pipeline workflow, while Declarative Pipeline provides a simpler and more structured
+
+what you do when see a broken build for your projects in jenkins
+Examine the build logs and console output to identify the cause of the failure.
+Review recent code changes in the version control system that may have introduced the issue.
+Communicate with team members, especially those who made recent changes.
+Check if the Jenkins configuration, including plugins and dependencies, needs updates.
+Once the issue is identified, make the necessary code or configuration changes.
+Retest the build locally before committing the fix.
+Trigger a manual or automatic rerun of the build to verify if the failure is consistent.
+
+what is post-section
+Answer: The post section in Jenkins Pipeline is used to define actions that should be taken after the completion of all the stages defined in the pipeline
+always: Executes the specified steps regardless of the build result.
+success: Executes the specified steps only if the build is successful.
+failure: Executes the specified steps only if the build fails.
+unstable: Executes the specified steps only if the build is unstable.
+
+pipeline {
+    agent any
+
+    stages {
+        // Define stages
+    }
+
+    post {
+        always {
+            echo 'This will run always'
+        }
+        success {
+            echo 'This will run only if the build is successful'
+        }
+        failure {
+            echo 'This will run only if the build fails'
+        }
+    }
+}
+ 
+1. How to install private plugins during Jenkins Pipeline?
+
+Answer: To install private plugins during a Jenkins Pipeline, you need to first ensure that the Jenkins master or agent has access to the necessary plugin files. You can achieve this by storing the private plugins in a designated location or a private repository. Then, in your Jenkinsfile, you can use the installPlugins step to install the required plugins:
+
+groovy
+Copy code
+pipeline {
+    agent any
+
+    stages {
+        stage('Install Plugins') {
+            steps {
+                script {
+                    // Define the plugin version and location
+                    def pluginVersion = '1.2.3'
+                    def pluginUrl = 'http://your-private-repo/plugin-name-' + pluginVersion + '.hpi'
+
+                    // Install the private plugin
+                    installPlugins([[$class: 'PlainArtifact', 
+                                    'artifacts': [[
+                                        'artifactId': 'plugin-name', 
+                                        'classifier': '', 
+                                        'groupId': '', 
+                                        'id': 'plugin-name', 
+                                        'type': 'hpi', 
+                                        'version': "${pluginVersion}"]
+                                    ], 
+                                    'id': 'plugin-name']], 
+                                    [[$class: 'FileArtifact', 'file': pluginUrl]])
+                }
+            }
+        }
+
+        // Add more stages as needed
+    }
+}
+
+4. How to integrate Jenkins with Amazon EC2?
+Answer: To integrate Jenkins with Amazon EC2 for dynamic agent provisioning, you can use the EC2 plugin. Here are the general steps:
+Install EC2 Plugin:
+In Jenkins, navigate to "Manage Jenkins" > "Manage Plugins."
+Install the "Amazon EC2" plugin.
+Configure EC2 Cloud:
+In Jenkins, go to "Manage Jenkins" > "Configure System."
+Scroll down to the "Cloud" section, and click "Add a new cloud" > "Amazon EC2."
+Enter your AWS credentials, specify region, and configure other settings.
+Configure Jenkins Jobs:
+
+In your Jenkins pipeline or job, use the agent directive to specify that the job should run on an EC2 agent dynamically provisioned by Jenkins.
+pipeline {
+    agent {  
+        label 'ec2-agent-label'                       
+    }
+
+    stages {
+        // Define stages
+    }
+}
+
+
+what is the purpose of jenkins_home directory
+Answer: The JENKINS_HOME directory is the home directory of the Jenkins installation and is crucial for storing configuration, job data, plugins, and other important information.
+
+JENKINS is a open-source ci/cd tool. it consists of serveral stages, like continueos download, build, testing and delivery. it works based  on master and slave architecture. evary organisation build multiple projects, so one jenkins master can't handle multiple project then we will  configure master and slave machines then distribute the work loads on slaves based on the project. 
+here two types of pipelines are there. 1. freestyle project. Free style project is supporting gui. we can't control the flow of the pipeline and doesn't easy to find out the errors. 
+2. Pipeline project worked based on jenkins file. Jenkins file means its consist of steps and stages for jenkins pipeline. when we are using pipeline, we can control the flow of the pipeline. here two types of pipelines are there. 1. one is scripted pipeline and second one is declarative pipeline.
+
+whenever developer merge his features branch into release branch, then we worked on deployment in testing phase from release branch. in this test phase we will use two days for socking time. if we do not face any issuses in socking time, then we will proceed to next phase.
+
+what is the blue-oscean in jenkins
+what do you mean by pipeline as code
+WHAT IS MULTIBRANCH Pipeline
+how to build jenkins job once its completed then immdeiatly other job
+
+docker run -d --name sonar -p  9000:9000 sonarqube:its-community
