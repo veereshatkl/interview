@@ -164,7 +164,7 @@ ENV is a directive used for defining environment variables to be passed while bu
 docker image build -t image:tag --env-file=variables.env
 
 variables.env
----------------
+-------------
 JAVA_HOME=/u01/middleware/openjdk-11-jdk
 TOMCAT_HOME=/u01/middleware/apache-tomcat-9.50.1
 
@@ -248,7 +248,7 @@ a specific directory on the host machine is mounted into the container. Changes 
 docker container run -it -v /u01/data:/u01/data:Z ubuntu:20.04 bin/bash
 
 #2.bind mounts
------------
+---------------
 bind mounts are used for mouting the host computer directory on to the docker container. while running statefull applications within a container, to ensure the data is not lost incase of container crash or destroyed we use bind mounts.
 
  --mount (new style)
@@ -336,11 +336,6 @@ $ docker network disconnect multi-host-network container1
 $ docker network rm network_name
 6.Remove all Unused Networks
 $ docker network prune
-
-what is Docker file or image ?
-Docker images act as a set of instructions to build a Docker container, like a template. 
-docker file :its consists of software application, dependencies libraries, libs/bins.
-
 
 What can you tell about Docker Compose?
 It is a YAML file consisting of all the details regarding various services, networks, and volumes that are needed for setting up the Docker-based application. So, docker-compose is used for creating multiple containers, host them and establish communication between them. For the purpose of communication amongst the containers, ports are exposed by each and every container.

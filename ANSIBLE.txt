@@ -246,10 +246,8 @@ There are 5 possible statuses in which a task can be there and it is reported pe
 2. changed(n)      = indicates how many tasks of the playbook executions has changed the state of the managed node
 3. unreachable(n)  = how many task executions of the playbook failed due to unable to connect to the managed node
 4. failure(n)      = how many task executions of the playbook resulted in failure of execution
-5. skipped(n)      = how many task executions are omitted on the managed node The reasons can be 
-                     - unmatched condition
-										 - due to previous failures	
-										 
+5. skipped(n)      = how many task executions are omitted on the managed node The reasons can be - unmatched condition - due to previous failures	
+																			 
 Modules
 --------
 Modules represents a unit of work that can be applied on managed nodes. The ansible modules are written in Python language, they take input as arguments and produces the output as json format including the status of the action being performed on a node
@@ -563,8 +561,7 @@ mysql-user-playbook.yml
 ...
 
 *6. register variables
-The output of a command module has been stored in a variable and passed as an input to the debug module using register variable.
-				
+The output of a command module has been stored in a variable and passed as an input to the debug module using register variable.				
 register variables are dynamic variables that are created during the playbook execution	unlike the other variables we declare in ansible
 ---
 - name: play

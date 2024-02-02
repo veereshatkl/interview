@@ -1,4 +1,3 @@
-
 what is git
 ------------
 Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
@@ -69,7 +68,7 @@ The git stash command will help a developer switch branches to work on something
 # Bring stashed work back to the working directory
   git stash pop
 
-16. What do you understand about the Git merge conflict?
+16. What do you understand about the Git merge conflict?	
 A Git merge conflict is an event that occurs when Git is unable to resolve the differences in code between the two commits automatically. 
 
 Git is capable of automatically merging the changes only if the commits are on different lines or branches.

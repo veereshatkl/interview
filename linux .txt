@@ -1,11 +1,11 @@
 Roles AND Responsibilities 
 Hi 
 Good morning
-I am xxxxx. I have completed my graduation in 2017 from JNTUA. 
-I am having total  5 years of experience, in this i have 3 years of experience as a devops with AWS engineer and 2 years of s experience as a sre engineer. 
+I am Veeresh. I have completed my graduation in 2017 from JNTUA. 
+I am having total  5 years of experience, in this i have 4.3 years of experience as a devops with AWS engineer and 6 months experience as a sre engineer. 
 During my tenure  I have been  working on various DevOps tools like git maven jenkins ansible, docker, k8s, terraform, .. and also such as a  various aws services like ec2 aim, s3 load balancing vpc cloud watch and other services. 
 
-my last working company is xxxxxx and client xxxx. In this organisation i worked on xxxxx project. In this project my roles and responsibilities is 
+my last working company is collabera technoligies and client PANW. In this organisation i worked on wildfire project. In this project my roles and responsibilities is 
 
 1. I have maintained 5DC 
 2. Every 15 days I work on releases and every release lasts for 10 days 
@@ -189,7 +189,6 @@ There are two commands to schedule tasks in Linux: cron and at.
 
 28)How to identify which shell you are using?
 $ echo $SHELL
-
 29) What Does Protocol Mean?
 A protocol is a set of rules and guidelines for communicating data.
 Types of Network Protocols
@@ -305,16 +304,53 @@ Canary Deployment:
 Gradual Rollout:
 Canary deployments involve a gradual rollout of the new version to a subset of users or servers before the full deployment.
 Only a small "canary" group initially receives the new version.
-Traffic Increment:
+Traffic Increment:   
 Traffic is incrementally increased to the canary group as the new version is validated.
 This allows for monitoring the impact of the new version on a small scale before exposing it to the entire user base.
 
 
+Grafana:
+Purpose: Grafana is primarily a visualization and dashboarding platform. It is often used to create visually appealing and interactive dashboards that aggregate and display data from various sources.
+Key Features:
+Supports multiple data sources, including Prometheus, InfluxDB, Elasticsearch, and more.
+Rich set of visualization options (graphs, tables, heatmaps, etc.).
+Alerting capabilities for proactive monitoring.
+Extensible through plugins.
+Common Use Cases:
+Monitoring system metrics.
+Visualizing time-series data.
+Building dashboards for various data sources.
+Splunk:
+Purpose: Splunk is a comprehensive platform for log management, log analysis, and machine data analytics. It is designed to ingest, index, and correlate large volumes of log and event data.
+Key Features:
+Log ingestion and indexing.
+Search and analysis capabilities for logs.
+Real-time monitoring and alerting.
+Correlation of data from different sources.
+Extensive query language (SPL - Splunk Processing Language).
+Common Use Cases:
+Log analysis and troubleshooting.
+Security information and event management (SIEM).
+Business intelligence and analytics on machine-generated data.
+Prometheus:
+Purpose: Prometheus is an open-source monitoring and alerting toolkit designed for reliability and scalability. It is particularly well-suited for monitoring containerized applications and microservices architectures.
+Key Features:
+Time-series data collection and storage.
+PromQL language for querying metrics.
+Alerting rules and notifications.
+Service discovery and dynamic configuration.
+Common Use Cases:
+Monitoring and alerting for applications and infrastructure.
+Metrics collection for container orchestration systems (e.g., Kubernetes).
+Integration with Grafana for visualization.
+In summary, while Grafana focuses on visualization and dashboards, Splunk is geared towards log management and analytics, and Prometheus is tailored for monitoring and alerting, particularly in containerized environments. Depending on your specific needs and the nature of your infrastructure, you might choose one or a combination of these tools to build a comprehensive observability stack for your applications and systems.
 
+A "VM stack" could refer to a set or stack of virtual machines (VMs) that work together to provide a specific set of services or applications. In this context, a VM stack might include multiple virtual machines, each serving a different role (e.g., web server, database server, application server) and collectively forming an application or service infrastructure.
 
-
-
-
+what is 3 tier architechure
+Presentation Tier (User Interface Tier):This is the topmost layer that interacts directly with the end-users.
+Application Tier (Logic Tier or Middle Tier):The application tier, also known as the business logic or middle tier, is responsible for processing the business logic and managing application functionality.
+Data Tier (Data Storage Tier):The data tier is responsible for managing and storing data used by the application.
 
 
 

@@ -41,7 +41,7 @@ Build plugins:  These plugins are used throughout the build process and are conf
 Reporting plugins: These plugins are configured in the pom.xml's <reporting/> element and run during stage generation
 
 6. How do you know the version of Maven being used?
-mvn –version 
+mvn -–version 
 
 1. mvn clean
 This command cleans the maven project by deleting the target directory.

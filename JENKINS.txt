@@ -355,11 +355,11 @@ pipeline {
 what is the purpose of jenkins_home directory
 Answer: The JENKINS_HOME directory is the home directory of the Jenkins installation and is crucial for storing configuration, job data, plugins, and other important information.
 
-JENKINS is a open-source ci/cd tool. it consists of serveral stages, like continueos download, build, testing and delivery. it works based  on master and slave architecture. evary organisation build multiple projects, so one jenkins master can't handle multiple project then we will  configure master and slave machines then distribute the work loads on slaves based on the project. 
+JENKINS is a open-source ci/cd tool. it consists of serveral stages, like continueos download, build, testing and delivery. it works based  on master and slave architecture. evary organisation build multiple projects, so one jenkins master can't handle multiple projects then we will configure master and slave machines then distribute the work loads on slaves based on the project. 
 here two types of pipelines are there. 1. freestyle project. Free style project is supporting gui. we can't control the flow of the pipeline and doesn't easy to find out the errors. 
 2. Pipeline project worked based on jenkins file. Jenkins file means its consist of steps and stages for jenkins pipeline. when we are using pipeline, we can control the flow of the pipeline. here two types of pipelines are there. 1. one is scripted pipeline and second one is declarative pipeline.
 
-whenever developer merge his features branch into release branch, then we worked on deployment in testing phase from release branch. in this test phase we will use two days for socking time. if we do not face any issuses in socking time, then we will proceed to next phase.
+whenever developer merge his features branch into release/master branch, then we worked on deployment in testing phase from the latest release branch. in this testing phase we will use two days for socking time. if we will not face any issuses in socking time, then we will proceed to next phase.
 
 what is the blue-oscean in jenkins
 what do you mean by pipeline as code

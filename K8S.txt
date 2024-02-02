@@ -543,7 +543,6 @@ When you create a Service of type NodePort, Kubernetes gives you a nodePort valu
 
 Here is a manifest for a Service of type NodePort:
 
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -583,7 +582,6 @@ Stateless applications do not keep a record of each interaction/state. Each requ
 Stateful applications stores information locally or on the remote storage. 
 
 StatefulSet: StatefulSets are used for deploying stateful applications, such as databases. They provide guarantees about the ordering and uniqueness of pods, which is essential for applications that require stable network identities and persistent storage.
-
 
 how to setup a eks cluster?
 1. to create a cluster role
@@ -641,3 +639,4 @@ spec:
 In this example, the pod is configured to be scheduled on nodes with the label node-type=special.
 
 
+\
