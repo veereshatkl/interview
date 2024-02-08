@@ -1,11 +1,12 @@
 JENKINS:
-Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. 
-there are few stages are there in jenkins process
-1. CONTINUOUS DOWNLOAD
-2. CONTINUOUS BUILD
-3. CONTINUOUS DEPLOYMENT
-4. CONTINUOUS TESTING
-5. CONTINUOUS DELIVARY
+jenkins architecture:
+JENKINS is a open-source ci/cd tool. it consists of serveral stages, like continueos download, build, testing and delivery. it works based  on master and slave architecture. evary organisation build multiple projects, so one jenkins master can't handle multiple projects then we will configure master and slave machines then distribute the work loads on slaves based on the project. 
+here two types of pipelines are there. 
+1. freestyle project. Free style project is supporting gui. we can't control the flow of the pipeline and doesn't easy to find out the errors. 
+2. Pipeline project worked based on jenkins file. Jenkins file means its consist of steps and stages for jenkins pipeline. when we are using pipeline, we can control the flow of the pipeline. here two types of pipelines are there. 1. one is scripted pipeline and second one is declarative pipeline.
+
+realtime scenario:
+whenever developer merge his features branch into release/master branch, then we worked on deployment in testing phase from the latest release branch. in this testing phase we will use two days for socking time. if we will not face any issuses in socking time, then we will proceed to next phase.
 
 #1 Continous Integration
 Whenever a developer merges his features into the develop/master branch, immediately the ops engineer has to perform the various different quality checks in certifying the code and making the artifact available for testing, like
@@ -34,16 +35,9 @@ based on the type of application:
  	all the cloud env in which application is running will be refereshed with latest artifact
  #2 if it is a binary delivery to the user, then the test and ceritfied artifact will be released to the public 
 	 
-The devops engineer has to perform relevant activities at different stages in building, testing, deploying and delivering the project repeatitively, which is an tedious job, to carry out all of these activities through automation the ops engineer requires ci/cd tools like jenkins
-
-Jenkins is a continous integration/delivery tool that orchestrates all the above activities that has to be carried out in delivering the software application. The jenkins has provided various different plugins that can be used for performing majority of the build activities automatically
-
 Jenkins Architecture
 ---------------------
-Jenkins follows master and slave architecture, where the jenkins will be installed on a central server environment and configured with slave nodes attached to it. whenever we ask the master to perform any build, the master executes the builds on these slave nodes
-
-To ensure the scalability of the builds for various different projects, master node distributes them across all the slaves 
-
+where the jenkins will be installed on a central server environment its act as jenkins master.by defaults all jenkins jobs informtaion stored in jenkins home directory "/var/lib/jenkins/"
 There are 2 types of jenkins projects are there
 	1. free-style project
 	Jenkins will provide an user interface allowing the opsengineer to define the steps that has to be applied in build the project. The jenkins takes the code and persist in its own persistence storage.
@@ -133,6 +127,7 @@ s3 publisher
 role based authentication
 sonarqubescanner
 ssh2 easy
+jacoco
 
 
 Q #2) What is Continuous Integration in Jenkins?
@@ -355,15 +350,70 @@ pipeline {
 what is the purpose of jenkins_home directory
 Answer: The JENKINS_HOME directory is the home directory of the Jenkins installation and is crucial for storing configuration, job data, plugins, and other important information.
 
-JENKINS is a open-source ci/cd tool. it consists of serveral stages, like continueos download, build, testing and delivery. it works based  on master and slave architecture. evary organisation build multiple projects, so one jenkins master can't handle multiple projects then we will configure master and slave machines then distribute the work loads on slaves based on the project. 
-here two types of pipelines are there. 1. freestyle project. Free style project is supporting gui. we can't control the flow of the pipeline and doesn't easy to find out the errors. 
-2. Pipeline project worked based on jenkins file. Jenkins file means its consist of steps and stages for jenkins pipeline. when we are using pipeline, we can control the flow of the pipeline. here two types of pipelines are there. 1. one is scripted pipeline and second one is declarative pipeline.
-
-whenever developer merge his features branch into release/master branch, then we worked on deployment in testing phase from the latest release branch. in this testing phase we will use two days for socking time. if we will not face any issuses in socking time, then we will proceed to next phase.
-
 what is the blue-oscean in jenkins
-what do you mean by pipeline as code
-WHAT IS MULTIBRANCH Pipeline
-how to build jenkins job once its completed then immdeiatly other job
+Blue Ocean is a modern and user-friendly graphical user interface (GUI) for Jenkins. It is designed to simplify the creation, visualization, and management of Jenkins pipelines.
 
-docker run -d --name sonar -p  9000:9000 sonarqube:its-community
+what do you mean by pipeline as code
+Pipeline as Code (PaC) is an approach to defining and managing continuous integration and continuous delivery (CI/CD) pipelines using code.
+Pipeline as Code uses a declarative syntax to describe the stages, steps, and configurations of the CI/CD pipeline.
+
+What is multibranch Pipeline
+A Multibranch Pipeline is a Jenkins pipeline that automatically detects, builds, and manages multiple branches of a version-controlled repository. 
+Multibranch Pipelines automatically detect branches in a version-controlled repository. Each branch in the repository can trigger a separate pipeline.
+As new branches are created in the version control system, Jenkins automatically creates corresponding branch-specific pipelines.
+The configuration for each branch-specific pipeline is defined in a Jenkinsfile located in the branch itself. This follows the "Pipeline as Code" paradigm.
+
+how to build jenkins job once its completed then immdeiatly other job
+Open the Jenkins Dashboard
+Navigate to Job Configuration:
+Configure "Post-build Actions":
+	Scroll down to the "Post-build Actions" section.
+	Check the box for "Build other projects."
+Specify Projects to Build:
+	In the "Projects to build" field, enter the names of the Jenkins projects that you want to trigger after the current job completes.
+	You can specify multiple projects, separated by commas.
+Configure Other Options (Optional):
+	Optionally, you can configure additional options such as triggering only if the build is stable, unstable, or failed.
+
+and also we are using post section in jenkins file 
+After configuring the job(s) to trigger upon completion, Jenkins will automatically initiate those jobs when the current job finishes its execution.
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                // Your build steps here
+                echo 'Building...'
+            }
+        }
+    }
+    
+    post {
+        success {
+            // Trigger other jobs upon successful build completion
+            build job: 'AnotherJob'
+        }
+        failure {
+            // Trigger other jobs upon build failure
+            build job: 'FailureJob'
+        }
+    }
+}
+  
+if suppose jenkins master goes down then how to overcome the problem
+Identify the Cause of Failure:
+Before proceeding with recovery, it's essential to identify the root cause of the Jenkins master failure. Common causes include hardware failures, software issues, or external factors like network problems.
+We will create a new Jenkins master node and will install Jenkins server  on the master node, then connect with agent nodes.
+Restore Jenkins Configuration and Data into jankins master node:
+If you have regular backups of your Jenkins configuration and data, you can use them to restore the environment. Ensure that your backups include:
+Jenkins home directory.
+Job configurations (Jenkins jobs).
+Jenkins configurations (system and global configurations).
+Plugins and their configurations.
+Security settings and user configurations.
+Start Jenkins:
+Once the backup files are in place, start Jenkins on the new master server. 
+ Verify Jenkins:
+Check the Jenkins web interface and verify that the configurations, jobs, and plugins are restored correctly.
+High Availability (HA): Consider setting up Jenkins in a high-availability configuration with multiple masters to minimize downtime in case of a failure.

@@ -1,5 +1,0 @@
-Jenkins
-1. install jenlkins
-2. install docker on jenkuns node(install docker for ubuntu)
-3. change usermod from docker to jenkuns
-4. 

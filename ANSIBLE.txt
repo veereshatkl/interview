@@ -51,6 +51,7 @@ Each module within an Ansible Playbook performs a specific task
 5. Inventory File
 The Control Node Server is completely stateless, it doesnt carry any information related to the Fleet/Managed Nodes of the cluster. The ansible developer has to write the list of servers/computers on whom we wanted to apply the playbook/module by writing in a File called InventoryFile.
 Now along with the playbook pass the inventoryFile as an input to ControlNode Server asking him to execute the modules
+an inventory file is a file that defines a list of hosts or nodes on which operations will be performed.
 
 6. ansible module
 Ansible modules are units of code that can execute system commands

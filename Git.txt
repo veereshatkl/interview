@@ -68,19 +68,6 @@ The git stash command will help a developer switch branches to work on something
 # Bring stashed work back to the working directory
   git stash pop
 
-16. What do you understand about the Git merge conflict?	
-A Git merge conflict is an event that occurs when Git is unable to resolve the differences in code between the two commits automatically. 
-
-Git is capable of automatically merging the changes only if the commits are on different lines or branches.
-
-17. How do you resolve conflicts in Git?
-Here are the steps that will help you resolve conflicts in Git:
-
-Identify the files responsible for the conflicts.
-Implement the desired changes to the files 
-Add the files using the git add command.
-The last step is to commit the changes in the file with the help of the git commit command.
-
 18.  What is the functionality of git clean command? 
 The git clean command removes the untracked files from the working directory.
 
@@ -88,8 +75,8 @@ The git clean command removes the untracked files from the working directory.
 A command typically used to move specific commits from one branch of a repository to another.
 $git cherry-pick commit-id
 
-21. What is conflict in Git?
-Resolving a conflict can be done by manually editing the file to choose which changes should be kept, or by using a tool like Git's merge command to automatically merge the changes.
+21. What is conflict in Git and how overvome this problem?
+git merge conflicts occur when two developers  make changes in the same file, then we can't merge a file into a specific branch. Then, two developers will connect and discuss which data should be kept and which data should be removed. then we will run git commands like git add, git commit.
 
 22. What is the command used to fix a broken commit?
 To fix a broken commit in Git, you may use the “git commit --amend” command, which helps you combine the staged changes with the previous commits instead of creating an entirely new commit.

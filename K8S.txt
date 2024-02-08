@@ -603,40 +603,209 @@ There are 3 ways we can host an eks cluster
 4. in eks cluster to chhose a compute and create a worker node
 
 differences between monolothic and micro services applications
+Monolithic: In a monolithic architecture, the entire application is developed, deployed, and maintained as a single, cohesive unit
+Changes to one part of the application may affect other parts, and the entire application is typically deployed as a whole.
+
+Microservices: In a microservices architecture, the application is decomposed into small, independent services, each with its own codebase and functionality. These services communicate over a network
+Each service can be developed, deployed, and scaled independently. Changes to one service do not necessarily impact others.
 
 what is node taints and tolerations
 In Kubernetes, taints and tolerations are mechanisms used to control which nodes can run specific pods. Taints are applied to nodes, and tolerations are applied to pods. When a node has a taint, it means that pods without the corresponding toleration will not be scheduled on that node.
 
 how to run a specific pod on specific node ?
-To schedule a specific pod on a specific node in Kubernetes, you can use node affinity rules. Node affinity is a feature that allows you to constrain the scheduling of a pod based on conditions that must be met by nodes in the cluster.
-Here's how you can set up node affinity to run a specific pod on a specific node:
+Node affinity:
+Purpose: Node affinity is a scheduling rule that specifies conditions under which a pod should be scheduled on nodes that have certain labels.
+For example, you might use node affinity to schedule pods on nodes with specific hardware characteristics, geographic location, or other node attributes.
+Example: Schedule a pod on nodes with the label zone=us-east:
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: zone
+          operator: In
+          values:
+          - us-east
 
-Label the Node:
-First, label the node that you want to use. For example, let's say you want to label a node with the key-value pair node-type=special.
-kubectl label nodes <node-name> node-type=special
 
-Define Node Affinity in Pod Spec:
-Modify your pod specification to include node affinity rules. Add the affinity section to the pod spec, specifying nodeAffinity with the required requiredDuringSchedulingIgnoredDuringExecution rules.
-yaml
-Copy code
-apiVersion: v1
-kind: Pod
+node anti-affinity:
+Purpose: Node anti-affinity is a scheduling rule that specifies conditions under which a pod should avoid being scheduled on nodes that have certain labels.
+Usage: It is used to repel pods from certain nodes based on node labels. The goal is to spread the pods across different nodes to enhance fault tolerance and availability.(statefull set)
+Example: Avoid scheduling pods on nodes with the label special-purpose
+affinity:
+  nodeAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: special-purpose
+          operator: Exists
+
+#difference between node preferred and required
+Node preferred refers to the affinity rules in Kubernetes that express a preference for scheduling pods on nodes with certain characteristics, but they are not strict requirements.
+If the conditions specified in the affinity rules cannot be met, the scheduler will still schedule the pod on any available node.
+
+Resource Requests: Node request typically refers to the resource requests made by a pod to the Kubernetes scheduler. 
+When defining resource requirements for a pod, you specify the amount of CPU and memory that the pod needs. These requests influence the scheduler's decisions about where to place the pod based on the availability of resources on nodes.
+
+#how to Upgrade a Kubernetes cluster with zero downtime ?
+1. Backup Your Cluster:
+Before starting the upgrade process, ensure that you have a backup of your Kubernetes cluster, including configurations, secrets, and persistent data.
+2. The kubectl drain command automatically cordons (marks as unschedulable) the node to prevent the scheduler from placing new pods on it.
+	The command then gracefully evicts (moves) the pods running on the node to other available nodes in the cluster.
+kubectl drain <node-name> --ignore-daemonsets
+Cordon:
+The kubectl cordon command is used to mark a node as unschedulable. When a node is cordoned, the Kubernetes scheduler will not place new pods onto that node. However, existing pods on the node continue to run.
+kubectl cordon node-1
+Uncordon 
+This removes the unschedulable mark from node-1, allowing new pods to be scheduled.
+kubectl uncordon node-1
+Upgrade Worker Nodes:
+Upgrade worker nodes one by one or in small batches. This ensures that there is sufficient capacity to handle the ongoing workloads. 
+Update kubectl:
+Ensure that the kubectl command-line tool is compatible with the new Kubernetes version. Download and install the latest version of kubectl if necessary.
+Monitoring and Validation:
+Continuously monitor the cluster during the upgrade to detect any issues promptly. 
+
+how to resolve a crashloopbackoff ?
+A CrashLoopBackOff status in Kubernetes indicates that a pod is repeatedly crashing and being restarted by the Kubernetes controller. The controller detects that the pod is not in a stable running state, and it keeps trying to restart it, leading to a continuous loop.
+Check Pod Logs:
+Use the kubectl logs command to check the logs of the failing pod. This can provide valuable information about the error or issue that is causing the pod to crash.
+kubectl logs <pod-name>
+Inspect Pod Events:
+Use kubectl describe to get more details about the pod and any associated events that might indicate issues.
+kubectl describe pod <pod-name>
+Review Container Image:
+Ensure that the container image specified in the pod's definition is valid and accessible. Check for typos, image availability, and correct image tags.
+Check Resource Constraints:
+Examine the resource constraints (CPU and memory) specified for the pod. Insufficient resources can cause a pod to crash. Adjust the resource limits in the pod's YAML configuration if needed.
+resources:
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+Verify Dependencies:
+Ensure that any external dependencies or services required by the pod are available and correctly configured.
+Update Pod Configuration:
+If there are issues with the pod's configuration, make necessary corrections and apply the changes.
+Check for Disk Space Issues:
+Insufficient disk space on the node where the pod is running can lead to crashes. Verify the available disk space on the node and free up space if needed.
+Consider Using Probe Checks:
+Implement readiness and liveness probes in your pod specification. These probes can help Kubernetes determine whether a pod is ready to serve traffic and whether it's alive.
+
+# real-time experiences or the ability to interact with external systems, including Kubernetes clusters.
+1.Deploying Applications:
+Users commonly deploy applications using Kubernetes manifests (YAML files) that describe the desired state of their applications. This includes specifying container images, resource requirements, and other configurations.
+2.Scaling Applications:
+Users scale their applications by adjusting the replica count in a Deployment or StatefulSet. This allows them to dynamically increase or decrease the number of running instances.
+kubectl scale deployment my-app --replicas=5
+3.Upgrading Applications:
+Users perform rolling updates to deploy a new version of an application. This involves updating the container image in a Deployment, allowing Kubernetes to gradually replace old pods with new ones.
+Monitoring and Logging:
+Users often set up monitoring and logging solutions, such as Prometheus and Grafana, to gain insights into the health and performance of their Kubernetes clusters and applications.
+Configuring Ingress and Services:
+Users define Ingress resources to manage external access to services and configure Services to expose and load balance traffic to pods.
+Secrets and ConfigMaps:
+Users use Secrets and ConfigMaps to manage sensitive information and configuration data separately from the application code.
+Persistent Storage:
+Users define PersistentVolume (PV) and PersistentVolumeClaim (PVC) resources to provide persistent storage for stateful applications.
+Node Maintenance:
+During node maintenance, users may cordon a node to prevent new pods from being scheduled, drain the node to evict existing pods, perform maintenance tasks, and then uncordon the node
+
+#how to expose a communication  between the pods in different nodes
+To enable communication between pods running on different nodes in a Kubernetes cluster, you can use services with type NodePort, LoadBalancer, or ExternalName, or you can set up an Ingress resource. 
+Create a Deployment:
+Start by creating a simple deployment with two pods running on different nodes.
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: your-pod-name
+  name: my-app
 spec:
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-type
-            operator: In
-            values:
-            - special
-  containers:
-  - name: your-container
-    image: your-image
-In this example, the pod is configured to be scheduled on nodes with the label node-type=special.
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: my-registry/my-app:latest
+        ports:
+        - containerPort: 80
+Create a NodePort Service:
+Create a NodePort service to expose the pods. The service will automatically assign a high port number on each node.
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort
+
+kubectl apply -f service.yaml
+kubectl get svc my-app-service
+
+what is default deployment strategy in k8s?
+A rolling deployment is the default deployment strategy in Kubernetes. It replaces the existing version of pods with a new version, updating pods slowly one by one, without cluster downtime.
+
+pod lifecycle
+1.pending
+2.running
+3.succeeded
+4.failed
+5.terminated
+
+what is init container in k8s?
+specialized containers that run before app containers in a Pod. Init containers can contain utilities or setup scripts not present in an app image. 
 
 
-\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

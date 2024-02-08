@@ -81,8 +81,8 @@ docker container run -it image:tag command
 #2 How to see the running containers on the docker workstation?
 docker container ps
 
-Only stopped containers can be listed using:
-docker ps -a --filter "status=exited"
+Only stopped containers deleted
+docker ps -a --filter "status=exited" | xargs docker rm
  
 #3. How to see all the containers on the docker workstation?
 docker container ls -a
@@ -364,3 +364,25 @@ FROM node:14-alpine
 WORKDIR /app
 COPY --from=builder /app/dist /app  / here only copy necessary information ftom build stage to prod
 CMD ["npm", "start"]
+
+If a Docker container loses network communication,
+Check Container Logs:	docker logs <container_name_or_id>
+Review the logs of the container to see if there are any error messages or warnings related to network issues. You can use the docker logs command to view container logs.
+Verify Network Settings:	docker inspect <container_name_or_id>
+Check the network settings of the container, such as IP address, ports, and network mode. Ensure that the container is using the correct network and that it has the necessary network configurations.
+Ping Host and External Resources:	docker exec -it <container_name_or_id> ping <host_ip_or_domain>
+From within the container, try to ping the host machine and external resources (e.g., Google's public DNS server 8.8.8.8). This helps determine if the issue is specific to certain destinations.
+Firewall or Security Group Rules:
+Verify that there are no firewall rules or security group restrictions preventing network communication. 
+Host Network Issues:
+Check the network configuration on the host machine.
+Restart the Container:	docker restart <container_name_or_id>
+In some cases, restarting the container might resolve network-related issues.
+Recreate the Container:
+docker stop <container_name_or_id>
+docker rm <container_name_or_id>
+docker run <your_container_options>
+
+
+
+

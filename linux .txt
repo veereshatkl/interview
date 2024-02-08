@@ -1,13 +1,13 @@
-Roles AND Responsibilities 
+
 Hi 
 Good morning
-I am Veeresh. I have completed my graduation in 2017 from JNTUA. 
-I am having total  5 years of experience, in this i have 4.3 years of experience as a devops with AWS engineer and 6 months experience as a sre engineer. 
+I am Veeresh. 
+I am having total  5 years of experience, in this i have 3 years of experience as a devops with AWS engineer and 2 years of experience as a sre engineer. 
 During my tenure  I have been  working on various DevOps tools like git maven jenkins ansible, docker, k8s, terraform, .. and also such as a  various aws services like ec2 aim, s3 load balancing vpc cloud watch and other services. 
 
-my last working company is collabera technoligies and client PANW. In this organisation i worked on wildfire project. In this project my roles and responsibilities is 
-
-1. I have maintained 5DC 
+my last working company is xxxx and client xxxx. In this organisation i worked on project name. In this project my roles and responsibilities is 
+it is used for detect any malware or malicious functions is there or not. 
+1. I have maintained 5DC single handedly.
 2. Every 15 days I work on releases and every release lasts for 10 days 
 3. After deployments were done I do validation and qa spot-checks through ansible via Jenkins pipeline
 4. After validations were done, I get to find multiple issues where I resolve them manually or through ansible playbooks.
@@ -17,28 +17,17 @@ my last working company is collabera technoligies and client PANW. In this organ
 i worked on on-call for production support and worked 4 to 7 days in a month for on-call. 
 8. So these are the activities we had performed in our project
 
-Day to day activities
-1. In my organisation we are using slack and gmail for communication purpose
-2. Every 30mins I have verified any msg or  mails are received 
-3. Once any important mail get then immediately responded  pc3r2]y
-4. Every mon to thu  we will attend standup call at 10 - 10:15 am
-5. We will give work progress
-6. And every 14 days once we have sprint planing and sprint retro meeting is there.
-
-Coming to 
-My roles and responsibilities includes setting up the CI-CD pipelines from scratch for various projects like Java, AngularJS, MicroServices, Spark and Databases.
+Coming to My roles and responsibilities :
+includes setting up the CI-CD pipelines from scratch for various projects like Java, AngularJS, MicroServices, Spark and Databases.
 For which we are using git as the Source Code Management tool, Jenkins as the CI-CD tool, AWS Code Build as the Build Platform.
 Jenkins
 In Jenkins - We are writing Declarative Pipeline scripts from which we are invoking Groovy script shared libraries like docker build, maven build, tomcat deploy, Helm deploy etc.,
 During build process, Once we fetch the code from the GitHub to Jenkins, we are invoking AWS Code Build project which is having the maven build steps in buildspec.yaml, and also for Angular JS project we are having npm as the build tool in AWS Code Build jobs. Once AWS , completes the build process, it will generate the build artifacts in the form of .jar files or .war files, and later we are storing those artifacts into AWS S3 buckets in the format of release versions.
 And later we are deploying those artifacts into respective application servers like weblogic, tomcat etc using deployment pipelines in Jenkins.
-
 Docker
 We are also using microservice applications for which we are containerizing them using Docker, where we are creating custom docker images using Dockerfiles, and storing those docker images in AWS ECR ( Elastic Container Registry ), and later we are deploying those docker images as containers in kubernetes clusters using helm charts.
 Ansible
 We are also using Ansible as the configuration management tool to install any packages on remote server and also to modify any configuration files on remote servers we are creating the ansible playbooks and roles for that, and encrypting any sensitive information like credentials, tokens, keys and passwords with Ansible Vault.
-Datadog
-And we are also using Datadog as the monitroing tool, using which we are monitoring different server metrices like cpu usage, disk usage, memory usage by creating cpu monitors, memory monitorg and setting up the alerts for the same. And also doing the application log monitoring and server log monitoring which will help us troubleshooting the application and network issues, we have also enabled APM ( Application Performance Monitoring ) Traces which will help us in identifying the exact reason and source which is causing the issue during troubleshooting.
 Kubernetes
 And also to monitor kubernetes environment, we have deployed datadog as daemonset, which will be deployed as pod on each worker node, and gather the metrices from those worker nodes, and will be available on datadog dashboard and console.
 Terraform
@@ -48,10 +37,20 @@ On AWS, we are also using CloudFront as the Content Delivery Network ( CDN ) too
 We are also using API Gateway as the entry point for our Microservices which are listening on top of kubernetes nginx ingress load balancer. On API GW, we ( deveopers ) are deploying our newly created APIS, and creating different stages according to environment, which will have the stage variables to point to backend kubernetes load balancer.
 Similarly, we are also using SNS, SES, CloudWatch, CloudTrail etc, we are using JIRA as the ticketing tool and CONFLUENCE as the documentation tool.
 
+Day to day activities:
+1. In my organization, we used Slack and Gmail for communication purposes.
+2. Every day, I attended a standup call from 10 am to 10:30 am and provided my work progress to the team.
+3. Every 30 minutes, I used to check any messages or emails received via Slack or email.
+4. Once any important email was received, we immediately responded and took action.
+5. Every 14 days, we had sprint planning and sprint retrospective meetings.
+6. Every hour, we monitored the pus to check how many were running and how many were out of service. We took immediate action to bring up the pus.
+7. I used to monitor servers like those in the K8S cluster, including application resources, pod status, and pod logs.
+8. I wrote Ansible playbooks for deploying applications and installing software packages.
+*. every day, i used to work on pending tickets
+9. I met with clients whenever required.
+10. I attended training sessions for self-improvement.
 
- What is Linux?
 Linux is an Open-Source Operating System based on Unix.
-
 LINUX BASIC COMMANDS
 	PWD-- to display the current path from root directory to current path  
 	MAN-- $ to display the user manual of any command that we can run on the terminal.
@@ -71,7 +70,7 @@ LINUX BASIC COMMANDS
 	chmod--  to manage a file and directory access permissions 0r change to files and directory permissions (777---read-4, write-2, exec-1)
 	tree-- Displays directory paths and (optionally) files in each subdirectory. 
 	grep-- search the string of characters from a given file :grep -r "pattern" directory or file path
-	find-- it can be used to find files and directories  find /home/ubuntu/veeresh/ -name "chinnari"
+	find-- it can be used to find files or directories  find /home/ubuntu/veeresh/ -name "chinnari"
 	head-- print the top N number of data of the given input.
 	tail-- print the bottom N number of data of the given input.
 	more-- displaying one screen at a time in case the file is large
@@ -205,12 +204,10 @@ Security protocols include HTTPS, SFTP, and SSL.
 30) How to see the logs in a givenfile
 tail -f (5)
 
-
 32)How to check the running process in your system ?
 $ ps -ef
 
 33)difference between start and enable - stop and disable?
-
 enable marks the service for starting up on boot, 
 start actually starts the service immediately.
 Stopping a job will only effect if the job is currently running and only effects the current execution of the job. If you try to stop a job which is not currently running you get an error.
@@ -310,48 +307,63 @@ This allows for monitoring the impact of the new version on a small scale before
 
 
 Grafana:
-Purpose: Grafana is primarily a visualization and dashboarding platform. It is often used to create visually appealing and interactive dashboards that aggregate and display data from various sources.
-Key Features:
-Supports multiple data sources, including Prometheus, InfluxDB, Elasticsearch, and more.
-Rich set of visualization options (graphs, tables, heatmaps, etc.).
-Alerting capabilities for proactive monitoring.
-Extensible through plugins.
-Common Use Cases:
-Monitoring system metrics.
-Visualizing time-series data.
-Building dashboards for various data sources.
+Purpose: Grafana is primarily a visualization and dashboarding platform. 
+it used for visualizing and analyzing metrics from various data sources.
+Grafana supports a variety of visualization options, including graphs, charts, tables, heatmaps, and more. 
+
 Splunk:
-Purpose: Splunk is a comprehensive platform for log management, log analysis, and machine data analytics. It is designed to ingest, index, and correlate large volumes of log and event data.
-Key Features:
-Log ingestion and indexing.
-Search and analysis capabilities for logs.
-Real-time monitoring and alerting.
-Correlation of data from different sources.
-Extensive query language (SPL - Splunk Processing Language).
-Common Use Cases:
-Log analysis and troubleshooting.
-Security information and event management (SIEM).
-Business intelligence and analytics on machine-generated data.
+Splunk is a software platform designed for searching, monitoring, and analyzing machine-generated data. 
+Splunk can collect and ingest data from a wide range of sources, including log files, event streams, databases, APIs, and more.
+
 Prometheus:
 Purpose: Prometheus is an open-source monitoring and alerting toolkit designed for reliability and scalability. It is particularly well-suited for monitoring containerized applications and microservices architectures.
-Key Features:
-Time-series data collection and storage.
-PromQL language for querying metrics.
-Alerting rules and notifications.
-Service discovery and dynamic configuration.
-Common Use Cases:
-Monitoring and alerting for applications and infrastructure.
-Metrics collection for container orchestration systems (e.g., Kubernetes).
-Integration with Grafana for visualization.
-In summary, while Grafana focuses on visualization and dashboards, Splunk is geared towards log management and analytics, and Prometheus is tailored for monitoring and alerting, particularly in containerized environments. Depending on your specific needs and the nature of your infrastructure, you might choose one or a combination of these tools to build a comprehensive observability stack for your applications and systems.
+Prometheus is responsible for collecting and storing time-series data (metrics) from various sources, such as applications, services, and infrastructure components.
 
+what is vm-stack
 A "VM stack" could refer to a set or stack of virtual machines (VMs) that work together to provide a specific set of services or applications. In this context, a VM stack might include multiple virtual machines, each serving a different role (e.g., web server, database server, application server) and collectively forming an application or service infrastructure.
+
+what is 2-tier architechure
+Client Tier: The client tier, also referred to as the "front end" or "presentation layer," is responsible for interacting with users and presenting the user interface.
+The server tier, also known as the "back end" or "application layer," is responsible for processing application logic, managing data, and handling business rules.
 
 what is 3 tier architechure
 Presentation Tier (User Interface Tier):This is the topmost layer that interacts directly with the end-users.
 Application Tier (Logic Tier or Middle Tier):The application tier, also known as the business logic or middle tier, is responsible for processing the business logic and managing application functionality.
 Data Tier (Data Storage Tier):The data tier is responsible for managing and storing data used by the application.
 
+what is ufw :
+it is used for managing firewall rules on Linux systems.
+Basic ufw Commands:
+sudo ufw enable
+sudo ufw disable
+sudo ufw allow 22   Allow Incoming Traffic on a Specific Port (e.g., SSH):
+sudo ufw status
 
+how to overcome network failures on linux:
+Review Logs: Inspect system logs, such as /var/log/syslog or /var/log/messages, for any network-related error messages. Logs can provide valuable information about the cause of network issues.
+Check Network Configuration: Verify the network configuration on the server to ensure that the network settings, IP address, subnet mask, gateway, and DNS servers are correctly configured. Use commands like ifconfig or ip addr to check network interfaces.
+Ping Gateway and External Hosts: Use the ping command to check connectivity to the default gateway and external hosts. If there is no response, it could indicate a network connectivity issue.
+Check DNS Resolution: Ensure that DNS resolution is working correctly. Use the nslookup or dig command to test DNS resolution.
+Review Firewall Settings: Check the firewall settings on the server. Firewalls can block incoming and outgoing network traffic. Use commands like iptables or firewalld to review and modify firewall rules.
+Restart Network Services: Restart networking services to apply any changes or reset network configurations.
+Check Cable Connections: If the server is connected to the network via physical cables, ensure that the cables are securely connected and not damaged. Consider checking network switch ports as well.
+
+A virtual host (vhost) refers to the practice of running multiple domain-based websites or services on a single physical machine, server, or IP address. 
+
+SSL (Secure Sockets Layer) and TLS (Transport Layer Security) are cryptographic protocols that provide secure communication over a computer network, most commonly seen in securing web browsing through HTTPS. 
+The handshake process is a key aspect of both SSL and TLS. During the handshake, the client and server agree on encryption algorithms and establish a secure connection.
+
+Transmission control protocol (TCP) and user datagram protocol. TCP is more reliable,
+(UDP) are foundational pillars of the internet, enabling different types of data transmission from a network source to the destination.  while UDP prioritizes speed and efficiency.
+
+what is ngnix? 
+Nginx (pronounced "engine-x") is a popular open-source web server, reverse proxy server, and load balancer. It is known for its high performance, stability, and low resource usage. 
+Web Server: Nginx can serve static content (HTML, CSS, images) and dynamic content by acting as a web server. It efficiently handles a large number of simultaneous connections and is designed to be lightweight and fast.
+
+Reverse Proxy: Nginx is often used as a reverse proxy server, sitting between clients and backend servers. It forwards client requests to the appropriate backend server, performs load balancing, and returns the response to the client. This setup helps improve security, scalability, and performance.
+
+Load Balancer: Nginx can distribute incoming network traffic across multiple servers to balance the load and ensure optimal resource utilization. It supports various load-balancing algorithms, including round-robin, least connections, and IP hash.
+
+Caching: Nginx includes caching mechanisms that can store and serve static content directly from memory, reducing the load on backend servers and improving response times.
 
 
