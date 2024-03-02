@@ -1,3 +1,7 @@
+veeresh
+acess: AKIARVFSHZOBRNA6IM4F
+secret: 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
+
 ec2:
 rds:
 terraform {
@@ -1452,20 +1456,9 @@ After tainting a resource, the next terraform apply will include a plan to destr
 
 A Terraform configuration file typically has a file extension of .tf or .tf.json (if written in JSON). These files contain the definitions of the infrastructure components and resources that need to be provisioned or managed. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+what is for-each and count in terraform
+The for-each expression in Terraform is used to create multiple instances of a resource or module based on a map or a set of key-value pairs.
+countThe count argument in Terraform is used to create a specified number of instances of a resource or module.
 
 
 

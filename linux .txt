@@ -2,10 +2,10 @@
 Hi 
 Good morning
 I am Veeresh. 
-I am having total  5 years of experience, in this i have 3 years of experience as a devops with AWS engineer and 2 years of experience as a sre engineer. 
+I am having total 5 years of experience, in this i have 3 years of experience as a devops with AWS engineer and 2 years of experience as a sre engineer. 
 During my tenure  I have been  working on various DevOps tools like git maven jenkins ansible, docker, k8s, terraform, .. and also such as a  various aws services like ec2 aim, s3 load balancing vpc cloud watch and other services. 
 
-my last working company is xxxx and client xxxx. In this organisation i worked on project name. In this project my roles and responsibilities is 
+my last working company was xxxx and client xxxx. In this organisation i worked on project name. In this project my roles and responsibilities is 
 it is used for detect any malware or malicious functions is there or not. 
 1. I have maintained 5DC single handedly.
 2. Every 15 days I work on releases and every release lasts for 10 days 
@@ -80,7 +80,7 @@ LINUX BASIC COMMANDS
 	du-- to display file and directories size
 	df -h -- to display disk utilities
 	tar commands-- zip , unzip and read the given file--tar -cvf, tar -xvf, tar -tvf
-	sed-- to edit a content of the gievn existing file
+	sed-- to edit a content of the gievn existing file sed 's/pattern/replacement/' filename
 	tr-- Use tr to perform different text transformations, including case conversion, squeezing or deleting characters, and basic text replacement
 	awk-- to print particular lines & Awk is mostly used for pattern scanning and processing.
 	kill-9-- forcely delete a files and folders
@@ -353,7 +353,7 @@ A virtual host (vhost) refers to the practice of running multiple domain-based w
 SSL (Secure Sockets Layer) and TLS (Transport Layer Security) are cryptographic protocols that provide secure communication over a computer network, most commonly seen in securing web browsing through HTTPS. 
 The handshake process is a key aspect of both SSL and TLS. During the handshake, the client and server agree on encryption algorithms and establish a secure connection.
 
-Transmission control protocol (TCP) and user datagram protocol. TCP is more reliable,
+Transmission control protocol (TCP) and user datagram protocol(UDP). TCP is more reliable,
 (UDP) are foundational pillars of the internet, enabling different types of data transmission from a network source to the destination.  while UDP prioritizes speed and efficiency.
 
 what is ngnix? 
@@ -366,4 +366,15 @@ Load Balancer: Nginx can distribute incoming network traffic across multiple ser
 
 Caching: Nginx includes caching mechanisms that can store and serve static content directly from memory, reducing the load on backend servers and improving response times.
 
+what is umask
+he umask is a three-digit octal number (e.g., 022).
+The umask value is subtracted from the default permissions (usually 666 for files and 777 for directories) to determine the final permissions of the newly created file or directory.
+example:
+Default file permissions: 666
+Subtract umask: 666 - 022 = 644 (rw-r--r--)
+Default directory permissions: 777
+Subtract umask: 777 - 022 = 755 (rwxr-xr-x)
+
+what is telnet ?
+Telnet provides a command-line interface to interact with a remote system, allowing the user to execute commands on the remote server as if they were physically present at the machine.
 
