@@ -808,9 +808,9 @@ $ sudo apt install ansible
 
 1. to create a ansible.cfg file under /etc/ansible/ansible.cfg
 2. sudo vim asible.cfg
-	[defaults]
-	private_key_file=~/.ssh/id_rsa
-	host_key_checking=false
+[defaults]
+private_key_file=~/.ssh/id_rsa
+host_key_checking=false
 
 3. create a inventory file
 hosts.yml
@@ -859,8 +859,4 @@ include_vars module can be used to dynamically load variable from a file or dire
       file: vars-Debian.yml
     when: ansible_os_family == 'Debian'
 include_role module: this module dynamically loads and execute a specified role as a task.
-
-
-
-
 

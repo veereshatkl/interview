@@ -45,6 +45,17 @@ pod
 -----
 What is a pod?
 A pod is the smallest entity/unit in the kubernetes cluster where one or more containers are executed together inside it.
+what is pod lifecycle ?
+Pending:
+The Pod has been created, but the container images are still being pulled, or the Pod is waiting for resources to be allocated.
+Running:
+The Pod has been scheduled to a node, and all of its containers have been successfully started.
+Succeeded:
+All containers in the Pod have completed their execution, and at least one container has exited with a success status.
+Failed:
+At least one container in the Pod has terminated with a failure status (non-zero exit code), or the container has been terminated by the system.
+Unknown:
+The state of the Pod cannot be determined. This can happen due to communication issues with the Kubernetes control plane.
 
 Kubernetes Namespaces
 ---------------------

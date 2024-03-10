@@ -1456,9 +1456,69 @@ After tainting a resource, the next terraform apply will include a plan to destr
 
 A Terraform configuration file typically has a file extension of .tf or .tf.json (if written in JSON). These files contain the definitions of the infrastructure components and resources that need to be provisioned or managed. 
 
-what is for-each and count in terraform
+what is for-each and count in terraform ?
 The for-each expression in Terraform is used to create multiple instances of a resource or module based on a map or a set of key-value pairs.
 countThe count argument in Terraform is used to create a specified number of instances of a resource or module.
+
+what is terraform workspace ?
+Terraform workspaces are a feature that allows you to manage multiple environments or configurations within a single Terraform configuration. Workspaces provide a way to create and switch between different instances of the same infrastructure, each with its own state.
+Isolation of State: Each workspace has its own state file, which means that Terraform can track and manage the resources for each environment separately. This avoids conflicts when working on multiple environments simultaneously.
+Command Usage:
+terraform workspace new <workspace_name>: Creates a new workspace.
+terraform workspace list: Lists all available workspaces.
+terraform workspace select <workspace_name>: Switches to the specified workspace.
+terraform workspace delete <workspace_name>: Deletes a workspace.
+Variable Overrides: Workspaces can be used to override specific variables for different environments. This allows you to define default values in your configuration and then override them at the workspace level.
+
+how can you delete a single resource where define multiple resources ?
+you can use the terraform destroy command with the specific resource's address.
+terraform destroy -target=aws_instance.example
+
+how you manage secrets in terraform
+Use external tools specifically designed for secret management, such as HashiCorp Vault or AWS Secrets Manager. These tools allow you to securely store and retrieve sensitive information.
+
+how can you skip the manual changes in terraform ?
+If manual changes have been made to resources outside of Terraform, you can use the terraform import command to bring those resources under Terraform management. This allows Terraform to track changes to these resources moving forward.
+terraform import aws_instance.example i-0123456789abcdef0
+Implement policy as code using tools like HashiCorp Sentinel or AWS Config Rules. Define and enforce policies to prevent or alert on manual changes that violate your infrastructure governance rules.
+
+
+what is terraform dynamic block ?
+In Terraform, dynamic blocks provide a way to create repeated nested blocks dynamically within a resource or module block. This is particularly useful when you need to generate multiple instances of a block based on dynamic or conditional logic. The dynamic block allows you to construct nested blocks with a flexible and concise syntax.
+
+what is terraform modules ?
+In Terraform, modules are a way to organize and reuse code by encapsulating a set of Terraform configurations into a single, reusable unit. Modules enable you to abstract and modularize your infrastructure code, promoting reusability, maintainability, and collaboration. They are a fundamental concept in Terraform's approach to Infrastructure as Code (IaC).
+Modules can be reused across multiple Terraform configurations, projects, or environments. This promotes consistency and reduces duplication of code.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
