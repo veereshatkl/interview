@@ -7,7 +7,7 @@ Features of Git
 -----------------
 Tracks history
 Free and open source
-Supports non-linear development
+Support non-linear development
 Creates backups
 Scalable
 Supports collaboration
