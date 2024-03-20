@@ -38,3 +38,116 @@ Source: Conversation with Bing, 20/3/2024
 (3) SFTP support for Azure Blob Storage - Azure Storage. https://learn.microsoft.com/en-us/azure/storage/blobs/secure-file-transfer-protocol-support.
 (4) SFTP on Azure - Code Samples | Microsoft Learn. https://learn.microsoft.com/en-us/samples/azure-samples/sftp-creation-template/sftp-on-azure/.
 (5) Getty. https://media.gettyimages.com/id/1247376130/photo/in-this-photo-illustration-a-microsoft-azure-logo-is-seen.jpg?b=1&s=612x612&w=0&k=20&c=x2wjCseJmf3yG9h_3l-iyVmkyRJ5gbavmnN5zkIH6aY=.
+
+
+
+
+2.How to access the storage account and aks from vnet.
+
+Certainly! Let's explore how you can access **Azure Storage accounts** and **Azure Kubernetes Service (AKS)** from a **Virtual Network (VNet)**.
+
+### Accessing Azure Storage Account from VNet:
+1. **Create a Virtual Network (VNet)**:
+    - In the Azure portal, navigate to **Virtual networks**.
+    - Click **+ Create** to create a new VNet.
+    - Configure the VNet settings, including the address space and subnets.
+    - Enable **Azure Bastion** within the VNet for secure connectivity to VMs using SSH or RDP.
+
+2. **Create an Azure Storage Account**:
+    - In the Azure portal, create a new **Azure Storage account**.
+    - Disable public access to the storage account.
+    - Note the private IP address assigned to the storage account (e.g., 10.0.0.10).
+
+3. **Create a Private Endpoint for the Storage Account**:
+    - Configure a **private endpoint** for the storage account within the VNet.
+    - Associate the private IP address of the storage account with this endpoint.
+    - This allows secure communication between resources in the VNet and the storage account.
+
+4. **Install Microsoft Azure Storage Explorer**:
+    - Install **Azure Storage Explorer** on a virtual machine (VM) within the VNet.
+    - Use the private IP address of the storage account to connect securely.
+
+### Accessing AKS from VNet:
+1. **Create a Subnet for AKS**:
+    - Within the same VNet, create a dedicated subnet for AKS.
+    - This subnet will be used for the private endpoint.
+
+2. **Create a Private Endpoint for AKS**:
+    - Configure a **private endpoint** for AKS within the AKS subnet.
+    - Associate the private IP address of the AKS API server with this endpoint.
+    - This ensures that AKS is accessible only from within the VNet.
+
+3. **Secure Access to Other Resources**:
+    - You can follow similar steps to create private endpoints for other resources like **Azure Container Registry (ACR)**, **Azure Key Vault**, and **Azure SQL**.
+    - Disabling the public Fully Qualified Domain Name (FQDN) of the AKS API server further enhances security.
+
+Remember to adjust the steps based on your specific requirements and resource configurations. Private endpoints provide a secure way to access Azure services within your VNet! 🚀
+
+Source: Conversation with Bing, 20/3/2024
+(1) Tutorial: Connect to a storage account using an Azure Private Endpoint. https://learn.microsoft.com/en-us/azure/private-link/tutorial-private-endpoint-storage-portal.
+(2) Quick-Start Guide to Azure Private Endpoints with AKS & Storage. https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/quick-start-guide-to-azure-private-endpoints-with-aks-amp/ba-p/3943803.
+(3) Private AKS and ACR Using Private Endpoint – Part 2/2. https://argonsys.com/microsoft-cloud/library/private-aks-and-acr-using-private-endpoint-part-2-2/.
+(4) Quick-Start Guide to Azure Private Endpoints with AKS & Storage. https://argonsys.com/microsoft-cloud/library/quick-start-guide-to-azure-private-endpoints-with-aks-storage/.
+
+
+How can you deploy multiple microservices through helm chaets?
+
+Certainly! Deploying multiple microservices using **Helm charts** can be streamlined and efficient. Let's explore how you can achieve this:
+
+1. **Subcharts**:
+    - **Subcharts** are the recommended approach for managing multiple microservices within a single Helm chart.
+    - Here's how it works:
+        - Create a **base chart** that covers common configuration shared by microservices (e.g., backend services, frontend servers).
+        - Each microservice becomes a **subchart** that inherits from the base chart.
+        - The base chart contains global values (e.g., Docker image registry, application name, version).
+        - Subcharts can have their own values and templates.
+        - Subcharts can't explicitly depend on their parent chart, but the parent can override values for subcharts.
+        - This approach promotes **code reuse** and simplifies maintenance.
+
+2. **Example Directory Structure**:
+    - Consider the following directory structure:
+        ```
+        ├── apps
+        │   ├── deploy
+        │   │   └── chart
+        │   │       ├── templates
+        │   │       │   ├── deployment.yaml
+        │   │       │   ├── service.yaml
+        │   │       │   └── ingress.yaml
+        │   │       └── values.yaml
+        │   ├── docs
+        │   └── ...
+        ```
+    - In this structure:
+        - `deploy/chart` is the base chart.
+        - Each microservice (e.g., `microservice1`, `microservice2`) inherits from the base chart.
+        - Microservices customize their values (e.g., image registry, version) in their own `values.yaml`.
+
+3. **Benefits of Subcharts**:
+    - **Efficiency**: Changes made to the base chart automatically apply to all microservices.
+    - **Consistency**: Templates remain the same across microservices.
+    - **Ease of Maintenance**: Updates are centralized.
+    - **Namespace Flexibility**: Install microservices in different namespaces without duplicating charts.
+
+4. **Implementation Example**:
+    - Let's create a **Django Helm Chart** as our base chart.
+    - The base chart includes deployment, service, and ingress templates.
+    - Define global values (e.g., Docker image registry, application name, version) in `values.yaml`.
+    - Microservices (e.g., `microservice1`, `microservice2`) inherit from this base chart.
+    - Install a microservice like this:
+        ```
+        $ helm repo add mycompany ⁸
+        $ helm install mycompany/microservice1 --namespace test
+        ```
+
+Remember, Helm subcharts allow you to manage multiple microservices efficiently while maintaining consistency and reusability! 🚀
+
+Source: Conversation with Bing, 20/3/2024
+(1) undefined. https://charts.mycompany.com.
+(2) Use one Helm chart for ALL microservices? - DevOps Stack Exchange. https://devops.stackexchange.com/questions/13379/use-one-helm-chart-for-all-microservices.
+(3) Deploy Example Microservices Using Helm :: Amazon EKS Workshop. https://archive.eksworkshop.com/beginner/060_helm/helm_micro/.
+(4) Scaling Microservices with Kubernetes and Helm Charts. https://www.momentslog.com/development/web-backend/scaling-microservices-with-kubernetes-and-helm-charts.
+(5) One Chart to rule them all. How to implement Helm subcharts - Medium. https://medium.com/craftech/one-chart-to-rule-them-all-3f685e0f25a9.
+(6) Go microservices deployed to Kubernetes with Helm subcharts. https://github.com/arkavo-com/example-helm-go-microservice.
+(7) DRY Helm Charts for Micro-Services | by Aviad Moreshet | FAUN ... - Medium. https://faun.pub/dry-helm-charts-for-micro-services-db3a1d6ecb80.
+(8) One Chart to rule them all – How to implement Helm Subcharts. https://craftech.io/blog/one-chart-to-rule-them-all-how-to-implement-helm-subcharts/.
