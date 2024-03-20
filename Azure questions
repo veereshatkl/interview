@@ -1,0 +1,40 @@
+How to create SFTP service in Azure cloud.
+Certainly! To set up an **SFTP service in Azure**, you have a couple of options:
+
+1. **Azure Blob Storage with SFTP Support**:
+    - You can securely connect to the Blob Storage endpoint of an Azure Storage account using an **SFTP client**. Here's how to do it:
+
+        - **Prerequisites**:
+            - A standard general-purpose v2 or premium block blob storage account (you can also enable SFTP during account creation).
+            - The hierarchical namespace feature of the account must be enabled.
+            - If connecting from an on-premises network, ensure that your client allows outgoing communication through **port 22** (used by SFTP).
+        
+        - **Enable SFTP Support**:
+            1. In the **Azure portal**, navigate to your storage account.
+            2. Under **Settings**, select **SFTP** (this option appears only if the hierarchical namespace feature is enabled).
+            3. Click **Enable SFTP**. If no local users appear, add at least one of them (see the next section for details).
+
+        - **Disable SFTP Support**:
+            1. In the **Azure portal**, navigate to your storage account.
+            2. Under **Settings**, select **SFTP**.
+            3. Click **Disable SFTP**.
+
+        - **Configure Permissions**:
+            - Azure Storage doesn't support shared access signatures (SAS) or Microsoft Enterprise authentication for accessing the SFTP endpoint. Instead, use an identity called **local user** secured with an Azure-generated password or an SSH key pair. Grant access to connecting clients by associating a local user with the password or key pair¹.
+
+2. **Azure Data Factory with SFTP Connector**:
+    - If you need to **copy and transform data** from an SFTP server, you can use **Azure Data Factory**. Follow these steps:
+
+        - Browse to the **Manage** tab in your Azure Data Factory or Synapse workspace.
+        - Select **Linked Services** and click **New**.
+        - Search for **SFTP** and choose the **SFTP connector**.
+        - Configure the service details, test the connection, and create the new linked service².
+
+Remember to choose the option that best fits your requirements! 🚀.
+
+Source: Conversation with Bing, 20/3/2024
+(1) Connect to Azure Blob Storage using SFTP - Azure Storage. https://learn.microsoft.com/en-us/azure/storage/blobs/secure-file-transfer-protocol-support-how-to.
+(2) Copy and transform data in SFTP server using Azure Data Factory or .... https://learn.microsoft.com/en-us/azure/data-factory/connector-sftp.
+(3) SFTP support for Azure Blob Storage - Azure Storage. https://learn.microsoft.com/en-us/azure/storage/blobs/secure-file-transfer-protocol-support.
+(4) SFTP on Azure - Code Samples | Microsoft Learn. https://learn.microsoft.com/en-us/samples/azure-samples/sftp-creation-template/sftp-on-azure/.
+(5) Getty. https://media.gettyimages.com/id/1247376130/photo/in-this-photo-illustration-a-microsoft-azure-logo-is-seen.jpg?b=1&s=612x612&w=0&k=20&c=x2wjCseJmf3yG9h_3l-iyVmkyRJ5gbavmnN5zkIH6aY=.
