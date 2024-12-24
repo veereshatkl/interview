@@ -417,3 +417,12 @@ Once the backup files are in place, start Jenkins on the new master server.
  Verify Jenkins:
 Check the Jenkins web interface and verify that the configurations, jobs, and plugins are restored correctly.
 High Availability (HA): Consider setting up Jenkins in a high-availability configuration with multiple masters to minimize downtime in case of a failure.
+
+
+14. What is the use of the docker plugin in Jenkins?
+Answer: The Docker plugin allows Jenkins to build, run, and manage Docker containers within Jenkins pipelines. It supports creating Docker containers to run build jobs or even build Docker images as part of the CI/CD process.
+
+Common operations with the Docker plugin:
+Building Docker images: docker.build('my-image')
+Running Docker containers: docker.image('my-image').inside { ... }
+Cleaning up containers: Use docker.cleanup() to remove old containers/images.
