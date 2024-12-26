@@ -1,6 +1,0 @@
-errors
-sre roles
-sop
-windows commands
-what is shared library and how to use
-multibranch pipeline
