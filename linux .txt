@@ -1,0 +1,389 @@
+
+Hi 
+Good morning
+I am Veeresh. 
+I am having total 5 years of experience, in this i have 3 years of experience as a devops with AWS engineer and 2 years of experience as a sre engineer. 
+During my tenure  I have been  working on various DevOps tools like git jenkins ansible, docker, k8s, terraform, .. and also such as a  various aws services like ec2 aim, s3 load balancing vpc cloud watch and other services. 
+
+my last working company was xxxx and client xxxx. In this organisation i worked on project name. In this project my roles and responsibilities is 
+it is used for detect any malware or malicious functions is there or not. 
+1. I have maintained 5DC single handedly.
+2. Every 15 days I work on releases and every release lasts for 10 days 
+3. After deployments were done I do validation and qa spot-checks through ansible via Jenkins pipeline
+4. After validations were done, I get to find multiple issues where I resolve them manually or through ansible playbooks.
+5. I also use ansible playbooks to troubleshoot some of the issues in servers.
+6. After validation completed we will sign-off the results to the us team.
+7. And I also be on-call for 4 to 7 days in a month and my on-call rotation is like 7am to 7pm
+i worked on on-call for production support and worked 4 to 7 days in a month for on-call. 
+8. So these are the activities we had performed in our project
+
+Coming to My roles and responsibilities :
+includes setting up the CI-CD pipelines from scratch for various projects like Java, AngularJS, MicroServices, Spark and Databases.
+For which we are using git as the Source Code Management tool, Jenkins as the CI-CD tool, AWS Code Build as the Build Platform.
+Jenkins
+In Jenkins - We are writing Declarative Pipeline scripts from which we are invoking Groovy script shared libraries like docker build, maven build, tomcat deploy, Helm deploy etc.,
+During build process, Once we fetch the code from the GitHub to Jenkins, we are invoking AWS Code Build project which is having the maven build steps in buildspec.yaml, and also for Angular JS project we are having npm as the build tool in AWS Code Build jobs. Once AWS , completes the build process, it will generate the build artifacts in the form of .jar files or .war files, and later we are storing those artifacts into AWS S3 buckets in the format of release versions.
+And later we are deploying those artifacts into respective application servers like weblogic, tomcat etc using deployment pipelines in Jenkins.
+Docker
+We are also using microservice applications for which we are containerizing them using Docker, where we are creating custom docker images using Dockerfiles, and storing those docker images in AWS ECR ( Elastic Container Registry ), and later we are deploying those docker images as containers in kubernetes clusters using helm charts.
+Ansible
+We are also using Ansible as the configuration management tool to install any packages on remote server and also to modify any configuration files on remote servers we are creating the ansible playbooks and roles for that, and encrypting any sensitive information like credentials, tokens, keys and passwords with Ansible Vault.
+Kubernetes
+And also to monitor kubernetes environment, we have deployed datadog as daemonset, which will be deployed as pod on each worker node, and gather the metrices from those worker nodes, and will be available on datadog dashboard and console.
+Terraform
+And we are also using terraform as the infrastructure provisioning automation tool, by which we are provisioning different AWS services like EC2, VPC, SubNet creation, Security Group creation, IAM users, roles and attaching policies to them to provide the authorization.
+AWS
+On AWS, we are also using CloudFront as the Content Delivery Network ( CDN ) tool, which will provide the fast delivery response to clients by serving the content from nearest edge locations, which will have cache content. By default we have cache content will get updated after 24 hours of the new deployment, but we are invalidating the cache soon after every deployment in production to make the customers to get the latest code immediately.
+We are also using API Gateway as the entry point for our Microservices which are listening on top of kubernetes nginx ingress load balancer. On API GW, we ( deveopers ) are deploying our newly created APIS, and creating different stages according to environment, which will have the stage variables to point to backend kubernetes load balancer.
+Similarly, we are also using SNS, SES, CloudWatch, CloudTrail etc, we are using JIRA as the ticketing tool and CONFLUENCE as the documentation tool.
+
+Day to day activities:
+1. In my organization, we used Slack and Gmail for communication purposes.
+2. Every day, I attended a standup call from 10 am to 10:30 am and provided my work progress to the team.
+3. Every 30 minutes, I used to check any messages or emails received via Slack or email.
+4. Once any important email was received, we immediately responded and took action.
+5. Every 14 days, we had sprint planning and sprint retrospective meetings.
+6. Every hour, we monitored the pus to check how many were running and how many were out of service. We took immediate action to bring up the pus.
+7. I used to monitor servers like those in the K8S cluster, including application resources, pod status, and pod logs.
+8. I wrote Ansible playbooks for deploying applications and installing software packages.
+*. every day, i used to work on pending tickets
+9. I met with clients whenever required.
+10. I attended training sessions for self-improvement.
+
+Linux is an Open-Source Operating System based on Unix.
+LINUX BASIC COMMANDS
+	PWD-- to display the current path from root directory to current path  
+	MAN-- $ to display the user manual of any command that we can run on the terminal.
+	mkdir-- create a directory		
+	touch-- create a file			
+	cd-- change to directory		
+	ls-- list the files and directories		
+	echo-- displaying lines of text or string which are passed as arguments on the command line		
+	cat-- It reads data from the file and gives their content as output		
+	cp-- copy the files	from source to destination			
+	mv-- move to files from one location to another and rename the given file
+	rmdir-- delete a directories
+	rm-- delete a files
+	run-- execute a commands
+	sudo -i-- swith from normal user to root user
+	chown-- changes the owner of the file or directory specified by the File or Directory parameter to the user specified by the Owner parameter
+	chmod--  to manage a file and directory access permissions or change to files and directory permissions (777---read-4, write-2, exec-1)
+	tree-- Displays directory paths and (optionally) files in each subdirectory. 
+	grep-- search the string of characters from a given file :grep -r "pattern" directory or file path
+	find-- it can be used to find files or directories  find /home/ubuntu/veeresh/ -name "chinnari"
+	head-- print the top N number of data of the given input.
+	tail-- print the bottom N number of data of the given input.
+	more-- displaying one screen at a time in case the file is large
+	less--The less command is a Linux terminal pager that shows a file's contents one screen at a time
+	stat-- to display detailing of the file
+	hyperlinks-- to create hard and soft links 
+	du -- to display file and directories size
+	df -h -- to display disk utilities
+	tar commands-- zip , unzip and read the given file--tar -cvf, tar -xvf, tar -tvf
+	sed-- to edit a content of the gievn existing file sed 's/pattern/replacement/' filename
+	tr-- Use tr to perform different text transformations, including case conversion, squeezing or deleting characters, and basic text replacement
+	awk-- to print particular lines & Awk is mostly used for pattern scanning and processing.
+	$cut -c 5-9 emp.dat & It will display 5th to 9th characters in every record
+	kill-9-- forcely delete a files and folders
+	crontab-- to shedule a job at particular time
+	users and groups-- to create user and groups
+	netstat-- to display runningg ports
+	top-- to display cpu and ram utilisation
+
+1. What are basic elements or components of Linux?
+	Hardware, kernal, shell, applications, utilities
+
+2. What is BASH?
+BASH is basically a command language interpreter.
+
+3. What is Kernel?
+It is simply a resource manager that acts as a bridge between hardware and software. Its main role is to manage hardware resources for users and is generally used to provide an interface for user-level interaction. 
+
+4. What is swap space?
+Swap space, as the name suggests, is basically a space on a hard disk that is used when the amount of physical memory or RAM is full.
+
+5. What is Linux Shell? 
+Linux shell is a user interface present between user and kernel. It is used for executing commands and communication with Linux OS. Linux shell is basically a program used by users for executing commands.
+
+6. What is a maximum length for a filename under Linux?
+The maximum length for a filename under Linux is 255 bytes.
+
+7. What are file permissions in Linux? Name different types of file systems in Linux.
+There are three owners in the Linux System i.e., user, group, and others. These owners have three types of permissions defined as listed below: 
+Read (r): It allows the user to open and read the file or list the directory. 
+Write (w): It allows the user to open and modify the file. One can also add new files to the directory. 
+Execute (x): It allows the user to execute or run the file.  One can also lookup a specific file within a directory
+
+r=4 w=2 x=1
+rwx=777
+rw=6
+rx=5
+wx=3
+no permissions=000
+
+31)Default files and directories permissions
+drwx-rwx-r-x
+-rw-rw-r--
+
+8. Name the file that is used to automatically mount file systems.
+File that is used to automatically mount file systems is a Fstab file
+
+9. What is SSH? How we can connect to a remote server via SSH.
+SSH (Secure Shell), as the name suggests, is basically a protocol that is being used to securely connect to remote servers or systems and enables two systems to communicate.
+
+10. Write the difference between Soft and Hard links?
+Hard Link :
+A hard link acts as a copy (mirrored) of the selected file. It accesses the data available in the original file.
+If the earlier selected file is deleted, the hard link to the file will still contain the data of that file.
+$ ln a b
+Soft Link :
+A soft link (also known as Symbolic link) acts as a pointer or a reference to the file name. It does not access the data available in the original file. If the earlier file is deleted, the soft link will be pointing to a file that does not exist anymore.
+$ ln -s a b
+
+11. What is netstat command?
+netstat (Network statics) command is generally a networking tool being used for troubleshooting and configuration and used to display all network connections on a system.
+
+12. What is the ping command?
+Linux ping (Packet Internet Groper) command used to check connection status between source and destination. In simple words, this command is used to check whether a network is available and if the host is reachable.
+
+13. Which command is used to check the size of file or directory?
+The command used to check the size of the file or directory is “du”. 
+
+14. Which command is used to count the number of characters in a file?
+The command that is used to count the number of characters in a file in Linux is “wc”. 
+
+15. What is the function of grep command?
+Grep (Global regular expression print) is a command that is used to the global search for a string of characters in a specified file.
+
+16. What is the pwd command?
+“pwd” command is basically a command that is used to print the complete path of the current working directory starting from the root (/). 
+
+17. Which command is used to check the memory status?
+The command used mostly to check memory status in Linux is “free” or "top"
+
+18. What is pipe?
+In Linux, a pipe is basically a form of redirection that is used to send the output of one command to input of another command for further processing
+
+20) Which command is used to uncompress gzip files?
+gunzip command is used to uncompress gzip files.
+
+22) What are inode and process id?
+inode is the unique name given by the operating system to each file. Similarly, process id is the unique id given to each process.
+
+23) What are daemons?
+Daemons are usually used to run services in the background without directly being in control of interactive users.
+
+24)What is a Latch?
+A Latch is a temporary storage device controlled by timing signal which can either store 0 or 1. A
+
+25) What is the minimum number of disk partitions required to install Linux?
+The minimum number of partitions required is 2.
+One partition is used as the local file system where all the files are stored. And the other partition is used as Swap Space which acts as an extended memory for RAM. 
+
+26)How to find where a file is stored in Linux?
+$locate filename
+
+27)How would you schedule a task in Linux?
+There are two commands to schedule tasks in Linux: cron and at.
+<minute> <hour> <day> <month> <weekday> <command>
+
+28)How to identify which shell you are using?
+$ echo $SHELL
+29) What Does Protocol Mean?
+A protocol is a set of rules and guidelines for communicating data.
+Types of Network Protocols
+There are three main types of network protocols. These include network management protocols, network communication protocols and network security protocols:
+
+Communication protocols include basic data communication tools like TCP/IP and HTTP.
+Management protocols maintain and govern the network through protocols such as ICMP and SNMP. 
+Security protocols include HTTPS, SFTP, and SSL.
+1.HTTP :hyper text transfer protocol (HTTP) --HTTP is an application layer protocol that allows the browser and server to communicate.
+2.TCP – Transmission Control Protocol (TCP) separates data into packets that can be shared over a network.
+3.SNMP – Simple Network Management Protocol (SNMP) is used to monitor and manage network devices. 
+4.SFTP – Secure File Transfer Protocol (SFTP), as its name might suggest, is used to securely transfer files across a network. Data is encrypted and the client and server are authenticated.
+
+30) How to see the logs in a givenfile
+tail -f (5)
+
+32)How to check the running process in your system ?
+$ ps -ef
+
+33)difference between start and enable - stop and disable?
+enable marks the service for starting up on boot, 
+start actually starts the service immediately.
+Stopping a job will only effect if the job is currently running and only effects the current execution of the job. If you try to stop a job which is not currently running you get an error.
+You can disable a job irrespective of whether a job is running or not. It just disables the future executions of the job.
+
+34)how to connect passwordless authentication?
+there are two servers
+1.SSH Client : 192.168.0.12 ( Fedora 34 )
+2.SSH Remote Host : 192.168.0.11 ( CentOS 8 ) 
+
+create user and password on the host machine
+give a sudoers permission by the above user /etc/sudoers  username ALL=(ALL) NOPASSWD:ALL
+goto /etc/ssh/sshd_config
+choose passwoedless authentication and modify no-yes
+restart the ssh
+and 
+step:1 First login into server 192.168.0.12 with user tecmint and generate a pair of public keys using the following command.
+$ssh-keygen -t rsa
+step: 2 Use SSH from server 192.168.0.12 and upload a new generated public key (id_rsa.pub) on server 192.168.0.11 under sheena‘s .ssh directory as a file name authorized_keys.
+$ ssh-copy-id id_rsa.pub sheena@192.168.0.11
+$ scp id_rsa.pub shemma@192.168.0.11:/home/under .ssh directory
+step:3 From now onwards you can log into 192.168.0.11 as sheena user from server 192.168.0.12 as a tecmint user without a password.
+$ ssh sheena@192.168.0.11
+
+Diff top and free command?  
+The “free” command usually displays the total amount of free and used physical and swap memory in the system, as well as the buffers used by the kernel. 
+The “top” command provides a dynamic real-time view of a running system.
+
+In order to check which application is listening on a port, you can use the following command from the command line:
+$ netstat -anpe | grep "1234" | grep "LISTEN"
+
+curl:
+The curl command is a powerful tool used for making HTTP requests and interacting with various network protocols. 
+
+how to see curent ec2 ip address?
+If you enter the command “ifconfig” in the terminal, all information will be displayed. You can also use the commands “ip addr” or “ip a”. Confirm with [Enter]
+
+how to see swap memory?
+To see swap size in Linux, type the command: swapon -s .
+
+how to delete a directory that is not empty?
+rm -rf directoty name
+
+Display Range of Characters in every Record:
+$cut -c 5-9 emp.dat
+It will display 5th to 9th characters in every record
+
+why using usermod
+The command ‘usermod‘ is used to modify or change any attributes of a already created user account via command line.
+The command ‘usermod‘ is similar to that ‘useradd‘ or ‘adduser‘ but the login granted to an existing user.
+
+how to see which porcess occupied more space
+ps -aux --sort=-%mem | head -n 11 it's print top 10 process
+pmap -x pid to display perticular process status
+
+why using $?
+command_name, $? will hold the exit status of that command.
+
+To list the top 10 largest files from the current directory: du . | sort -nr | head -n10
+nproc we can see how many number of cpus are there in a vm
+
+how to change hostname?
+sudo hostnamectl set-hostname veeresh
+/bin/bash
+
+what is 500 errors:
+HTTP status code 500 is a generic server error response indicating that the server has encountered an unexpected condition that prevented it from fulfilling the request.
+500 Internal Server Error: It indicates that an unexpected condition was encountered, and no more specific message is suitable.
+502 Bad Gateway: A 502 error typically occurs when a server acting as a gateway or proxy receives an invalid response from an upstream server.
+503 Service Unavailable: This error indicates that the server is temporarily unable to handle the request. 
+505 HTTP Version Not Supported: This error occurs when the server does not support the HTTP protocol version used in the request.
+507 Insufficient Storage: This status code indicates that the server is unable to store the representation needed to complete the request. 
+
+HTTP status code 400 is a client error response code indicating that the server could not understand or process the request due to apparent client error. 
+400 Bad Request: This is a generic error indicating that the server cannot or will not process the request due to a client error, such as malformed request syntax, invalid request message framing, or deceptive request routing.
+401 Unauthorized: This status code indicates that the request has not been applied because it lacks valid authentication credentials for the target resource. 
+404 Not Found: This error indicates that the server could not find the requested resource. 
+
+Blue-Green Deployment:
+Environment Separation:
+Blue Environment: Represents the currently running version of the application.
+Green Environment: Represents the new version of the application being deployed.
+Deployment Process:
+Deployment involves switching traffic from the blue environment to the green environment.
+Both environments (blue and green) are maintained, but only one serves production traffic at a time.
+Switching Traffic:
+After deploying and validating the new version in the green environment, traffic is switched from blue to green.
+Blue becomes the idle environment, and green becomes the active production environment.
+
+Canary Deployment:
+Gradual Rollout:
+Canary deployments involve a gradual rollout of the new version to a subset of users or servers before the full deployment.
+Only a small "canary" group initially receives the new version.
+Traffic Increment:   
+Traffic is incrementally increased to the canary group as the new version is validated.
+This allows for monitoring the impact of the new version on a small scale before exposing it to the entire user base.
+
+
+Grafana:
+Purpose: Grafana is primarily a visualization and dashboarding platform. 
+it used for visualizing and analyzing metrics from various data sources.
+Grafana supports a variety of visualization options, including graphs, charts, tables, heatmaps, and more. 
+
+Splunk:
+Splunk is a software platform designed for searching, monitoring, and analyzing machine-generated data. 
+Splunk can collect and ingest data from a wide range of sources, including log files, event streams, databases, APIs, and more.
+
+Prometheus:
+Purpose: Prometheus is an open-source monitoring and alerting toolkit designed for reliability and scalability. It is particularly well-suited for monitoring containerized applications and microservices architectures.
+Prometheus is responsible for collecting and storing time-series data (metrics) from various sources, such as applications, services, and infrastructure components.
+
+what is vm-stack
+A "VM stack" could refer to a set or stack of virtual machines (VMs) that work together to provide a specific set of services or applications. In this context, a VM stack might include multiple virtual machines, each serving a different role (e.g., web server, database server, application server) and collectively forming an application or service infrastructure.
+
+what is 2-tier architechure
+Client Tier: The client tier, also referred to as the "front end" or "presentation layer," is responsible for interacting with users and presenting the user interface.
+The server tier, also known as the "back end" or "application layer," is responsible for processing application logic, managing data, and handling business rules.
+
+what is 3 tier architechure
+Presentation Tier (User Interface Tier):This is the topmost layer that interacts directly with the end-users.
+Application Tier (Logic Tier or Middle Tier):The application tier, also known as the business logic or middle tier, is responsible for processing the business logic and managing application functionality.
+Data Tier (Data Storage Tier):The data tier is responsible for managing and storing data used by the application.
+
+what is ufw :
+it is used for managing firewall rules on Linux systems.
+Basic ufw Commands:
+sudo ufw enable
+sudo ufw disable
+sudo ufw allow 22   Allow Incoming Traffic on a Specific Port (e.g., SSH):
+sudo ufw status
+
+how to overcome network failures on linux:
+Review Logs: Inspect system logs, such as /var/log/syslog or /var/log/messages, for any network-related error messages. Logs can provide valuable information about the cause of network issues.
+Check Network Configuration: Verify the network configuration on the server to ensure that the network settings, IP address, subnet mask, gateway, and DNS servers are correctly configured. Use commands like ifconfig or ip addr to check network interfaces.
+Ping Gateway and External Hosts: Use the ping command to check connectivity to the default gateway and external hosts. If there is no response, it could indicate a network connectivity issue.
+Check DNS Resolution: Ensure that DNS resolution is working correctly. Use the nslookup or dig command to test DNS resolution.
+Review Firewall Settings: Check the firewall settings on the server. Firewalls can block incoming and outgoing network traffic. Use commands like iptables or firewalld to review and modify firewall rules.
+Restart Network Services: Restart networking services to apply any changes or reset network configurations.
+Check Cable Connections: If the server is connected to the network via physical cables, ensure that the cables are securely connected and not damaged. Consider checking network switch ports as well.
+
+A virtual host (vhost) refers to the practice of running multiple domain-based websites or services on a single physical machine, server, or IP address. 
+
+SSL (Secure Sockets Layer) and TLS (Transport Layer Security) are cryptographic protocols that provide secure communication over a computer network, most commonly seen in securing web browsing through HTTPS. 
+The handshake process is a key aspect of both SSL and TLS. During the handshake, the client and server agree on encryption algorithms and establish a secure connection.
+
+Transmission control protocol (TCP) and user datagram protocol(UDP). TCP is more reliable,
+(UDP) are foundational pillars of the internet, enabling different types of data transmission from a network source to the destination.  while UDP prioritizes speed and efficiency.
+
+what is ngnix? 
+Nginx (pronounced "engine-x") is a popular open-source web server, reverse proxy server, and load balancer. It is known for its high performance, stability, and low resource usage. 
+Web Server: Nginx can serve static content (HTML, CSS, images) and dynamic content by acting as a web server. It efficiently handles a large number of simultaneous connections and is designed to be lightweight and fast.
+
+Reverse Proxy: Nginx is often used as a reverse proxy server, sitting between clients and backend servers. It forwards client requests to the appropriate backend server, performs load balancing, and returns the response to the client. This setup helps improve security, scalability, and performance.
+
+Load Balancer: Nginx can distribute incoming network traffic across multiple servers to balance the load and ensure optimal resource utilization. It supports various load-balancing algorithms, including round-robin, least connections, and IP hash.
+
+Caching: Nginx includes caching mechanisms that can store and serve static content directly from memory, reducing the load on backend servers and improving response times.
+
+what is umask
+he umask is a three-digit octal number (e.g., 022).
+The umask value is subtracted from the default permissions (usually 666 for files and 777 for directories) to determine the final permissions of the newly created file or directory.
+example:
+Default file permissions: 666
+Subtract umask: 666 - 022 = 644 (rw-r--r--)
+Default directory permissions: 777
+Subtract umask: 777 - 022 = 755 (rwxr-xr-x)
+
+what is telnet ?
+Telnet provides a command-line interface to interact with a remote system, allowing the user to execute commands on the remote server as if they were physically present at the machine.
+
+
+
+UserName: harshithadale
+Password: Harshitha@2000$
+
+veereshdale532@gmail.com
+Veeresh@1996
+daleveeresh

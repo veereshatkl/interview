@@ -1,0 +1,2787 @@
+veeresh
+acess: AKIARVFSHZOBRNA6IM4F
+secret: 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
+
+ec2:
+rds:
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+  profile = "default"
+}
+
+
+resource "aws_vpc" "avpc" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    "Name" = "avpc"
+  }
+}
+
+resource "aws_subnet" "apvsn1" {
+  cidr_block = "10.0.1.0/24"
+  vpc_id = aws_vpc.avpc.id
+  availability_zone = "ap-south-1a"
+  tags = {
+    "Name" = "apvsn1"
+  }
+}
+
+resource "aws_subnet" "apvsn2" {
+  cidr_block = "10.0.2.0/24"
+  vpc_id = aws_vpc.avpc.id
+  availability_zone = "ap-south-1b"
+  tags = {
+    "Name" = "apvsn2"
+  }
+}
+
+resource "aws_subnet" "apubsn3" {
+  cidr_block = "10.0.3.0/24"
+  vpc_id = aws_vpc.avpc.id
+  availability_zone = "ap-south-1a"
+  tags = {
+    "Name" = "apubsn3"
+  }
+}
+
+resource "aws_internet_gateway" "aig" {
+  vpc_id = aws_vpc.avpc.id
+  tags = {
+    "Name" = "aig"
+  }
+}
+
+resource "aws_route_table" "aigrtr" {
+  vpc_id = aws_vpc.avpc.id
+  route  {
+    gateway_id = aws_internet_gateway.aig.id
+    cidr_block = "0.0.0.0/0"
+  }
+}
+
+resource "aws_route_table_association" "aigrtas" {
+  subnet_id = aws_subnet.apubsn3.id
+  route_table_id = aws_route_table.aigrtr.id
+}
+
+resource "aws_security_group" "pubsg" {
+  vpc_id = aws_vpc.avpc.id
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = -1
+        cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "mysg" {
+  vpc_id = aws_vpc.avpc.id
+  ingress {
+    from_port = 3306
+    to_port = 3306
+    protocol = "TCP"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = -1
+        cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_key_pair" "akp" {
+  key_name = "akp"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4DnPj0nvmL6PZdWKQPXUVoMwO0AJ2Ir6dHS35AcC0SxyGBX+JpdDxxSvtIsLNAlgTRmCD3IQXH+4cKStoHZ2HMSUJEVtBwKGkOCaYmdizrhmbtVWgIbPGdtiDqkw0e2N/f2MAg4Fwu7K9Wf/Xs5FWRAWPRgKIRiARG8Dx0iKrVmMY85Z4c/Wabe6MbfeKO8vgmo9sIxwQ3ON6TTzZV2oH/z+CY2pXU6RIPt18Uckm7pOUrXGQexfzlrYbQKnIqmolA2DQ4GQQvzHgp/9W82kBIE9wq9PTqY1QMXKCD6nhi6WYmw62wYZ/xEzV3sEUjn6h3W5jSryY2Vz40fYi5VqbH1+BkwblRmXOJTGYZg1Htdjzz+9DZ0h9RY/6i14O4F6GLDqbsKpn5LGlqPJx7xEvgz5dnD+0Er2ko7dhWkA0ZxwOiWf4Yl5zeb+FKb4Xq3eDYhvnJuaAmFkX7kOEbDV7I6+oaz3fCh/ChqA3IIGo6CbPMBYtTqlkxeV5v/fwYyM= veere@DESKTOP-DSDIFA3"
+}
+
+resource "aws_instance" "aec2" {
+  ami = "ami-0caf778a172362f1c"
+  subnet_id = aws_subnet.apubsn3.id
+  instance_type = "t2.micro"
+  associate_public_ip_address = "true"
+  key_name = aws_key_pair.akp.id
+  vpc_security_group_ids = [aws_security_group.pubsg.id]
+  count =4
+}
+
+resource "aws_db_subnet_group" "dbsngp" {
+  subnet_ids = [aws_subnet.apvsn1.id, aws_subnet.apvsn2.id]
+  tags = {
+    "Name" = "dbsngp"
+  }
+}
+
+resource "aws_db_instance" "dbec2" {
+  allocated_storage    = 10
+  db_name              = "mydb"
+  engine               = "mysql"
+  engine_version       = "8.0"
+  instance_class       = "db.t3.micro"
+  username             = "veeru"
+  password             = "welcome#123"
+  skip_final_snapshot  = true
+  db_subnet_group_name = aws_db_subnet_group.dbsngp.name
+  vpc_security_group_ids = [aws_security_group.mysg.id]
+}
+
+
+1. Define IAC?
+IAC or Infrastructure as Code allows you to build, change, and manage your infrastructure through coding instead of manual processes.
+
+2: What are the reasons for choosing Terraform for DevOps?
+Answer: Below are the reasons for choosing Terraform for DevOps:
+It can do complete orchestration and not just configuration management (like Ansible and Puppet).
+Has amazing support of almost all the popular cloud providers like AWS, Azure, GCP, DigitalOcean etc.
+Easily manages the configuration of an immutable (dynamic) infrastructure.
+Provide immutable infrastructure where configuration changes smoothly.
+Works on HCL (HashiCorp configuration language), which is very easy to learn and understand.
+Easily portable from one provider to another.
+Easy Installation.
+
+3. What are the most useful Terraform commands?
+Some of the most useful Terraform commands are:
+
+terraform init - initializes the current directory
+terraform refresh - refreshes the state file
+terraform output - views Terraform outputs
+terraform apply - applies the Terraform code and builds stuff
+terraform destroy - destroys what has been built by Terraform
+terraform graph - creates a DOT-formatted graph
+terraform plan - a dry run to see what Terraform will do
+terraform validate - Validates the syntax and format of your Terraform configuration files without executing them.
+terraform import: Imports existing infrastructure into Terraform.
+
+
+4. What is Terraform init?
+This command is used to set up the working directory for Terraform configuration files.
+
+5. How does Terraform work?
+Answer: Terraform creates an implementation plan, defines what it will do to achieve the desired state, and then executes it to build the infrastructure described. Terraform is capable of determining what changed and generating incremental execution plans that are practical as the configuration changes.
+
+7. What is Terraform D?
+Terraform D is a plugin used on most in-service systems and Windows. Terraform init by default searches next directories for plugins.
+
+10. Where operations are performed 
+Where the state is stored (Terraform keeps track of all the resources created in a state file)
+
+11. What are modules in Terraform?
+A jug for numerous resources that are used jointly is known as a module in Terraform. The root module includes resources mentioned in the .tf files and is required for every Terraform.
+
+12. What is a Private Module Registry?
+A Private Module Registry is a feature from Terraform Cloud that allows you to share Terraform modules across the organization. You can enforce rules or “sentinel policies” on the registry that specify how many members of your organization can use the modules.
+
+13. Is Terraform usable for an on-prem infrastructure?
+Yes, Terraform can be used for on-prem infrastructure. As there are a lot of obtainable providers, we can decide which suits us the best. All that we need is an API.
+Interested in becoming a cloud architect? Join our Cloud Architect Master’s Program and learn AWS, Microsoft Azure, and Google Cloud Platform from the ground up!
+
+14. Does Terraform support multi-provider deployments?
+Yes, multi-provider deployments are supported by Terraform, which includes on-prem like Openstack, VMware, and we can manage SDN even using Terram too.
+Also Read: VMware vSphere Best Practices
+
+15. How is duplicate resource error ignored during terraform apply?
+We can try the following options:
+Delete those resources from the cloud provider(API) and recreate them using Terraform
+Delete those resources from Terraform code to stop its management with it
+Carry out a terraform import of the resource and remove the code that is trying to recreate them
+
+16. Which command destroys Terraform managed infrastructure?
+terraform destroy [options] [dir]
+
+17. Can you provide a few examples where we can use for Sentinel policies?
+Sentinels are a powerful way to implement a variety of policies in Terraform. Here are a few examples:
+Enforce explicit ownership in resources
+Restrict roles the cloud provider can assume
+Review an audit trail for Terraform Cloud operations
+Forbid only certain resources, providers, or data sources
+Enforce mandatory tagging on resources 
+Restrict how modules are used in the Private Module Registry
+
+18. How to Store Sensitive Data in Terraform?
+Terraform requires credentials to communicate with your cloud provider's API. But most of the time, these credentials are saved in plaintext on your desktop. GitHub is exposed to thousands of API and cryptographic keys every day. Hence, your API keys should never be stored in Terraform code directly.  You should use encrypted storage to store all your passwords, TLS certificates, SSH keys, and anything else that shouldn't be stored in plain text.
+
+19. Explain State File Locking?
+State file locking is Terraform mechanism in which operations on a specific state file are blocked to avoid conflicts between multiple users performing the same process. When one user releases the lock, then only the other one can operate on that state. This helps in preventing state file corruption. This is a backend operation.
+
+20. What do you understand by a Tainted Resource?
+A tainted resource is a resource that is forced to be destroyed and recreated on the next apply command. When a resource is marked as tainted, the state files are updated, but nothing changes on infrastructure. The terraform plan out shows that help will get destroyed and recreated. The changes get implemented when the next apply happens.
+
+21. How to lock Terraform module versions?
+A proven way of locking Terraform module version is using the Terraform module registry as a source. We can use the ‘version’ attribute in module of the Terraform configuration file. As the Github repository is being used as a source, we need to specify versions, branch, and query string with ‘?ref’.
+
+22. What is Terraform Core? Tell us some primary responsibilities of it.
+Terraform Core is a binary written statically compiled by using the Go programming language. The compiled binary offers an entry point for the users of Terraform. The primary responsibilities include:
+Reading and interpolation of modules and configuration files by Infrastructure as code functionalities
+Resource Graph Construction
+Plugin communication through RPC
+Plan execution
+Management of resource state
+
+24. How will you upgrade plugins on Terraform?
+Run ‘terraform init’ with ‘-upgrade’ option. This command rechecks the releases.hashicorp.com to find new acceptable provider versions. It also downloads available provider versions. “.terraform/plugins/<OS>_<ARCH>” is the automatic downloads directory.
+
+26. Differentiate between Terraform and Ansible.
+Answer: Ansible is a deceptively simple IT automation tool. Configuration management, application deployment, cloud provisioning, ad-hoc job execution, network automation, and multi-node orchestration are all handled by this software. Ansible simplifies complex changes such as zero-downtime rolling updates with load balancers. The following table compares and contrasts Ansible and Terraform:
+Terraform	Ansible
+Terraform is a tool for provisioning.					Ansible is a tool for managing configurations.
+It uses a declarative Infrastructure as Code methodology.				It takes a procedural method.
+It’s ideal for orchestrating cloud services and building cloud infrastructure from the ground up.				It is mostly used to configure servers with the appropriate software and to update resources that have previously been configured.
+By default, Terraform does not allow bare metal provisioning.						The provisioning of bare metal servers is supported by Ansible.
+In terms of packing and templating, it does not provide better support.					It includes complete packaging and templating support.
+It is strongly influenced by lifecycle or state management.					It doesn’t have any kind of lifecycle management. It does not store the state.
+
+terraform state file:
+When you run terraform apply command to create an infrastructure on cloud, Terraform creates a state file called “terraform.tfstate”. This State File contains full details of resources in our terraform code. When you modify something on your code and apply it on cloud, terraform will look into the state file, and compare the changes made in the code from that state file and the changes to the infrastructure based on the state file.  
+
+null resources
+If you need to run provisioners that aren't directly associated with a specific resource, you can associate them with a null_resource.
+
+
+Terraform
+----------
+upon building an application to deploy and make the application available to the public world we need to host it, which requires infrastructure. 
+There are 2 ways we can get the infrastructure
+1. virtualization
+2. cloud platforms
+
+It is preferred to create infrastructure on the cloud platform over virtualization as there are many benefits of using cloud services.
+
+There are many cloud providers are there like AWS, Microsoft Azure, GCP, Oracle Cloud Infrastructure etc and they offer different services for hosting our application.
+So to deploy our application we need to provision the required infrastructure on these cloud platforms. How to provision the infrastructure on these cloud platforms?
+
+Each cloud providers provides an cloud console web applications using which we can login and access our cloud account services. The cloud developers can use the cloud services and can provision the resources on that platform. they need to fill the webforms with the data, navigate through the links in creating the resources for deploying the application.
+
+Manually browsing the services & filling out the forms in creating the cloud resources is going to take lot of time and has many dis-advantages:
+1. it takes too much time in provisioning the resources required for deploying the application
+2. as it is an manual process, humans errors can creep up in creating the infrastructure 
+3. we need to recreate the same infrastructure across various different environments which is a repeatitive process and might take too much time and lead to errors as discussed above
+
+Instead of using cloud consoles for creating the infrastructure manually, every cloud provider offers api/sdks for managing the infrastructure
+For helping us in automating the cloud infrastructure management each cloud provider provides api or sdks 
+1. api 
+http endpoints which are inter-operable, irrespective of platform or language we can implement our programs to invoke the apis provided by the cloud vendor to create the infrastructure
+
+2. sdks
+each cloud provider provides language libraries written in specific programming language, these libraries can be used in our programs in creating the infrastructure
+
+so that we can eliminate the manual process of creating the infrastructure, each time to provision the infrastructure we just need to run the programs we wrote which eliminates all the problems we discussed earlier
+
+
+
+Managing the infrastructure manually through cloud console applications is very difficult, instead we need to implement automation in recreating the repeatitive infrastructure.
+The cloud providers has provided 
+1. apis
+2. sdks
+which can be used for provisioning and managing the cloud infrastructure.
+	
+1. Http Endpoints/API = every cloud provider exposes http endpoints or rest apis which are interoperable, we can build software programs with relevant logic for invoking the http apis exposed by the cloud vendor to create/manage the infra
+
+2. sdks = sdks stands for software development kit, these are libraries shipped by the cloud vendor for multiple programming languages, now devops engineers/programmers can build application programs in their respective programming languages which makes use of these apis in creating/managing the infrastructure
+
+So everytime we need to provision infra for hosting application we just need to run these programs we build, thus achieving repeatitive infrastructure easily
+
+From the above we can understand to achieve infrastructure automation we need to build software programs, which requires significant amount of programming knowledge in addition there are lot of drawbacks in managing the infrastructure by build software programs
+1. The efforts involved in building the code to achieve infra automation is very high
+2. manpower required in building the automation code is high
+3. the time required for developing the automation code is more
+4. huge cost involved in achieving this automation
+5. testability of the code takes huge time and quite difficult
+
+from the above we can understand building infrastructure for deploying the application by writing software programs seems to be not an viable solution
+
+To overcome all the above problems in building and achieving infrastructure automation, the iac tools are introduced
+iac stands for "infrastructure as code", where each resource or service we want to provision is expressed interms of code which can be executed to reproduce the infrastructure quickly.
+There are lot of iac tools available in the market
+1. terraform
+2. openstack heat
+3. cloud formation
+etc
+
+What are the benefits of using iac tools?
+The applications that adopts the iac tools for provisioning the infrastructure has better rate of delivery of the application when compared with others since the efforts of managing the infrastructure is very less
+There are lot of advantages of adopting iac tools for provisioning the infrastructure
+1. self-service
+2. documentation
+3. versioning
+
+	
+What are the advantages of adopting iac tools in building the infrastructure?
+There are plenty of benefits in adopting the iac tools in provisioning infrastructure 
+1. Higher-rate of deliveries
+The applications that adopts iac tools for provisioning the infrastructure has better rate of delivery of the application when compared with others 
+2. self-service
+Most of the time the application being developed by the developers is deployed manually into the production environment. There are small team of ops engineers who are responsible for building the infrastructure in delivering the application into production. For each delivery the development has to reach to ops engineering team to setup required infrastructure, here the development team groups are in large numbers and ops engineering team is small and it becomes bottleneck for releasing the application
+
+Instead of we manually taking care of releasing the application, if we can adopt iac automation the development team by themself can release the application straight into the production and will improve deliverability of the application.
+3. documentation
+If we express the infrastructure in terms of code through iac tools, it acts as good source of documentation in understanding the infrastructure. So if an existing ops engineer has been replaced by a new one, within less time the new ops engineer can become productive by looking through the iac code in understanding infrastructure being used for our application.
+4. versioning
+since we build the infrastructure through code, we can push and commit the code into version control system repositories, so each time when we need to make change in the infrastructure we need to modify the code and every change is being captured and commited into repository. as we keep versioning the infrastructure code, we can easily understand and track how does the infrastructure has been evolved to the current state and anytime we can rollback the infrastructure to the previous state by rolling back the code
+5. Speed and Safety
+if we are setting up the infrastructure manually, there is always a chance of commiting an human mistake while building the infrastructure due to which we landup in failure of delivering he application. Instead if we adopt iac tools for creating the infrastructure, since the code is pre-tested before executing on the actual environments, there is no chance something go wrong while creating the infrastructure using iac code and we can create repeatable infrastructure quickly
+6. Validation
+as we build the infrastructure through code, we can share the code to the peers and get it reviewed along with that we can run the code on a test environment to see the final state of the system being produced, there after we can validate the env being produced before using the code for creating actual environment.
+7. Reusability
+We can write the iac code as libraries or modules, so that when we are working on building the code for creating infrastructure, we can import existing libraries or modules in quickly writing the code for creating infrastrucutre
+8. Collaboration & Sharing
+as we create infrastructure through code, we can push the code into version control systems and can share it to the other members of the team, so that all the members can collaboratively build infrastructure and share with each other
+
+There are 2 types of tools are there
+1. configuration management tools = used for installing and configuring the software packages on the machines
+
+2. infrastructure as code (infrastructure automation tools) = building infrastructure resources required for deploying the application
+	
+There are few configuration management tools, that supports building infrastructure as well, like ansible has aws modules for creating aws cloud services/resources on that platform.
+So what is the difference between Configuration Management Tools and Infrastructure as a code tools, which one should be used when?
+	
+	
+benefits of adopting iac tools in provisioning and managing the infrastructure
+1. higher delivery rates
+2. self-service
+3. documentation
+4. versioning
+5. speed and safety
+6. validation
+7. reusability
+8. collaboration and sharing
+------------------------------------------------------------------------------------------------------------------------
+compare iac automation tools with sofware configuration management tools to understand the differences between them
+There are lot of software configuration management tools like chef, puppet, ansible and salt etc which helps us in installing and configuration the software packages on the fleet servers, within these tools, few of them supports in provisioning and managing the infrastructure
+
+similarly there are lot of iac automation tools are there that supports provisioning and managing the infrastructure, within them few iac tools supports software configuration management.
+	
+From this we can understand there is a very thin line between software configuration management tools and iac automation tools and looks like both can be used inter-chageably, so what is the difference between sofware configuration management and iac automation tools which one should be used for what purpose?
+	
+before moving further let us try to draw a comparision between server templating tools and software configuration management tools
+
+software configuration management         vs    server templating tools
+tools   
+----------------------------------              ------------------------
+ansible, puppet, chef, salt                     docker/packer
+
+if we are using server templating tools like docker and packer etc most of the software configuration management requirements are handled by these tools itself we dont need software configuration management tools like ansible/puppet/chef/salt for installing & configuring the software, but to provision the infrastructure we still need iac tools
+
+if we are running our application without using server templating tools, then to install and configure the software we need software configuration management tools
+
+Software configuration management tools          vs         infrastructure as a code (iac tools)
+chef/puppet/salt/ansible                                    terraform, cloud formation, openstack heat
+-----------------------------------------------------------------------------------------------------------------------
+#1. mutable vs immutable infrastructure
+mutable = something that can be changeable
+immutable = cannot be changed
+
+#2. procedural vs declarative programming
+
+#3. master vs masterless
+#4. agent vs agentless
+
+
+
+How does terraform works?
+There are various different cloud providers provides different types of services. To enable provisioning the infrastructure automatically, these cloud providers provides apis/sdks
+
+Terraform to support provisioning the infrastructure across any of the cloud providers in the market, it has comeup with plugin based architecture. Per each provider, it has written one provider plugin which contains the logic for interacting and invoking the respective cloud provider api/sdks. 	
+	
+The developer has to write Terraform configuration file by describing the provider resource declarations he/she wanted to provision on the cloud platform.	The resource declarations are specific to the provider since the services/resources per each provider is different from another.
+So within the terraform configuration file we define 2 things
+1. which provider against whom we wanted to provision the infrastructure
+2. resource declarations, describing the infrastructure to be provisioned
+
+Now pass this terraform configuration file as an input to Terraform CLI asking him to plan and apply the resource declarations.
+	1. Terraform CLI reads the terraform configuration file and validates whether the configuration provided is valid or not and reports an error
+	2. identifies the cloud provider on wich we wanted to provision the infrastructure based on provider declaration in terraform configuration file
+	3. downloads the terraform cloud provider plugin from internal repository of Terraform into the workspace directory
+	4. passes the resource declarations to the provider plugin asking him to apply the configurations on the cloud platform
+	5. The provider plugin invokes the respective api/sdk of the cloud platform to provision the infrastructure
+	
+advantages:-
+	1. Terraform is an hybrid iac provisioning tool, it can be used for provisioning the infrastructure across any cloud providers. so we dont need to learn/use different iac tools in provisioning the infrastructure across different providers.
+	2. Terraform abstracted the process of provisioning the infrastructure across the cloud providers by standardizing the provisioning workflow automation
+-----------------------------------------------------------------------------------------------------------------------
+What are the components of Terraform?
+There are 4 components are there in Terraform
+1. Terraform CLI = provides the commands that can be used in applying the terraform configurations to create provider infrastructure. It reads the terraform configuration file, validates and invokes the respective cloud provider plugin.
+2. Terraform configuration file
+The Hashicorp has provided an standard language called "HCL" (Hashicorp Language). using this language we need to write provider and resource declarations in Terraform configuration file. The terraform configuration file is written with an extension of ".tf" (terraform file). 
+The file in which we write the resource declarations to provision is called "terraform configuration file"
+3. Provider Plugin = per each provider, the terraform has written the provider plugin which contains the appropriate logic for invoking the api/sdk of a cloud provider to provision the infrastructure based on the resource declarations
+4. Cloud Provider Api = its an programmatic interface in provisioning/managing the infrastructure on the cloud platform provided by the cloud platform itself
+------------------------------------------------------------------------------------------------------------------------
+How to setup terraform?
+We need to setup an Terraform control machine/node, on which we need to install the Terraform CLI. it is distributed as single binary file that works across all the platforms. we need to download and the file to the system path.
+	
+	
+To let the terraform work with the aws cloud provider api/sdks in provisioning the infrastructure we need to setup IAM user on aws cloud platform with necessary permissions and roles.
+	
+There are 2 types of users are there in aws:
+1. aws root user
+2. aws iam user
+
+***upon setting up the aws account, we have the root user dont create api keys/secret access keys on root user in provisioning the infrastructure resources, because the root user is an unrestricted user who has access to all the resources/services account using it is volunerable
+
+create an separate IAM user with necessary permissions and generate an api key/secret access key and use it for provisioning the infrastructure
+
+2. How to pass the aws apikey/secret access key as an input to the terraform cli letting it provisioning the resource on the aws cloud account?
+There are 3 ways of passing the account information to the terraform cli
+1. shared file approach
+2. through environment variables
+3. write the credentials in terrform file
+
+#1. shared file approach
+after creating an IAM user with apikey/secret access key we need to pass this information as an input to Terraform CLI as below
+1.1 create an .aws directory under the $HOME directory of the terraform control node
+1.2 create an file with name "credentials"
+1.3 we may have multiple aws accounts or multiple aws iam users for an account, to provision resources on different accounts or through different users we need to pass their relevant apikeys/secret access keys to cli. 
+So to allow us to work with multiple accounts or users, the cli supports profiles.
+per each account or user, we need to define 1 profile in "credentails" file and we need to specify using which profile we wanted to provision resources on platform in terraform configuration file
+
+~/.aws/credentails
+[default]
+aws_access_key=accesskey
+aws_secret_access_key=secret access code
+aws_region=ap-south-1
+	
+#2. through environment variables
+before running the terraform CLI we need to set the access key/secret access key using environment variables. The terraform has predefined these variables to be used for defining the credentails
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+
+[this is considered as safest as we dont store the credentails any where]
+	
+#3. write the credentails in terraform configuration file
+we can write the api key and secret access key directly inside the terraform configuration file within provider block as 
+
+provider "aws" {
+	access_key = ""
+	secret_key = ""
+}
+
+This way of configuring the credetails in tf file is dis-encouraged, since the terraform script files will be versioned into vcs repositories and distributed, so that everyone knows the credentails of our account.
+	
+
+How to pass the api key & secret access key of the IAM user to terraform CLI?
+There are 3 ways 
+1. shared file
+2. env variables
+3. terraform configuration file
+
+vpc
+types subnets
+nat network
+bastion host/jumpbox
+
+loadbalancer (sticky session) 
+scale-up / scale-out 
+s3 bucket
+hosting static applications on S3
+IAM and Policy
+Lambda
+sqs/sns
+-------------------------------------
+docker directivies
+ADD
+CMD
+ENTRYPOINT
+COPY
+RUN
+WORKDIR
+
+docker cli commands
+ci/cd pipeline
+why vagrant when cloud is there?
+cloud advantage?	
+
+kubernetes
+ - deployment strategies
+ - blue/green deployments
+ - rolling updates
+how do you scale-out the application?
+what is the purpose of ansible?
+linux:
+systemd services
+linux basic commands
+
+git
+-rebase
+-cherrypick
+-stash
+-
+	
+How to pass the aws access key and secret access key to the terraform CLI?
+There are 3 ways are there 
+#1. Shared File
+we need to create credentails file under ~/.aws/ directory, into which we need to add the below properties populated with the corresponding values
+~/.aws/credentails
+[profile]
+aws_access_key=accesskey
+aws_secret_access_key=secretcode
+
+profile = is used for supporting multiple aws accounts or IAM users
+
+#2. through environment variables
+export the env variables with the names as below
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+	
+#3. through terraform configuration file	
+in the terraform configuration file within the provider block we can declare
+provider "aws" {
+	access_key = ""
+	secret_key = ""
+}
+------------------------------------------------------------------------------------------------------------------------
+How to provision the infrastructure on aws cloud platform using terraform?
+To provision the infrastructure resources using terraform, we need to declare resources information that we wanted to provision by writing in terraform configuration file
+
+There are 2 formats in which we can write the terraform configuration file
+1. HCL = HCL stands for Hashicorp Language
+2. JSON = Terraform supports declaring resources in JSON format as well.
+	
+It is preferred to write the terraform configuration in HCL format than JSON, since it is easy to read and understand
+
+In terraform configuration file we can write 2 types of declarations
+1. Resource declaration
+Resource declaration are way through which we tell the terraform to provision an resource on the cloud provider platform
+2. DataSource declaration
+DataSource declarations are way we ask terraform to query the existing resources that are already of the cloud provider platform. For eg.. we wanted to provision an ec2 instance within an existing vpc/subnet, they way we can fetch the existing vpc/subnet of our account so that we can pass it as an input to ec2 resource declaration is through the help of datasource declaration
+
+#1. Resource declaration
+A Resource declaration indicates the resource we wanted to be provisioned on the cloud provider platform. for eg.. if we want to provision an ec2 instance on aws cloud provider platform we need to write ec2 resource declaration describing the details of the instance we wanted to provision in terraform configuration file
+The resource declarations differs from provider to provider, since each provider has their own services/resource types.
+	
+Syntax:-
+resource "TYPE" "NAME" {
+	resource configuration
+}	
+
+1. TYPE = indicates the type of resource we want to provision. For every cloud provider, the resource type will starts with cloudprovidername_resourceType.
+for eg.. if we want to provision an ec2 instance on aws cloud provider then the resource type will be "aws_ec2", so that we can quickly identify the resource we are referring from
+
+2. NAME = The NAME we declare here doesnt refers to the name of the resource we want to create, its just an configuration name or block name we gave to the resource declaration. using the name we can refer the resource in expressing dependencies across the resources
+
+For eg.. we want to create an vpc with name "javavpc" and within the javavpc we want to create a subnet called "javasubnet". So we can tell the terraform to create javasubnet under javavpc by referring to the RESOURCENAME as shown below.
+	
+resource "aws_vpc" "javavpc" {
+	cidr = "10.0.0.0/16"
+	tags = {
+		NAME = "javavpc"
+	}
+}	
+	
+resource "aws_subnet" "javasubnet" {
+	cidr = "10.0.1.0/24"
+	vpc_id = aws_vpc.javavpc.id
+	tags = {
+		NAME = "javasubnet"
+	}
+}
+
+In the above aws_subnet resource declaration we are referring to the vpc_id pointing to javavpc.id, that is how we express depenencies between the resources or we can refer resources using the name
+
+when we apply the above terraform configuration by passing to terraform CLI, the terraform will generates an acyclic graph representing the resources and their dependencies to identify the resources has to be created in which order
+
+There are lot of resource types are there supported by each cloud provider, it will be practically impossible to memorize the resource types and their declarations in writing terraform configuration file, we need to refer the provider declarations documentation provided by terraform 
+
+#2. datasource declaration
+datasources is used for querying the existing resources available on the cloud platform, so that using these references we can create resources within them
+
+
+How to provision the aws cloud resources using terraform?
+To provision the infrastructure resources using terraform we need to write resource declarations in terraform configuration file. There are 2 formats in writing the terraform configuration file
+1. HCL format = Hashicorp language
+2. JSON format = Javascript object notation
+
+There are 2 types of declarations are there
+1. resource declaration
+2. datasource declaration
+
+#1. Resource declaration
+using the Resource declaration we tell the terraform to provision an resource on the cloud platform.
+syntax:
+resource "TYPE" "NAME" {
+	resource configuration
+}
+
+#2. Datasource declaration
+using the datasource declaration we can query the existing resources that are part of the aws account
+-----------------------------------------------------------------------------------------------------------------------
+How to write terraform configuration in provisioning an infrastructure?
+We provision the infrastructure for deploying an application, first in-hand we need to derive what infrastructure resources are required in deploying an application and list them.
+	
+for eg.. for deploying an fithealth2 java application we need
+1. java server 
+2. no need of cluster deployment as the traffic to the application is very less
+
+From the above statements we can derive the infrastructure needed for deploying the application as
+1. vpc network
+2. public subnet
+3. security group
+4. ec2 instance
+
+Now we can write the infrastructure code either within the project or can be written in a separate project. 
+Let us keep the infrastructure code along with the project code as below.
+	
+fithealth2
+|-src
+  |-main
+	  |-java
+		|-resources
+		|-config
+			|-terraform (terraform directory)
+				|-write terraform configuration files
+		|-webapp
+		  |-WEB-INF
+				|-web.xml
+|-pom.xml				
+
+The Terraform configuration files are written with an extension as ".tf" only. The preffered name with which we need to write the terraform configuration file is "main.tf", but we can write the file with anyname there is no mandatory rule in writing the filename
+
+We can declare all the resource declarations in one single terraform configuration file "main.tf" or we can modularize the resource declarations by distributing them into multiple terraform configuration files as well.
+for eg.. we can create
+vpc.tf
+subnet.tf
+ec2.tf
+securitygroup.tf
+per resource one configuration file or we can declare all of these resources in main.tf
+
+if we modularize the resource declarations into multiple terraform files, the identifying the resources and their dependencies becomes bit difficult as those are scattered across the files
+
+For one project, the relevant terraform configuration should be kept under one-single directory which is called terraform project directory. So when we execute the terraform asking to create infrastructure, it combines all the terraform configuration files together into a single configuration file by merging and applies 
+
+In addition to the resource declarations we need to define provider plugin configuration and credentails to let the terraform identify the cloud provider and account on which these resources should be created.
+
+~/.aws/credentails
+[default]
+aws_access_key = 
+aws_secret_access_key=
+	
+	
+d:\work\terraform:/>
+fithealth:/>
+|-main.tf
+
+main.tf
+-------
+terraform {
+	required_providers {
+		aws = {
+			source = "hashicorp/aws"
+		}
+	}
+}
+provider "aws" {
+	region = "ap-south-1"
+	profile = "default"
+}
+resource "aws_vpc" "fithealth2vpc" {
+	cidr_block = "10.0.0.0/16"
+	tags = {
+		Name = "fithealth2vpc"
+	}
+}
+resource "aws_subnet" "fithealth2subnet" {
+	cidr_block = "10.0.1.0/24"
+	vpc_id = aws_vpc.fithealth2vpc.id
+	tags = {
+		Name = "fithealth2subnet"
+	}
+}
+resource "aws_security_group" "fithealthec2sg" {
+	vpc_id = aws_vpc.fithealth2vpc.id
+	ingress {
+		from_port = 22
+		to_port = 22
+		protocol = "ssh"
+		cidr_blocks = ["10.0.0.0/16"]
+		
+	}
+	egress {
+		from_port = 0
+		to_port = 0
+		protocol = -1
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+}
+resource "aws_key_pair" "fithealth2kp" {
+	key_nm = "jkp"
+	public_key = ""
+}
+resource "aws_instance" "fithealth2ec2" {
+	subnet_id = aws_subnet.fithealth2subnet.id
+	vpc_security_group_ids = ["aws_security_group.fithealthec2sg.id"]
+	instance_type = "t2.micro"
+	ami = "ami-39838"
+	key_name = aws_key_pair.fithealth2kp.key_nm
+}
+
+How to run the terraform configuration?
+1. goto the project directory where we have written the terraform configuration files (inshort terraform project directory)	
+2. terraform init
+when we run terraform init, the terraform CLI will gathers all the .tf files places in the terraform project directory and merges them into one single configuration file (in-memory) and validates the configuration.
+if the configuration produced is not valid, it returns error indicating it. if the terraform configuration file is valid, immediately it downloads the terrform provider plugin and stores under the project directory by creating another directory called ".terraform"
+	
+From this we can understand, per each project we need to run atleast once the terraform init to validate and download the provider plugin
+3. terraform plan
+terraform plan is a dry run by which we can easily identify the terraform configuration upon executing produces what infrastructure on the cloud account.
+when we run terraform plan, it connects to the cloud account and queries the existing resources of our account and compares with the terraform configuration we passed to identify the delta from which it derives
+1. how many resources should be provisioned newly
+2. how many resources should be deprovisioned
+3. how many should be modified
+and provides an summary of resources being created upon applying configuration to the user
+
+now user can see is this configuration is producing the expected infrastructure or not before applying and proceed for apply
+
+4. terraform apply
+executes the terraform configuration on cloud provider and displays the results
+
+How can we write terraform configuration file with resource/datasource delcarations to provision the infrastructure?
+per each project for deployment and delivery we provision the infrastructure, so there are 2 ways we place the infrastructure and configuration management code
+1. along with the application project
+2. by keeping them in a separate repository with a project something like project-integration or project-cicd directory
+
+
+main.tf
+--------
+terraform {
+	required_providers {
+		aws {
+			source = "hashicorp/aws"
+		}
+	}
+}
+
+provider "aws" {
+	region = "ap-south-1"
+	profile = default
+}
+
+resource "aws_instance" "javaec2" {
+	instance_type = "t2.micro"
+	ami = "ami-3938"
+}
+here the ec2 instance will be provisioned on default vpc, subnet & securitygroup with no keypair attached to it.
+How to execute the terraform configuration?
+1. goto the project directory
+2. terraform init = validates the configuration by combining into one single file & downloads the provider plugin and stores in the .terraform directory under the project
+3. terraform plan = dry run
+4. terraform apply
+
+
+What is datasource, how to work with it?
+Datasource is used for querying the resources that are part of our aws account.	These are used for provisioning the resources on an existing infra
+The datasource declaration starts with data followed by resourceType we want to query, aliasName we want to give to the resource we queried
+
+      TYPE         ALIASNAME
+data "aws_subnet" "sailorpubsn" {
+	filter {
+		name = "tag:Name"
+		values = ["sailorpubsn"]
+	}
+}
+The filter condition indicates the criteria based on which we want to query the resources.
+	
+resource "aws_instance" "javaserverec2" {
+	subnet_id = data.aws_subnet.sailorpubsn.id
+}	
+-----------------------------------------------------------------------------------------------------------------------
+Working with variables in Terraform?
+Variables are the placeholders in which we can store the data or values. so that in the programs rather than using hardcoded values, we can refer variables that improves code readability and maintainability. Like any other programming language terraform also supports working with declaring variables, assigning values to them and referencing them in the terraform configuration file
+
+How can we use variables in Terraform?
+Let us consider we have written an Terraform configuration for provisioning an ec2 instance as below
+
+resource "aws_instance" "tomcatserver" {
+	instance_type = "t2.micro"
+	ami = "ami-a9383"	
+}
+here we have declared an ec2 instance resource to be provision of shape "t2.micro", but while moving to production, we want to bump-up the shape of the resource, this can be done by modifying the terraform configuration file. each time changing the terraform configuration file is error-prone and searching and locating the place where we need to make the changes seems complex
+
+Instead of hardcoding these values we can use variables. while writing the terraform configuration file we can refer the variables and while executing we can pass the values to these variables
+So that we can quickly produce infrastructure with different values being attached for different env
+There are 3 parts of working with variables are there
+1. declare variables
+2. refer the variables in terraform configuration file instead of hardcoding
+3. passing the values 
+
+#1. How to declare variables in terraform
+We can declare variables inside the terraform configuration file using variable block declaration
+
+main.tf
+---------
+variable "variableName" {
+	type = dataType
+	description = "purpose/usage of the variable"
+	default = "defaultValue"
+}
+
+a variable declaration contains 3 parts
+1. type = which type of data the variable holds is indicated through dataType. when we supply the value for the variable terraform validates it against the dataType before applying the configuration
+2. description = indicates the purpose or usage of the variable
+3. default = indicates the defaultValue to be used incase user has not supplied any value for the variable
+
+Following are the supported dataTypes for a variable declaration
+1. string
+2. list
+3. map
+4. bool
+5. number
+6. set
+7. object
+
+#1. list variable
+variable "cidr_blocks" {
+	type = list
+	description = "cidrs for security group"
+	default = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
+#2. map variable
+variable "tags" {
+	type = map
+	default = {
+		Name = tomcatserver
+		Env = dev
+		App = fithealth2
+	}
+}
+
+#3. object variable
+variable "ec2instanceconf" {
+	type = object({
+		instance_type = string
+		ami = string
+	})	
+	default = {
+		instance_type = "t2.micro"
+		ami = "ami-39393"
+	}
+}
+
+#4. number variable
+variable "port" {
+	type = number       
+	description = "port no"
+	default = 22
+}
+String: Purpose: Used to represent text or sequences of characters.
+Number: Purpose: Used to represent numeric values, including integers and floating-point numbers.
+Bool: Purpose: Used to represent boolean values (true or false).
+List: Purpose: Used to represent ordered sequences or lists of values.
+Map: Purpose: Used to represent collections of key-value pairs.
+Object: Purpose: Used to represent complex objects with multiple attributes.
+
+
+It is recommended to place the variable declarations outside the terraform resource configuration file. it is recommended to place in an another *.tf file under the project directory. Most commonly used filename in which the people declare the variables in variables.tf
+
+#2. how to refer the variables in terraform configuration file?
+variables.tf
+------------
+variable "ec2config" {
+	type = object({
+		instance_type = string
+		ami = string
+	})
+	default = {
+		instance_type = "t2.micro"
+		ami = "ami-3938"
+	}
+}
+
+variable "tags" {
+	type = map
+	default = {
+		Name = "tomcatec2"
+	}
+}
+
+main.tf
+-------
+terraform {
+	required_providers {
+		aws = {
+			source = "hashicorp/aws"
+		}
+	}
+}
+provider "aws" {
+	region = "ap-south-1"
+	profile "default"
+}
+resource "aws_instance" "tomcatec2" {
+	instance_type = var.ec2config.instance_type
+	ami = var.ec2config.ami
+	tags = {
+		Name = var.tags['Name']
+	}
+}
+-----------------------------------------------------------------------------------------------------------------------
+#3. How to supply values while applying the terraform configuration?
+while declaring the variables, if we dont assign a default value, then terraform during the apply prompts for the values for the variables which results in interactive execution. instead we can pass the values for the variables at runtime while running the terraform configuration for achieving touchless automation
+
+In case if we supply the values at runtime, the default values that we defined at the time of declaring variables will be overriden.
+There are 4 ways we can supply values for the inputs while running the terraform configuration
+
+#1. using -var switch at the terminal while launching the terraform CLI
+syntax:
+
+terraform apply -var varName=value -var varName=value
+
+if more variables are there constructing the CLI command in passing them becomes difficult
+
+#2. instead of passing the values for these variables through terminal, we can define the values in *.tfvars file and pass it as input during execution 
+tfvars = terraform variables
+
+The recommended filename to be used in supplying values is inputs.tfvars, by looking at *.tfvars extension we can easily differentiate these files holds the values for the variables
+
+variables.tf
+variable "instance_shape" {
+	type = string
+	default = "t2.micro"
+}
+
+main.tf
+resource "aws_instance" "ec2" {
+	instance_type = var.instance_shape
+}
+
+inputs.tfvars
+instance_shape="t2.nano"
+variableName=value
+
+terraform apply -vars-file=inputs.tfvars
+
+#3. using *.auto.tfvars
+instead of we manually passing the filename as an input while applying the terraform we can create files by following the naming convention as *.auto.tfvars and place under the project directory. So, when we apply the terraform, it looks for any file with extension "*.auto.tfvars" if found pick the values for the variables and executes
+
+inputs.auto.tfvars
+instance_type=t2.micor
+
+#4. environment variables
+instead of declaring the variable values in files we can set them through environment variables as well
+To differentiate the terraform env variables from others we need to follow naming convention while setting the variables in env
+
+export TF_VAR_variableName=value
+variables.tf
+variable "ami" {
+	type = string
+}
+set TF_VAR_ami=ami-3938
+
+precedence in taking the values supplied:
+1. *.auto.tfvars
+2. -var-file=*.tfvars
+3. -var  var=value
+4. env variable
+
+
+Working with output variables
+-----------------------------
+Output variables are similar to function/method calls in programming language. when we invoke a method we pass input parameters, upon completing the execution it produces the output that can be taken as an input to another function. Similarly while working on terraform we pass inputs for terraform configuration file during execution. 
+	
+While executing the terraform resources may produce/generates output upon computing which can be captured as an output using output variables
+For eg.. while provisioning an ec2 instance we dont know what is public/private ip address associated for that instance, upon completing the execution we can look for the ip address by going through cloud console, instead we can capture such data that is generated during provisioning the instance by using output variables
+
+we can declare output variables in terraform configuration file inside main.tf but it is not recommended to declare output variables inside main.tf, rather recommended place in separate file and standard convention people use in writing the filename is outputs.tf
+
+How to delcare an output variable?
+we declare output variable using output variable block declaration as below:
+outputs.tf
+
+output "variableName" {
+	value = "expression pointing to the one of resource attribute which we want to capture"
+	description = "information about the variable"
+	sensitive = true/false
+}
+for eg.. value = ${aws_instance.varsec2.public_ip}
+the default behaviour is every output variable will be displayed to the console, if we mark it as sensitive it will capature but will not display as output to the console
+
+
+Terraform Provisioners
+----------------------
+Terraform is an iac automation tool used for provisioning the cloud infrastructure, but we need to have platform software to be installed and configured ontop of the infrastructure we created to run the software applications. But the job Terraform is only provisioning it doesnt install/configure the software
+
+How to install and configure the software ontop of the infrastructure provisioned by Terraform?
+There are 2 options are available
+1. use software configuration management tools like ansible, puppet, chef, salt etc for installing and configuring the software ontop of the infrastructure provisioned through terraform
+2. create custom cloud provider images in re-creating the infrastructure whenever needed
+
+
+#2. create custom cloud provider images
+upon provisioning the infrastructure using terraform, we can manually install and configure the environment with required software packages and libraries. once the environment is ready for usage, export it as an cloud image so that we can reuse in re-creating the infrastructure
+
+but there are problems with above approach:
+1. manually setting up the environment in installing and configuring the software packages takes lot of time and error prone
+2. whenever there is change in software packages we want to bundle or upgrade existing software packages with higher versions we need rebake the images from scratch which is an painful job
+
+From the above we can understand baking the images in recreating the infrastructure in not effective method rather we need to use software configuration management scripts
+
+#1. use software configuration management tools for creating the environment
+The devops engineer needs to write sofware configuration management scripts using tools like ansible, puppet, chef or saltstack for installing & configuring the environment to the desired state
+
+upon provisioning the environment using terraform, the ops engineer has to gather the information about the env provisioned has to identify which software configuration management scripts has to be applied on which resources being provisioned and execute them manually, this approach has lot of drawbacks or challenges:
+1. the devops engineer has to gather manually the information about all the resources that are provisioned through terraform
+2. need to identify which software configuration management scripts has to be executed on which resources and has to memorize them
+3. need to derive the dependency order in which these scripts has to applied
+4. the devops engineers has to know the technology of the scm script written and has to be aware of how to execute them on the end resources
+5. while launching the scm scripts to be applied on the infrastructure provisioned manually, always there is an chance we might pass the information about the infra wrongly or execute wrong script on a resource which might lead to unexpected behaviour and leads to failure
+
+even though we have 2 automation tools for infrastructure provisioning and software configuration management, to have them work together we have still the manuall process involved due to which we are running into above problems listed. how to overcome these problems?
+we need to integrate these 2 different tools together for executing them automatically that is where terraform provisioners are introduced
+
+
+upon provisioning the infrastructure through terraform, we can launch or apply software configuration management scripts ontop of the infrastructure provisioned through the help of provisioners
+There are 3 types of provisioners are supported by terraform
+1. file-provisioner
+2. local-exec provisioner
+3. remote-exec provisioner
+
+#1. file provisioner
+The file provisioner is used for copying the files from terraform control node to the remote resource
+
+#2. local-exec provisioner
+The scm scripts will execute local to the terraform node using local-exec provisioner
+
+
+Provisioners:
+Provisioners are the way through which we can hookup software configuration management scripts to the terraform asking to execute upon provisioning a resource or at the end of execution of the terraform configuration. So, that devops engineers dont need launch or trigger the software configuration management scripts manually.
+	
+There are 3 types of provisioners are supported by terraform
+1. file provisioner
+2. local-exec provisioner
+3. remote-exec provisioner
+
+#1. file provisioner
+file provisioners are used for copying the files from terraform control node to the remote resources provisioned
+
+#2. local-exec provisioner
+runs the software configuration management scripts locally on the terraform control node
+
+#3. remote-exec provisioner
+run the software configuration management scripts by copying them on the remote resource and executes local to the resource itself
+
+Provisioners can be defined at 2 levels
+1. local to the resource level
+2. global 
+
+#1. local to resource level
+we can define a provisioner to a resource on whom it has to be applied, so that upon provisioning the resource, the terraform immediately executes the provisioner on that resource
+
+#2. global provisioner
+if we wanted to execute a provisioner or a software configuration management script upon provisioning a group of resources or all the resources, then we need to use global provisioner.
+In general provisioner are used for applying software configuration management scripts on resource, so without a resource we cannot write a provisioner, but global provisioner is not attached to any resource so how to write a provisioner without attaching to any specific resource
+
+That is where terraform has provided an "null_resource" on which we can configure the provisioner
+
+lets understand how to work with file & remote-provisioner
+we wanted to install jdk upon provisioning an ec2 instance
+
+tfprovisioners
+|-sh
+  |-installjdk.sh
+|-main.tf
+|-variables.tf
+|-inputs.tfvars
+|-output.tf
+
+installjdk.sh
+#!/bin/bash
+sudo apt update -y
+sudo apt install -y openjdk-11-jdk
+
+variables.tf
+------------
+variable "ec2config" {
+	type = object({
+		instance_type = string
+		ami = string
+		public_key = string
+		associate_public_ip = bool
+		tags = map(string)
+	})
+}
+
+inputs.tfvars
+-------------
+ec2config = {
+	instance_type = "t2.micro"
+	ami = "ami-29383"
+	public_key = "SSH-RSA al93903"
+	associate_public_ip = true
+	tags = {
+		Name = "javaserver"
+	}
+}
+
+outputs.tf
+---------
+output "tfprovisionerec2_publicip" {
+	value = aws_instance.javaserver.public_ip
+}
+
+main.tf
+-------
+terraform {
+	required_providers {
+		aws = {
+			source = "hashicorp/aws"
+		}
+	}
+}
+
+provider "aws" {
+	region = "ap-south-1"
+	profile = "default"
+}
+
+resource "aws_keypair" "javaserverkp" {
+	key_name = "javaserverkp"
+	public_key = var.ec2config.public_key
+}
+
+resource "aws_instance" "javaserver" {
+	instance_type = var.ec2config.instance_type
+	ami = var.ec2config.ami
+	key_name = aws_keypair.javaserverkp.key_name
+	associate_public_ip_address = var.ec2config.associate_public_ip
+	
+	connection {
+		type = "ssh"
+		host = self.public_ip
+		user = "ubuntu"
+		private_key_file = "~/.ssh/jkp"
+	}
+	provisioner "file" {
+		source = "sh/installjdk.sh"
+		destination = "/tmp/installjdk.sh"
+	}
+	provisioner "remote-exec" {
+		inline = {
+			"chmod u+x /tmp/installjdk.sh",
+			"bash /tmp/installjdk.sh"
+		}
+	}	
+}
+
+#local-exec provisioner
+resource "aws_instance" "localexecec2" {
+	instance_type = "t2.micro"
+	ami = "ami-3983"
+	
+	provisioner "local-exec" {
+		inline = [
+			"echo $self.public_ip >> hosts" 
+		]
+	}
+}
+
+
+Terraform Modules
+-----------------
+What are terraform modules, why do we need to use terraform modules?
+Terraform modules are the group of resources that can be imported in various terraform configurations in creating the infrastructure. Modules are the way through which we can reuse the terraform resource declarations or configurations across the projects
+
+We can create modules of our own locally and can be reused across various projects we build or there are lot of published modules available in the market which can be imported and reused in building the infrastructure
+
+The terraform configuration and the resource declarations we have written remains same, but the way we are writing or organizing them will change when working with modules
+
+How to work with modules?
+while working with modules we need to organize the directory structure of our project in differentiating modules from main terraform configuration. Each resource/group of resources that can be reused should be defined as one module
+
+tomcatec2
+|-modules
+  |-services
+		|-network
+			|-vpc
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf
+			|-subnet
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf
+			|-ig
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf
+			|-securitygroup
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf				
+		|-compute
+			|-ec2
+				|-variables.tf
+				|-main.tf
+				|-outputs.tf
+|-global [terraform configuration]
+	|-main.tf
+	|-inputs.tfvars
+	|-variables.tf
+	|-outputs.tf
+	
+tomcatec2/modules/services/network/vpc
+variables.tf
+------------
+variable "vpcconfig" {
+	type = object({
+		vpc_cidr = string
+		vpc_name = string
+	})
+}
+
+main.tf
+-------
+resource "aws_vpc" "vpc" {
+	cidr_block = var.vpcconfig.vpc_cidr
+	tags = {
+		"Name" = var.vpcconfig.vpc_name
+	}
+}
+
+outputs.tf
+----------
+output "vpc_id" {
+	value = aws_vpc.vpc.vpc_id
+}
+-------------------------------------------------------------
+tomcatec2/modules/services/network/subnet
+variables.tf
+------------
+variable subnetconfig {
+	type = object({
+		subnet_cidr = string
+		vpc_id = string
+		subnet_name = string
+		availability_zone = string
+	})
+}
+
+main.tf
+-------
+resource "aws_subnet" "subnet" {
+	vpc_id = var.subnetconfig.vpc_id
+	cidr_block = var.subnetconfig.subnet_cidr
+	availability_zone = var.subnetconfig.availability_zone
+	tags = {
+		"Name" = var.subnetconfig.subnet_name
+	}	
+}
+
+outputs.tf
+----------
+output "subnet_id" {
+	value = aws_subnet.subnet.id
+}
+-------------------------------------------------------------------------
+tomcatec2/modules/services/network/ig
+variables.tf
+------------
+variable "igconfig" {
+	type = object({
+		vpc_id = string
+		vpc_subnet_ids = list(string)
+		route_cidr = string
+		ig_name = string
+	})
+}
+
+main.tf
+-------
+resource "aws_internet_gateway" "ig" {
+	vpc_id = var.igconfig.vpc_id
+	tags {
+		"Name" = var.igconfig.ig_name
+	}
+}
+
+resource "aws_route_table" "igrt" {
+	vpc_id = var.igconfig.vpc_id
+	route {
+		cidr_block = var.igconfig.route_cidr
+		gateway_id = aws_internet_gateway.ig.id
+	}
+}
+resource "aws_route_table_associate" "igrtassociation" {
+	route_table_id = aws_route_table.igrt.id
+	subnet_ids = var.igconfig.vpc_subnet_ids
+}
+--------------------------------------------------------------------------
+tomcatec2/global
+variables.tf
+variable "vpc_cidr" {
+	type = string
+}
+variable "vpc_name" {
+	type = string
+}
+
+main.tf
+-------
+terraform {
+	required_providers {
+		aws = {
+			source = "hashicorp/aws"
+		}
+	}
+}
+provider "aws" {
+	region = "ap-south-1"
+	profile = "default"
+}
+
+module "tomcatec2_vpc_module" {
+	source = "../modules/services/network/vpc"
+	vpcconfig.vpc_cidr = var.vpc_cidr
+	vpcconfig.vpc_name = var.vpc_name
+}
+
+module "tomcatec2_pub_sn1" {
+	source = "../modules/services/network/subnet"
+	subnetconfig.vpc_id = tomcatec2_vpc_module.vpc_id
+	subnetconfig.subnet_cidr = var.subnet_cidr
+	subnetconfig.subnet_name = var.subnet_name
+}
+
+
+Terraform state management
+---------------------------
+When we provision the infrastructure using terraform, it should use some mechanism to identify for each resource declaration what is the corresponding service/resource it has provisioned on the cloud platform, so that in subsequent re-apply of the same terraform configuration it will not re-create the resources.
+	
+In case if we have modified the terraform configuration from the previous run, it can identify the changes and can perform necessary actions to bring the system to the desired state.
+	
+Terraform uses the terraform state file to identify for a resource declaration what is the corresponding service or resource being created on the cloud provider. During the time of provisioning the infrastructure using terraform it generates an terraform.tfstate file under the project directory in which it stores the information about for which resource declaration what resources are provisioned on the cloud provider by storing resource ids being generated by the cloud provider. This is called Terraform resource mapping
+
+#new terraform configuration
+---------------------------------
+#2.
+#change the terraform configuration (by adding new resources) = ?
+	
+#3.
+#change existing resource ?
+	
+#4. after apply, go and remove the resource on cloud provider and reapply
+
+Terraform state management
+---------------------------
+What is terraform state file, how is it being used by the terraform while provisioning the infrastructure?
+Terraform to keep track of the resources that are provisioned through the terraform configuration, it creates an teraform state file under the project directory with name terraform.tfstate. In the terraform.tfstate file it stores the information about each resource that is declared in the terraform configuration file with the corresponding resource id that is provisioned on the cloud provider platform along with the information the resource. So that terraform can understand which resources are provisioned and can avoid recreating them in the subsequent runs of the same terraform configuration
+	
+How does the terraform state will be used in determining how many resources has to be new provisioned, modified, deprovisioned?
+The terraform makes use of the state file to identify the resources and actions to be applied in bring the desired state of the system as below
+
+#1 new terraform configuration
+when we create a terraform configuration and plan & apply, since there is no existing terraform.tfstate file under the project, it treats all the resource that are declared in the terraform configuration should be created newly and mark for provisioning.
+	
+when we apply the terraform configuration, post completion of the execution, the terraform captures the state of the resources that are created on the cloud platform and stores them in terraform.tfstate file
+
+
+#2. sub-sequent runs of the same/existing terraform configuration
+when we try to re-apply the existing terraform configuration with modified/added resources in them, terraform will perform the execution as below.
+	2.1 refresh the resources
+	it goes to each resource definition that is available in terraform.tfstate file and takes the id of the resource and tries to query the latest state of the resources from the cloud provider and updates that into the local state file
+	in-short: refreshes the state of the resources in the terraform.tfstate file by querying from the cloud provider
+	2.2 checks to determine actions to be applied
+	it compares the terraform configuration with the latest state of the resources that are there in the cloud platform by using terraform.tfstate file and determines
+		a) which resources are newly added to the terraform configuration
+		b) which resources are modified
+		c) which resources declarations are removed from terraform configuration
+based on this it derives the actions to be applied on the cloud account to bring the system to the desired state
+------------------------------------------------------------------------------------------------------------------------
+How to manage the terraform state file?
+Terraform remote state management
+----------------------------------
+By default terraform generates and stores the terraform state file within the project directory. To support collaborative development we need to version the terraform source code into the vcs repository. But it is no enough to distribute only the terraform configuration (sourcecode) to the team members, along with that we need to distribute terraform state file as well unless otherwise always terraform treats the execution as new on each new terraform workstation on which we running and creates new resources.
+	
+one way to distribute the terraform state file is to push into along with sourcecode, the state file also into the vcs repository and distribute it to the team, but it has few problems.
+	1. terraform state file doesnt require any versioning, the developer or the ops engineer dont modify this file directly to version it or rather we never directly rollback the changes of the file. The only way this file will gets modified is by applying terraform configuration, by which we can understand it doesnt require versioning
+	2. if multiple developers are trying to parallely execute the terraform configuration file against the same state file, due to parallel execution un-predictable outcome will be resulted and might even corrupt the state of the system. by storing terraform state file into vcs repository we cannot prevent this
+		
+From the above we can understand we need a solution where we wanted to distribute state file without any versioning and want to avoid multiple people running the terraform configuration on the same state parallelly
+This can be achieved through terraform remote state management
+
+Remote State management means, instead of keeping the terraform state local to the controlnode of the terraform, we can place the terraform state file globally on backed like database, network filesystem or storage location that can be accessible over the network.
+		
+Now whereever we run the terraform configuration, the terraform cli refreshes and updates the same state file that is stored on the backend
+
+In addition to avoid parallel terraform execution on the same state file we need to implement locking mechanism where while one terraform execution is under progress, no other person can acquire the lock on the statefile to run the terraform configuration in parallel
+
+The above can be acieved by using
+1. S3 as a backend
+3. dynamodb for locking
+
+
+To support this terraform has provided backend configuration, we dont need to write the code for refreshing or updating the terraform state on the remote backend or we dont need to acquire the lock before applying the terraform configuration.
+Terrform automatically does this for us when we configure remote backend in terraform
+
+How to perform remote state management?
+1. IAM user we are using for provisioning the infrastructure through terraform should have bucket and dynamodb access policies
+2. we need to create an S3 storage bucket
+3. we need to create an dynamodb table with partition key as LockID (name should match)
+4. In terraform configuration file we need to add the backend declaration as shown below.	
+	
+
+main.tf
+terraform {
+	required_providers {
+		aws = {
+			source = "hashicorp/aws"
+		}
+	}
+	backend "s3" {
+		bucket = "bucketname"
+		key = "statefilename"
+		region = "region"
+		dynamodb_table = "locktable"
+	}
+}
+
+
+terraform taint resource:
+In Terraform, the terraform taint command is used to mark a resource managed by Terraform as "tainted."
+terraform taint aws_instance.my_instance
+After tainting a resource, the next terraform apply will include a plan to destroy and recreate that specific resource. This can be useful in scenarios where a resource becomes corrupted, needs to be reconfigured, or for other reasons requires recreation.
+
+A Terraform configuration file typically has a file extension of .tf or .tf.json (if written in JSON). These files contain the definitions of the infrastructure components and resources that need to be provisioned or managed. 
+
+what is for-each and count in terraform ?
+The for-each expression in Terraform is used to create multiple instances of a resource or module based on a map or a set of key-value pairs.
+countThe count argument in Terraform is used to create a specified number of instances of a resource or module.
+
+what is terraform workspace ?
+Terraform workspaces are a feature that allows you to manage multiple environments or configurations within a single Terraform configuration. Workspaces provide a way to create and switch between different instances of the same infrastructure, each with its own state.
+Isolation of State: Each workspace has its own state file, which means that Terraform can track and manage the resources for each environment separately. This avoids conflicts when working on multiple environments simultaneously.
+Command Usage:
+terraform workspace new <workspace_name>: Creates a new workspace.
+terraform workspace list: Lists all available workspaces.
+terraform workspace select <workspace_name>: Switches to the specified workspace.
+terraform workspace delete <workspace_name>: Deletes a workspace.
+Variable Overrides: Workspaces can be used to override specific variables for different environments. This allows you to define default values in your configuration and then override them at the workspace level.
+
+how can you delete a single resource where define multiple resources ?
+you can use the terraform destroy command with the specific resource's address.
+terraform destroy -target=aws_instance.example
+
+how you manage secrets in terraform
+Use external tools specifically designed for secret management, such as HashiCorp Vault or AWS Secrets Manager. These tools allow you to securely store and retrieve sensitive information.
+
+how can you skip the manual changes in terraform ?
+If manual changes have been made to resources outside of Terraform, you can use the terraform import command to bring those resources under Terraform management. This allows Terraform to track changes to these resources moving forward.
+terraform import aws_instance.example i-0123456789abcdef0
+Implement policy as code using tools like HashiCorp Sentinel or AWS Config Rules. Define and enforce policies to prevent or alert on manual changes that violate your infrastructure governance rules.
+
+
+what is terraform dynamic block ?
+In Terraform, dynamic blocks provide a way to create repeated nested blocks dynamically within a resource or module block. This is particularly useful when you need to generate multiple instances of a block based on dynamic or conditional logic. The dynamic block allows you to construct nested blocks with a flexible and concise syntax.
+
+what is terraform modules ?
+In Terraform, modules are a way to organize and reuse code by encapsulating a set of Terraform configurations into a single, reusable unit. Modules enable you to abstract and modularize your infrastructure code, promoting reusability, maintainability, and collaboration. They are a fundamental concept in Terraform's approach to Infrastructure as Code (IaC).
+Modules can be reused across multiple Terraform configurations, projects, or environments. This promotes consistency and reduces duplication of code.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
