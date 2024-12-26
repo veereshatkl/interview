@@ -149,32 +149,32 @@ metadata:
 spec:
 	containers:
 		- name: sailor
-			image: techsriman/sailorrepo:2.0
-			ports:
-				- name: http
-					containerPort: 8080
-					protocol: TCP
-			livenessProbe:
-				httpGet:
-					path: /sailor/actuator/liveness
-					port: 8080
-				initialDelaySeconds: 10
-				timeoutSeconds: 10
-				failureThreshold: 3
-			readinessProbe:
-				httpGet:
-					path: /sailor/actuator/readiness
-					port: 8080
-				initialDelaySeconds: 10
-				timeoutSeconds: 5
-				failureThreashold: 3
-			resources:
-				requests:
-					cpu: "500m"
-					memory: "512Mi"	
-				limits:
-					cpu: "1000m"
-					memory: "1024Mi"	
+		  image: techsriman/sailorrepo:2.0
+		  ports:
+			  - name: http
+				  containerPort: 8080
+				  protocol: TCP
+		  livenessProbe:
+			  httpGet:
+				  path: /sailor/actuator/liveness
+				  port: 8080
+			  initialDelaySeconds: 10
+			  timeoutSeconds: 10
+			  failureThreshold: 3
+		  readinessProbe:
+			  httpGet:
+				  path: /sailor/actuator/readiness
+				  port: 8080
+			  initialDelaySeconds: 10
+			  timeoutSeconds: 5
+			  failureThreashold: 3
+		  resources:
+			  requests:
+				  cpu: "500m"
+				  memory: "512Mi"	
+			  limits:
+				  cpu: "1000m"
+				  memory: "1024Mi"	
 
 How to expose a pod?
 kubectl expose pod hangoutpod --name hangoutsvc --port 8080 --type=NodePort
@@ -354,6 +354,7 @@ spec:
 A ReplicaSet ensures that a specified number of pod replicas are running at any given time. 
 If the actual number deviates from the desired state, the ReplicaSet automatically takes corrective actions.
 The ReplicaSet controller constantly monitors the cluster for changes and takes action to maintain the desired number of replicas specified in the associated ReplicaSet resource.
+Use Case: Ensuring a fixed number of pod replicas are always running.
 ibanking-replicaset.yaml
 -------------------------
 apiVersion: apps/v1
@@ -368,7 +369,7 @@ spec:
 		matchLabels:
 			app: ibanking
 			version: "1.0"
-template: [run 3 replicas of the below template]
+	template: [run 3 replicas of the below template]
 	metadata:
 		labels:
 			app: ibanking
@@ -394,6 +395,8 @@ $kubectl get rs
 2.DaemonSet
 A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created.
 ensures the pods are running across all the nodes of the cluster
+It's commonly used for logging, monitoring, or networking agents.
+
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -442,7 +445,11 @@ A Deployment provides declarative updates for Pods and ReplicaSets.
 			or
 Deployment is another way of deploying containerized application on the kubernetes cluster. Through deployment controller any changes to the pod template can be rolledout in a controlled way.
 They are suitable for stateless applications where the focus is on maintaining a desired number of replicas and managing rolling updates and rollbacks.
-Deployments provide features like rolling updates, scaling, and automated rollback in case of failures. 
+Deployments provide features like rolling updates, scaling, and automated rollback in case of failures.
+
+What is the difference between StatefulSets and Deployments?
+StatefulSets manage stateful applications, ensuring stable Pod names and ordered deployments. Deployments are for stateless applications.
+ 
 speed-deployment.yaml
 ---------------------
 apiVersion: apps/v1
@@ -511,7 +518,7 @@ Service is about networking the pods that are running on the kubernetes cluster.
 	3. to be load balanced the request across the multiple replicas of the pod	
 these can be achieved through the help of service
 There are 5 types of services are supported by kubernetes cluster
-1. ClusteredIp
+1. ClustereIp
 2. NodePort
 3. Loadbalancer
 4. Ingress
