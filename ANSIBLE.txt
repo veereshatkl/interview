@@ -1,5 +1,5 @@
 ANSIBLE:
-Ansible is an open-source automation tool, or platform, used for IT tasks such as configuration management, application deployment, intraservice orchestration, and provisioning. 
+Ansible is an open-source automation platform used for configuration management, application deployment, task automation, and orchestration.
 Ansible: Ansible is a configuration management tool that focuses on automating the provisioning and configuration of software applications. It is agentless, meaning it doesn't require any software to be installed on the target machines. 
 Terraform: Terraform is an Infrastructure as Code (IaC) tool that is designed for provisioning and managing infrastructure resources across various cloud providers and on-premises environments. 
 
@@ -822,8 +822,12 @@ ansible -i hosts.ym all -m ping
 What are callback plugins in Ansible?
 
 Callback plugins basically control most of the output we see while running cmd programs. But it can also be used to add additional output. For example log_plays callback is used to record playbook events to a log file, and mail callback is used to send email on playbook failures. We can also add custom callback plugins by dropping them into a callback_plugins directory adjacent to play, inside a role
+Control how task results are displayed.
+Send notifications (e.g., email, Slack, or webhook) upon task execution.
+Generate detailed logs for auditing purposes.
+Customize Ansible output to match specific requirements.
  
- how to intigrate ansiblw with jenkins ?
+how to intigrate ansible with jenkins ?
 
 ansible-modules:
 ping module:
@@ -860,3 +864,18 @@ include_vars module can be used to dynamically load variable from a file or dire
     when: ansible_os_family == 'Debian'
 include_role module: this module dynamically loads and execute a specified role as a task.
 
+What are Ansible tags, and how are they used?
+Tags allow you to run specific tasks within a playbook.
+tasks:
+ - name: Install Apache
+   apt:
+     name: apache2
+     state: present
+   tags: apache
+
+ - name: Install MySQL
+   apt:
+     name: mysql-server
+     state: present
+   tags: mysql
+$ansible-playbook playbook.yml --tags "apache"
