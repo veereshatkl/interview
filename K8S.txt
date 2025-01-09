@@ -118,6 +118,10 @@ kubectl logs -f podName = tail -f
 kubectl delete pod podName
 kubectl delete -f pod.yml
 
+#13 Run the command to list all nodes (including master and worker nodes):
+kubectl get nodes
+
+
 Both liveness & readiness probes are used to control the health of an application. 
 Failing liveness probe will restart the container, whereas failing readiness probe will stop our application from serving traffic.
 For a pod we can configure readinessProbe and livelinessProbe letting the kubernetes identify when does the pod is available for accessing and determine whether the pod is running or not
@@ -776,13 +780,23 @@ pod lifecycle
 what is init container in k8s?
 specialized containers that run before app containers in a Pod. Init containers can contain utilities or setup scripts not present in an app image. 
 
+ArgoCD
+ArgoCD is a declarative, GitOps-based continuous delivery (CD) tool for Kubernetes. It automates the deployment, management, and monitoring of Kubernetes applications by synchronizing the desired application state, defined in Git repositories, with the actual state of the cluster.
+Automatically applies updates to the Kubernetes cluster whenever changes are committed to the Git repository.
+Continuously monitors the cluster state and compares it with the desired state in the Git repository.
+Offers a web-based user interface and command-line interface for managing applications, viewing logs, and troubleshooting issues.
 
+Helm-Chart
+A Helm Chart is a package that contains pre-configured Kubernetes resources used for deploying applications or services to a Kubernetes cluster
+An organization wants to deploy a web application consisting of a frontend, backend, and database. Instead of creating and managing multiple YAML files manually, they use a Helm chart to define and deploy all components as a single package.
 
-
-
-
-
-
+what is KONG
+Kong is an open-source, high-performance API gateway and microservices management platform. It acts as a middleware layer between clients and upstream services, handling API requests, authentication, rate limiting, load balancing, and more
+Features:
+Routes incoming API requests to the appropriate backend services
+Controls the number of requests per second or minute to prevent overloading services.
+Distributes incoming requests across multiple upstream services to ensure high availability and reliability.
+Integrates with logging and monitoring tools like Prometheus, Grafana, ELK stack, and others.
 
 
 

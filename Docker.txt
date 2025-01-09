@@ -297,7 +297,7 @@ Docker supports networking for its containers via network drivers. These drivers
 2.Host
 3.None
 4.Overlay
-5Macvlan
+5.Macvlan
 
 1.Bridge Network:
 Docker creates a default bridge network called bridge when installed. Containers connected to the bridge network can communicate with each other.
@@ -384,7 +384,7 @@ docker rm <container_name_or_id>
 docker run <your_container_options>
 
 what is Distroless image
-It is used for avoid hacking and educe docker image size
+It is used for avoid hacking and reduce docker image size
 
 Docker: Containers share the host OS kernel and run in isolated user spaces, which makes them lightweight and faster to start compared to VMs. Docker containers are more efficient because they use fewer resources.
 Virtual Machines (VMs): Each VM runs a full operating system (OS) along with the application, which requires more resources and can be slower to start because of the overhead of the full OS.
@@ -396,7 +396,18 @@ Handling image transfers and storage
 Managing container networking
 Managing container namespaces and cgroups Docker leverages containerd as its runtime, abstracting the complexities of container orchestration while containerd handles the actual container management tasks.
 
+what is sidecar container
+A sidecar container is a secondary container that runs alongside the main (primary) container within the same Kubernetes Pod.
+Both containers share the same Pod's resources, including storage volumes, network, and lifecycle. 
+The sidecar container is typically used to enhance or complement the functionality of the main container.
 
+A sidecar container can collect and forward logs from the main container to a centralized logging system (Collects logs and sends them to an external system.)
+Limit Sidecar Responsibilities:
+Avoid overloading sidecars with too many responsibilities.
+Use Shared Volumes:
+Share data between containers efficiently using volumes.
+Monitor Resources:
+Ensure the sidecar doesn’t consume excessive Pod resources.
 
 
 

@@ -1,7 +1,3 @@
-veeresh
-acess: AKIARVFSHZOBRNA6IM4F
-secret: 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
-
 ec2:
 rds:
 terraform {
@@ -152,18 +148,19 @@ Provide immutable infrastructure where configuration changes smoothly.
 Works on HCL (HashiCorp configuration language), which is very easy to learn and understand.
 Easily portable from one provider to another.
 Easy Installation.
+Idempotency - Ensures that applying the same configuration multiple times produces the same result.
 
 3. What are the most useful Terraform commands?
 Some of the most useful Terraform commands are:
 
 terraform init - initializes the current directory
 terraform refresh - refreshes the state file
-terraform output - views Terraform outputs
-terraform apply - applies the Terraform code and builds stuff
-terraform destroy - destroys what has been built by Terraform
-terraform graph - creates a DOT-formatted graph
 terraform plan - a dry run to see what Terraform will do
 terraform validate - Validates the syntax and format of your Terraform configuration files without executing them.
+terraform apply - applies the Terraform code and builds stuff
+terraform output - views Terraform outputs
+terraform destroy - destroys what has been built by Terraform
+terraform graph - creates a DOT-formatted graph
 terraform import: Imports existing infrastructure into Terraform.
 
 
@@ -1457,8 +1454,35 @@ After tainting a resource, the next terraform apply will include a plan to destr
 A Terraform configuration file typically has a file extension of .tf or .tf.json (if written in JSON). These files contain the definitions of the infrastructure components and resources that need to be provisioned or managed. 
 
 what is for-each and count in terraform ?
-The for-each expression in Terraform is used to create multiple instances of a resource or module based on a map or a set of key-value pairs.
-countThe count argument in Terraform is used to create a specified number of instances of a resource or module.
+The for-each expression in Terraform is used to create multiple instances of a resource based on a map or a set of key-value pairs.
+variable "instances" {
+  default = {
+    instance1 = "t2.micro"
+    instance2 = "t2.small"
+  }
+}
+
+resource "aws_instance" "example" {
+  for_each = var.instances
+  ami = "ami-12345678"
+  instance_type = each.value
+  tags = {
+    Name = each.key
+  }
+}
+
+
+count argument in Terraform is used to create a specified number of instances of a resource or module.
+variable "instance_count" {
+  default = 3
+}
+
+resource "aws_instance" "example" {
+  count = var.instance_count
+  ami = "ami-12345678"
+  instance_type = "t2.micro"
+}
+
 
 what is terraform workspace ?
 Terraform workspaces are a feature that allows you to manage multiple environments or configurations within a single Terraform configuration. Workspaces provide a way to create and switch between different instances of the same infrastructure, each with its own state.
@@ -1472,7 +1496,7 @@ Variable Overrides: Workspaces can be used to override specific variables for di
 
 how can you delete a single resource where define multiple resources ?
 you can use the terraform destroy command with the specific resource's address.
-terraform destroy -target=aws_instance.example
+terraform destroy --target=aws_instance.example
 
 how you manage secrets in terraform
 Use external tools specifically designed for secret management, such as HashiCorp Vault or AWS Secrets Manager. These tools allow you to securely store and retrieve sensitive information.
@@ -1490,7 +1514,22 @@ what is terraform modules ?
 In Terraform, modules are a way to organize and reuse code by encapsulating a set of Terraform configurations into a single, reusable unit. Modules enable you to abstract and modularize your infrastructure code, promoting reusability, maintainability, and collaboration. They are a fundamental concept in Terraform's approach to Infrastructure as Code (IaC).
 Modules can be reused across multiple Terraform configurations, projects, or environments. This promotes consistency and reduces duplication of code.
 
+what is locals in terraform
+In Terraform, locals are named variables used to define values that can be reused within a Terraform configuration.
+The locals block is used to define one or more local values. Here's the basic syntax:
 
+locals {
+  environment = "production"
+}
+
+resource "aws_instance" "web" {
+  ami           = "ami-123456"
+  instance_type = "t2.micro"
+  tags = {
+    Environment = local.environment
+  }
+}
+Here, the environment local is defined once and reused, avoiding repeated hardcoding.
 
 
 

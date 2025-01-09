@@ -1,6 +1,6 @@
 JENKINS:
 jenkins architecture:
-JENKINS is a open-source ci/cd tool. it consists of serveral stages, like continueos download, build, testing and delivery. it works based  on master and slave architecture. evary organisation build multiple projects, so one jenkins master can't handle multiple projects then we will configure master and slave machines then distribute the work loads on slaves based on the project. 
+JENKINS is a open-source ci/cd tool. it consists of serveral stages, like continueos download, build, testing and delivery. it works based on master and slave architecture. evary organisation build multiple projects, so one jenkins master can't handle multiple projects then we will configure master and slave machines then distribute the work loads on slaves based on the project. 
 here two types of pipelines are there. 
 1. freestyle project. Free style project is supporting gui. we can't control the flow of the pipeline and doesn't easy to find out the errors. 
 2. Pipeline project worked based on jenkins file. Jenkins file means its consist of steps and stages for jenkins pipeline. when we are using pipeline, we can control the flow of the pipeline. here two types of pipelines are there. 1. one is scripted pipeline and second one is declarative pipeline.
@@ -427,17 +427,160 @@ Building Docker images: docker.build('my-image')
 Running Docker containers: docker.image('my-image').inside { ... }
 Cleaning up containers: Use docker.cleanup() to remove old containers/images.
 
+why using agent any in jekins file
+Here, agent any tells Jenkins to run on any available agent (node).
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building on any available agent.'
+            }
+        }
+    }
+}
 
 
+Support for Dockerized Builds
+pipeline {
+    agent {
+        docker {
+            image 'node:14-alpine'
+        }
+    }
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+    }
+}
+Here, Jenkins will pull the node:14-alpine Docker image and run the pipeline inside a container.
+
+How to integrate jekins with Docker
+1. Install Docker on the Jenkins Server:
+Ensure Docker is installed on the server where Jenkins is running.
+2. Add Jenkins User to the Docker Group:
+Add Jenkins to the Docker group to allow it to execute Docker commands: sudo usermod -aG docker jenkins
+3. sudo systemctl restart jenkins
+sudo systemctl restart docker
+4. Install Docker Plugin in Jenkins:
+Go to Jenkins Dashboard > Manage Jenkins > Manage Plugins.
+Search for the "Docker Pipeline" plugin and install it.
+5. Create a Jenkins Pipeline with Docker:
+Example Jenkinsfilepipeline {
+    agent {
+        docker {
+            image 'maven:3.8.1-jdk-11' // Use a Maven Docker image
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
 
 
+Integrate Jenkins with Kubernetes
+Objective: Use Kubernetes as a platform to run Jenkins agents or deploy applications from Jenkins pipelines.
+1. Set Up a Kubernetes Cluster:
+Use a Kubernetes provider (e.g., Minikube, GKE, or AKS) or an existing cluster.
+2. Install Kubernetes Plugin in Jenkins:
+Go to Jenkins Dashboard > Manage Jenkins > Manage Plugins.
+Search for the "Kubernetes" plugin and install it.
+3. Configure Kubernetes in Jenkins:
+Go to Manage Jenkins > Configure System.
+In the Cloud section, click Add a new cloud and select Kubernetes.
+Configure the Kubernetes connection:
+Kubernetes URL: The API endpoint of your cluster.
+Kubernetes Namespace: Namespace where pods will run (default is default).
+Credentials: Add credentials for connecting to the Kubernetes cluster (e.g., kubeconfig file).
+4. Create a Kubernetes Pod Template:
+Define pod templates for running Jenkins agents in Kubernetes.
+Example pod template
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins-agent
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:4.10-1
+    args:
+    - ${computer.jnlpmac}
+    - ${computer.name}
+  - name: build-container
+    image: maven:3.8.1-jdk-11
+    command:
+    - cat
+    tty: true
 
+5. Create a Jenkins Pipeline with Kubernetes:
+Example Jenkinsfile
+pipeline {
+    agent {
+        kubernetes {
+            label 'kubernetes'
+            yaml """
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: maven
+                image: maven:3.8.1-jdk-11
+                command:
+                - cat
+                tty: true
+            """
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                container('maven') {
+                    sh 'mvn clean package'
+                }
+            }
+        }
+    }
+		stage('Deploy') {
+    steps {
+        sh '''
+        kubectl apply -f deployment.yaml
+        kubectl rollout status deployment/my-app
+        '''
+		}
+	}
+}
 
+#Sending notifications after a pipeline build completes 
 
-
-
-
-
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+    }
+    post {
+        success {
+            emailext subject: 'Build Successful',
+                    body: 'The pipeline has completed successfully.',
+                    to: 'team@example.com'
+        }
+        failure {
+            emailext subject: 'Build Failed',
+                    body: 'The pipeline failed. Check Jenkins for details.',
+                    to: 'team@example.com'
+        }
+    }
+}
 
 
 

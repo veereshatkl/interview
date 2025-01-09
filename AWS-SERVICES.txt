@@ -828,8 +828,40 @@ we can not access the data over the internet
 
 
 
+GCP - Services
+Compute engine
+GKE
+cloud Storage
+VPC
+Load balancing
+Cloud Content delivory network
+Bigquery
+Cloud IAM
+Cloud Monitoring
+Cloud logging
 
+------------------------------------------------------------------------------------
+latest interview questions: 
 
+DataDog
+Datadog is a cloud-based monitoring and analytics platform designed to provide observability into infrastructure, applications, logs, and performance metrics. 
+It helps organizations track and analyze data across their tech stack in real time, enabling better system reliability, performance, and troubleshooting.
+
+what is locals in terraform
+In Terraform, locals are named variables used to define values that can be reused within a Terraform configuration.
+The locals block is used to define one or more local values. Here's the basic syntax:
+
+locals {
+  environment = "production"
+}
+
+resource "aws_instance" "web" {
+  ami           = "ami-123456"
+  instance_type = "t2.micro"
+  tags = {
+    Environment = local.environment
+  }
+}
 
 
 
