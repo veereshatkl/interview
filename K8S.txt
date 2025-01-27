@@ -530,7 +530,7 @@ There are 5 types of services are supported by kubernetes cluster
 
 1.Services of type ClusterIP
 When you create a Service of type ClusterIP, Kubernetes creates a stable IP address for services that is accessible from nodes in the cluster.
-You cannot make requests to service (pods) from outside the cluster.
+ClusterIP is the default Kubernetes service type, which exposes the service only within the cluster, meaning it can be accessed by other pods but not from outside the cluster.
 
 Here is a manifest for a Service of type ClusterIP:
 
@@ -556,6 +556,7 @@ my-cip-service   ClusterIP   10.11.247.213   none          80/TCP
 
 2.Service of type NodePort
 When you create a Service of type NodePort, Kubernetes gives you a nodePort value. Then the Service is accessible by using the IP address of any node along with the nodePort value.
+NodePort exposes the service externally by opening a specific port on each worker node of the cluster. External traffic can reach the service by accessing any node's IP on the assigned port.
 
 Here is a manifest for a Service of type NodePort:
 
@@ -576,6 +577,7 @@ After you create the Service, you can use kubectl get service -o yaml to view it
 
 3.Ingress
 defines rules for routing HTTP(S) traffic to applications running in a cluster. 
+It allows users to expose multiple services using a single external IP and provides advanced features such as path-based routing, SSL termination, and virtual hosting.
 
 4.What is the LoadBalancer in Kubernetes? 
 The LoadBalancer service is used to expose services to the internet. A Network load balancer, for example, creates a single IP address that forwards all traffic to your service. 

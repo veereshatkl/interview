@@ -91,3 +91,47 @@ Git has a distributed architecture, while SVN is centralized. Both are enterpris
 
 26). what is .gitignore file
 The .gitignore file is a text file that tells Git which files or folders to ignore in a project.
+
+What is the difference between git reset and git revert?
+git reset: Moves the branch pointer to an earlier commit, effectively removing commits from history.
+git reset --hard HEAD~2  # Removes last 2 commits permanently
+
+git revert: Creates a new commit that undoes changes from a specific commit without altering history.
+git revert <commit-hash>
+
+How can you undo a commit that has already been pushed?
+If not shared: Use reset (force push if needed)
+git reset --hard HEAD~1
+git push --force
+
+If shared: Use revert to create an undo commit:
+git revert HEAD
+git push
+
+How to see the differences between two branches?
+git diff branch1..branch2
+
+How can you track the author and timestamp of changes in a file?
+git blame <file>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -445,9 +445,9 @@ Support for Dockerized Builds
 pipeline {
     agent {
         docker {
-            image 'node:14-alpine'
+            ima
+    }ge 'node:14-alpine'
         }
-    }
     stages {
         stage('Install Dependencies') {
             steps {

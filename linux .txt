@@ -121,8 +121,8 @@ wx=3
 no permissions=000
 
 31)Default files and directories permissions
-drwx-rwx-r-x
--rw-rw-r--
+drwx-rwx-r-x - 775
+-rw-rw-r-- - 664
 
 8. Name the file that is used to automatically mount file systems.
 File that is used to automatically mount file systems is a Fstab file
