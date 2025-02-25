@@ -173,12 +173,16 @@ spec:
 			  timeoutSeconds: 5
 			  failureThreashold: 3
 		  resources:
-			  requests:
+			  requests: 
 				  cpu: "500m"
 				  memory: "512Mi"	
 			  limits:
 				  cpu: "1000m"
-				  memory: "1024Mi"	
+				  memory: "1024Mi"
+
+Note: 
+Requests define the minimum guaranteed amount of CPU and memory a container will receive. Kubernetes scheduler uses these values to decide on which node to place the pod.
+Limits define the maximum amount of CPU and memory a container can use. If a container exceeds this limit:				  
 
 How to expose a pod?
 kubectl expose pod hangoutpod --name hangoutsvc --port 8080 --type=NodePort
