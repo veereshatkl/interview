@@ -64,7 +64,7 @@ The docker has provided a "http://hub.docker.com" docker registry in which peopl
 docker image is a file packaged with
 1. application binary
 2. software packages (required for running the application)
-3. instructions in running the application
+3. instructions for running the application
 4. bins/libs = that enables to communicate with docker engine
 together to run an application in an isolated environment of a computer
 
@@ -396,18 +396,7 @@ Handling image transfers and storage
 Managing container networking
 Managing container namespaces and cgroups Docker leverages containerd as its runtime, abstracting the complexities of container orchestration while containerd handles the actual container management tasks.
 
-what is sidecar container
-A sidecar container is a secondary container that runs alongside the main (primary) container within the same Kubernetes Pod.
-Both containers share the same Pod's resources, including storage volumes, network, and lifecycle. 
-The sidecar container is typically used to enhance or complement the functionality of the main container.
 
-A sidecar container can collect and forward logs from the main container to a centralized logging system (Collects logs and sends them to an external system.)
-Limit Sidecar Responsibilities:
-Avoid overloading sidecars with too many responsibilities.
-Use Shared Volumes:
-Share data between containers efficiently using volumes.
-Monitor Resources:
-Ensure the sidecar doesn’t consume excessive Pod resources.
 
 
 

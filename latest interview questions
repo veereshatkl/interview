@@ -14,3 +14,11 @@ how to check which perticular layer occupied more space in docker
 how to optimized docker image size
 what approch you face deploy a app 
 jenkins work flow
+
+Key Responsibilities of an SRE
+Maintain high availability (HA) of critical applications and infrastructure.
+Define and monitor Service Level Objectives (SLOs), Service Level Indicators (SLIs), and Service Level Agreements (SLAs).
+Set up real-time monitoring, logging, and alerting using tools like LogicMonitor, Splunk, Prometheus, Grafana, ELK.
+Automate repetitive tasks using PowerShell, Bash, Python, Terraform, and Ansible.
+Use GitOps (ArgoCD, Flux) to manage Kubernetes deployments.
+Ensure zero-downtime deployments through blue-green, canary, and rolling updates.

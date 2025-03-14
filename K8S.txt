@@ -672,7 +672,7 @@ When defining resource requirements for a pod, you specify the amount of CPU and
 #how to Upgrade a Kubernetes cluster with zero downtime ?
 1. Backup Your Cluster:
 Before starting the upgrade process, ensure that you have a backup of your Kubernetes cluster, including configurations, secrets, and persistent data.
-2. The kubectl drain command automatically cordons (marks as unschedulable) the node to prevent the scheduler from placing new pods on it.
+2. The kubectl drain command automatically prevent the scheduler from placing new pods on it.
 	The command then gracefully evicts (moves) the pods running on the node to other available nodes in the cluster.
 kubectl drain <node-name> --ignore-daemonsets
 Cordon:
@@ -804,9 +804,22 @@ Controls the number of requests per second or minute to prevent overloading serv
 Distributes incoming requests across multiple upstream services to ensure high availability and reliability.
 Integrates with logging and monitoring tools like Prometheus, Grafana, ELK stack, and others.
 
+What is a Service Mesh? 
+A Service Mesh is a dedicated infrastructure layer that manages service-to-service communication in microservices architectures.
+It controls traffic, security, and observability between services without changing the application code.
 
+what is sidecar container
+A sidecar container is a secondary container that runs alongside the main (primary) container within the same Kubernetes Pod.
+Both containers share the same Pod's resources, including storage volumes, network, and lifecycle. 
+The sidecar container is typically used to enhance or complement the functionality of the main container.
 
-
+A sidecar container can collect and forward logs from the main container to a centralized logging system (Collects logs and sends them to an external system.)
+Limit Sidecar Responsibilities:
+Avoid overloading sidecars with too many responsibilities.
+Use Shared Volumes:
+Share data between containers efficiently using volumes.
+Monitor Resources:
+Ensure the sidecar doesn’t consume excessive Pod resources.
 
 
 

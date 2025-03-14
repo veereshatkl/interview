@@ -847,24 +847,76 @@ DataDog
 Datadog is a cloud-based monitoring and analytics platform designed to provide observability into infrastructure, applications, logs, and performance metrics. 
 It helps organizations track and analyze data across their tech stack in real time, enabling better system reliability, performance, and troubleshooting.
 
-what is locals in terraform
-In Terraform, locals are named variables used to define values that can be reused within a Terraform configuration.
-The locals block is used to define one or more local values. Here's the basic syntax:
+Key Application Metrics to Monitor in SRE & DevOps
+Availability & Reliability Metrics  
+Uptime / Availability
+CPU Utilization
+Memory Utilization
+Database Query Performance
+Application Error Logs & Stack Traces
+Transaction Tracing
+Container & Pod Health
+Unauthorized Access Attempts
+SSL/TLS Certificate Expiry
+Page Load Time
+Application Downtime Impact
 
-locals {
-  environment = "production"
+copy an S3 object from one AWS account (Source) to another (Destination), 
+✔ Two AWS accounts (Source & Destination).
+✔ Source S3 Bucket should allow cross-account access.
+✔ Destination account should have permission to read from Source.
+✔ AWS CLI configured on your local machine.
+
+Now, log into the Destination Account and run the following command:
+aws s3 cp s3://SOURCE_BUCKET_NAME/OBJECT_KEY s3://DESTINATION_BUCKET_NAME/OBJECT_KEY --source-region us-east-1
+
+To copy all objects from the Source S3 Bucket to the Destination S3 Bucket, run:
+aws s3 sync s3://SOURCE_BUCKET_NAME s3://DESTINATION_BUCKET_NAME
+
+
+Triggering Jenkins Job on Recent Changes in a Specific Git Branch
+If multiple branches exist in a Git repository, and a change is pushed to a specific branch, you can configure Jenkins to trigger a job for that specific branch automatically.
+Method 1: Using Webhooks
+Method 2: Using Poll SCM (Less Efficient)
+
+Method 3: Using Multi-Branch Pipeline (Best for CI/CD)
+Create a New Job → Choose "Multibranch Pipeline".
+Under "Branch Sources" → Select "Git" → Enter Repo URL.
+Add a "Branch Discovery Strategy" to detect changes in any branch.
+Jenkinsfile should be inside the repository (for pipeline automation).
+Example:
+groovy
+Copy
+Edit
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/example/repo.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+    }
 }
+Jenkins will now trigger builds for new commits in any branch. ✅
 
-resource "aws_instance" "web" {
-  ami           = "ami-123456"
-  instance_type = "t2.micro"
-  tags = {
-    Environment = local.environment
-  }
-}
+How to Copy EC2 Logs to an S3 Bucket & Configure It
+ Install CloudWatch Agent on EC2
+ Create a CloudWatch Agent Configuration File 
+ Start the CloudWatch Agent:
+ Create an S3 Export Task
+ Once logs are in CloudWatch, export them to S3:
 
-
-
+What is a VPN (Virtual Private Network)?
+A VPN (Virtual Private Network) is a secure tunnel between two or more devices over the internet. It encrypts data and masks your IP address, providing privacy and security while accessing public or private networks.
+VPN encrypts your internet traffic, protecting sensitive data from hackers, ISPs, and third parties.
+Hides your real IP address and location, making online activities harder to track.
+Allows employees to securely access company networks from anywhere.
 
 
 
