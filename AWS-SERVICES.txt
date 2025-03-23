@@ -824,7 +824,11 @@ Amazon EBS (Elastic Block Store):
 Purpose: EBS provides block-level storage volumes for use with Amazon EC2 instances. It is a type of persistent block storage that can be attached to EC2 instances to provide scalable and high-performance storage.
 we can not access the data over the internet
 
+AWS KMS (Key Management Service)
+AWS Key Management Service (KMS) is a fully managed encryption service that allows you to create, manage, and control cryptographic keys for securing data across AWS services and applications.
 
+X-Ray
+Glue
 
 
 
@@ -917,12 +921,6 @@ A VPN (Virtual Private Network) is a secure tunnel between two or more devices o
 VPN encrypts your internet traffic, protecting sensitive data from hackers, ISPs, and third parties.
 Hides your real IP address and location, making online activities harder to track.
 Allows employees to securely access company networks from anywhere.
-
-
-
-
-
-
 
 
 

@@ -586,6 +586,9 @@ It allows users to expose multiple services using a single external IP and provi
 4.What is the LoadBalancer in Kubernetes? 
 The LoadBalancer service is used to expose services to the internet. A Network load balancer, for example, creates a single IP address that forwards all traffic to your service. 
 
+5. Headless Service
+A Headless Service in Kubernetes is a type of service that does not allocate a cluster IP and does not perform load balancing. 
+
 INTERVIEW QUESTIONS:
 1.What are the main differences between the Docker Swarm and Kubernetes?
 Docker Swarm can’t do auto-scaling (as can Kubernetes); however, Docker scaling is five times faster than Kubernetes 
@@ -822,7 +825,25 @@ Monitor Resources:
 Ensure the sidecar doesn’t consume excessive Pod resources.
 
 
+How to expose k8s endpoint on www.com
+1. crate apiendepont.yaml
+2. modify and allow external world
+3. create load balancing on cloud
+4. set up DNS records
+5. and check internally and then expose to externalizing
 
+ImagePullBackOff error
+ImagePullBackOff occurs when a Kubernetes Pod fails to pull the container image from the specified container registry. The error means that Kubernetes tried and failed to fetch the image, and it is backing off before retrying.
+1. The specified container image name or tag is incorrect or does not exist in the registry.
+2. The image is in a private registry, and Kubernetes lacks credentials.
+3. The cluster cannot reach the image registry due to network issues.
+
+ELK
+ELK is a log management and analytics stack that helps collect, store, and visualize log data in real time. It consists of three main components:
+1️⃣ Logstash collects logs from various sources (e.g., servers, applications, cloud services).
+2️⃣ Logstash processes and sends the data to Elasticsearch for indexing.
+3️⃣ Elasticsearch stores and allows fast searching of logs.
+4️⃣ Kibana provides a dashboard to visualize and analyze logs.
 
 
 

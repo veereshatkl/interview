@@ -128,13 +128,15 @@ docker image pull image:tag
 4. How to retag/add an alias name to an existing image?
 docker image tag image:tag newimage:newtag
 5. How to remove an docker image?
-docker image rm image:tag 
+docker rmi image:tag 
 6. How to remove all the unused images on the workstation?
 docker image prune
 7. How to export an existing docker image on a machine?
 docker image save image:tag -o filename.tar
 8. How to load an docker image from an existing .tar file?
 docker image load -i filename.tar
+9. Remove All Unused Images (Not in Use)
+docker image prune -a -f
 
 
 What are the build image instructions that are there?

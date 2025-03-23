@@ -97,6 +97,7 @@ BASH is basically a command language interpreter.
 
 3. What is Kernel?
 It is simply a resource manager that acts as a bridge between hardware and software. Its main role is to manage hardware resources for users and is generally used to provide an interface for user-level interaction. 
+The Linux Kernel is the core component of the Linux operating system, managing system resources and hardware communication.
 
 4. What is swap space?
 Swap space, as the name suggests, is basically a space on a hard disk that is used when the amount of physical memory or RAM is full.
