@@ -1,20 +1,3 @@
-what is shared library and how to use
-multibranch pipeline
-sidecar container
-any agent
-how to integrate jenkins with k8s
-where we can store secrets in gcp
-datadog
-what is umask
-how to delete a perticular commit in git
-what is git branching startegy
-how to work git-cherrypick 
-configured sonarqube
-how to check which perticular layer occupied more space in docker
-how to optimized docker image size
-what approch you face deploy a app 
-jenkins work flow
-
 Key Responsibilities of an SRE
 Maintain high availability (HA) of critical applications and infrastructure.
 Define and monitor Service Level Objectives (SLOs), Service Level Indicators (SLIs), and Service Level Agreements (SLAs).
@@ -23,28 +6,18 @@ Automate repetitive tasks using PowerShell, Bash, Python, Terraform, and Ansible
 Use GitOps (ArgoCD, Flux) to manage Kubernetes deployments.
 Ensure zero-downtime deployments through blue-green, canary, and rolling updates.
 
+Monitoring below app metrics
 
-packer
-key management system 
-terrfaorm drift
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Key Application Metrics to Monitor in SRE & DevOps
+Availability & Reliability Metrics  
+Uptime / Availability
+CPU Utilization
+Memory Utilization
+Database Query Performance
+Application Error Logs & Stack Traces
+Transaction Tracing
+Container & Pod Health
+Unauthorized Access Attempts
+SSL/TLS Certificate Expiry
+Page Load Time
+Application Downtime Impact

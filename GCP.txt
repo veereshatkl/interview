@@ -1,0 +1,11 @@
+GCP - Services
+Compute engine
+GKE
+cloud Storage
+VPC
+Load balancing
+Cloud Content delivory network
+Bigquery
+Cloud IAM
+Cloud Monitoring
+Cloud logging

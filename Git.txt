@@ -72,7 +72,8 @@ The git stash command will help a developer switch branches to work on something
 The git clean command removes the untracked files from the working directory.
 
 20. What exactly is git cherry-pick?
-A command typically used to move specific commits from one branch of a repository to another.
+Let’s say you're on dev branch and want to pick a commit from feature-branch:
+git checkout dev
 $git cherry-pick commit-id
 
 21. What is conflict in Git and how overvome this problem?

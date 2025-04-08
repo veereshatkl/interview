@@ -79,8 +79,8 @@ docker container run -it image:tag command
 #2 How to see the running containers on the docker workstation?
 docker container ps
 
-Only stopped containers deleted
-docker ps -a --filter "status=exited" | xargs docker rm
+How to see Only stopped containers 
+docker ps -a --filter "status=exited"
  
 #3. How to see all the containers on the docker workstation?
 docker container ls -a

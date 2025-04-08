@@ -827,43 +827,9 @@ we can not access the data over the internet
 AWS KMS (Key Management Service)
 AWS Key Management Service (KMS) is a fully managed encryption service that allows you to create, manage, and control cryptographic keys for securing data across AWS services and applications.
 
-X-Ray
-Glue
-
-
-
-GCP - Services
-Compute engine
-GKE
-cloud Storage
-VPC
-Load balancing
-Cloud Content delivory network
-Bigquery
-Cloud IAM
-Cloud Monitoring
-Cloud logging
-
-------------------------------------------------------------------------------------
-latest interview questions: 
-
 DataDog
 Datadog is a cloud-based monitoring and analytics platform designed to provide observability into infrastructure, applications, logs, and performance metrics. 
 It helps organizations track and analyze data across their tech stack in real time, enabling better system reliability, performance, and troubleshooting.
-
-Key Application Metrics to Monitor in SRE & DevOps
-Availability & Reliability Metrics  
-Uptime / Availability
-CPU Utilization
-Memory Utilization
-Database Query Performance
-Application Error Logs & Stack Traces
-Transaction Tracing
-Container & Pod Health
-Unauthorized Access Attempts
-SSL/TLS Certificate Expiry
-Page Load Time
-Application Downtime Impact
 
 copy an S3 object from one AWS account (Source) to another (Destination), 
 ✔ Two AWS accounts (Source & Destination).
@@ -876,38 +842,6 @@ aws s3 cp s3://SOURCE_BUCKET_NAME/OBJECT_KEY s3://DESTINATION_BUCKET_NAME/OBJECT
 
 To copy all objects from the Source S3 Bucket to the Destination S3 Bucket, run:
 aws s3 sync s3://SOURCE_BUCKET_NAME s3://DESTINATION_BUCKET_NAME
-
-
-Triggering Jenkins Job on Recent Changes in a Specific Git Branch
-If multiple branches exist in a Git repository, and a change is pushed to a specific branch, you can configure Jenkins to trigger a job for that specific branch automatically.
-Method 1: Using Webhooks
-Method 2: Using Poll SCM (Less Efficient)
-
-Method 3: Using Multi-Branch Pipeline (Best for CI/CD)
-Create a New Job → Choose "Multibranch Pipeline".
-Under "Branch Sources" → Select "Git" → Enter Repo URL.
-Add a "Branch Discovery Strategy" to detect changes in any branch.
-Jenkinsfile should be inside the repository (for pipeline automation).
-Example:
-groovy
-Copy
-Edit
-pipeline {
-    agent any
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/example/repo.git'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-    }
-}
-Jenkins will now trigger builds for new commits in any branch. ✅
 
 How to Copy EC2 Logs to an S3 Bucket & Configure It
  Install CloudWatch Agent on EC2
@@ -922,9 +856,7 @@ VPN encrypts your internet traffic, protecting sensitive data from hackers, ISPs
 Hides your real IP address and location, making online activities harder to track.
 Allows employees to securely access company networks from anywhere.
 
-
-
-
+Aws Glue?
 
 
 
