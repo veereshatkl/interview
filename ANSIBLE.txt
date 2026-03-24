@@ -11,6 +11,7 @@ Flexible: You can orchestrate the entire application environment no matter where
 Agentless: You don’t need to install any other software or firewall ports on the client systems you want to automate. You also don’t have to set up a separate management structure.
 Efficient: Because you don’t need to install any extra software, there’s more room for application resources on your server.
 
+
 Ansible Features:
 1. Configuration Management
 2. Application Deployment
