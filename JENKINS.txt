@@ -109,6 +109,13 @@ Through jenkins GUI we configure parameters to be used for that project. there i
 2. dynamic
 In the jenkins pipeline itself we declare parameters with which we wanted to build the project, so when we migrate from one jenkins env to another all the parameters will be created automatically.
 
+parameters types:
+string 
+boolean
+run
+file
+password 
+
 interview questions:
 Q #1) What is Jenkins?
 Answer: Jenkins is a free open source Continuous Integration tool and automation server to monitor continuous integration and delivery. It is written in Java.
@@ -631,3 +638,182 @@ Jenkins will now trigger builds for new commits in any branch. ✅
 
 
 
+pipeline {
+    agent {
+        label 'BUILD-DEPLOYMENT'
+    }
+
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('Key-Rotation')
+        AWS_SECRET_ACCESS_KEY = credentials('Key-Rotation')
+        AWS_REGION = 'us-east-1'
+    }
+
+    stages {
+
+        stage('GIT CHECKOUT') {
+            steps {
+                script {
+                    checkout();
+                }
+            }
+        }
+
+        stage('Prerequisite') {
+            steps {
+                sh """
+                cd /home/jenkins/noteapi_jenkins/jenkins/insights/all/notesapi;
+                ansible -m ping all -i hosts -l ${params.Env}-app;
+                ansible-playbook --extra-vars '{"Env":"${params.Env}"}' prerequisite.yml -i hosts -l ${params.Env}-app
+                """
+            }
+        }
+
+        stage('Docker Image Build') {
+            steps {
+                sh """
+                cd /home/jenkins/noteapi
+                cp Dockerfile_noteapi Dockerfile
+                cp docker-compose-noteapi.yml docker-compose.yml
+                docker build -t notesapi:$Git_Revision_Number
+                """
+            }
+        }
+
+        stage('Docker Image tag and push to GCR') {
+            steps {
+                sh """
+                docker tag notesapi:$Git_Revision_Number us-docker.pkg.dev/optimum-agency-252/us.gcr.io/notesapi/${params.Env}:${params.Git_Revision_Number}
+                docker push us-docker.pkg.dev/optimum-agency-252/us.gcr.io/notesapi/${params.Env}:${params.Git_Revision_Number}
+                """
+            }
+        }
+
+        stage('Delete Inactive key , create new key and store in secret manager') {
+            steps {
+                sh """
+                cd /home/jenkins/noteapi_jenkins/jenkins/insights/all/notesapi;
+                bash key-creation.sh ${params.Env}
+                """
+            }
+        }
+
+        stage('Retrieve AWS Credentials') {
+            steps {
+                script {
+                    sh """
+                    cd /home/jenkins/noteapi_jenkins/jenkins/insights/all/notesapi;
+                    bash retrieve_aws_creds.sh ${params.Env}
+                    """
+                }
+            }
+        }
+
+        stage('Service Deployment') {
+            steps {
+                script {
+                    try {
+                        sh """
+                        cd /home/jenkins/noteapi_jenkins/jenkins/insights/all/notesapi;
+                        ansible-playbook --extra-vars '{"Git_Branch":"${params.Git_Branch}"}' \
+                        --extra-vars '{"Git_Revision_Number":"${params.Git_Revision_Number}"}'
+                        """
+                    } catch (e) {
+                        currentBuild.result = "FAILED"
+                        throw e
+                    } finally {
+                        notifyBuild(currentBuild.result)
+                    }
+                }
+            }
+        }
+
+        stage('Inactive key that is not used in deployment now') {
+            steps {
+                script {
+                    sh '''
+                    #!/bin/bash
+                    secretName="${Env}/notesapi"
+
+                    APP_AWS_ACCESS_KEY_ID=$(aws secretsmanager get-secret-value \
+                    --secret-id ${secretName} --query SecretString --output text --region ${AWS_REGION})
+
+                    OLD_ACCESS_KEY_ID=$(aws iam list-access-keys --user-name "${Env}-notesapi" \
+                    --query 'AccessKeyMetadata[?AccessKeyId!="'$APP_AWS_ACCESS_KEY_ID'"].AccessKeyId' --output text)
+
+                    aws iam update-access-key --user-name "${Env}-notesapi" \
+                    --access-key-id $OLD_ACCESS_KEY_ID --status Inactive
+                    '''
+                }
+            }
+        }
+    }
+
+    if ("${env.Env}" == "uat") {
+
+        stage('Trigger UATAPP-NOTEWEBAPP') {
+            build job: 'UATAPP-NOTEWEBAPP',
+            parameters: [
+                string(name: 'Git_Branch', value: "${Git_Branch}"),
+                string(name: 'Git_Revision_Number', value: "${Git_Revision_Number}")
+            ]
+        }
+
+        stage('Trigger UAT-GOLDENCOPY-NOTESAPI') {
+            build job: 'UAT-GOLDENCOPY-NOTESAPI',
+            parameters: [
+                string(name: 'Git_Branch', value: "${Git_Branch}"),
+                string(name: 'Git_Revision_Number', value: "${Git_Revision_Number}")
+            ]
+        }
+    }
+}
+
+def checkout() {
+    sh """
+    cd /home/jenkins
+
+    if [ -d "/home/jenkins/noteapi" ]; then
+        echo "noteapi directory exist, deleting dir"
+        sudo rm -r noteapi
+    else
+        echo "noteapi directory not exist"
+    fi
+
+    git clone git@gitlab.visiblealpha.com:root/notesapp.git noteapi
+
+    cd /home/jenkins/noteapi
+    git stash -u
+    git fetch --all
+    git checkout ${params.Git_Branch}
+    git pull origin ${params.Git_Branch}
+    git checkout ${params.Git_Revision_Number}
+
+    cd /home/jenkins
+
+    if [ -d "/home/jenkins/noteapi_jenkins" ]; then
+        sudo rm -r /home/jenkins/noteapi_jenkins
+    fi
+
+    mkdir /home/jenkins/noteapi_jenkins
+    cd /home/jenkins/noteapi_jenkins
+
+    git clone git@gitlab.visiblealpha.com:root/jenkins.git
+    cd /home/jenkins/noteapi_jenkins/jenkins/insights
+
+    cp logrotate_template /home/jenkins/noteapi/logrotate
+    cp logrotate.txt /home/jenkins/noteapi/
+    cd /home/jenkins/noteapi/
+
+    sed -i 's/temp/noteapi/g' noteapi
+    sed -i 's/temp/noteapi/g' logrotate.txt
+
+    cd /home/jenkins/noteapi_jenkins
+
+    git clone git@gitlab.visiblealpha.com:root/api-key.git
+    cp api-key/pubsub_json/insights/${params.Env}/notesapp/${params.Env}-notesapp.json /home/jenkins/noteapi/google_credentials.json
+    cp api-key/newrelic.ini/${params.Env}/notewebapp /home/jenkins/noteapi/newrelic.ini
+
+    echo "CHECKOUT SUCCESSFUL"
+    """
+}
