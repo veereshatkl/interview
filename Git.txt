@@ -105,6 +105,7 @@ If not shared: Use reset (force push if needed)
 git reset --hard HEAD~1
 git push --force
 
+
 If shared: Use revert to create an undo commit:
 git revert HEAD
 git push
