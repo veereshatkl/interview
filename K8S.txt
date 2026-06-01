@@ -44,7 +44,7 @@ etcd is a key/value pair database where all the objects information that we crea
 pod
 -----
 What is a pod?
-A pod is the smallest entity/unit in the kubernetes cluster where one or more containers are executed together inside it.
+A Pod is a group of containers that run together on the same node and share resources.
 what is pod lifecycle ?
 Pending:
 The Pod has been created, but the container images are still being pulled, or the Pod is waiting for resources to be allocated.
@@ -84,7 +84,7 @@ kubernetes commands
 kubectl config view
 
 #2. How to see the pod objects that are in specific namespace?
-kubectl get pods -o wide -n namespace
+kubectl get pods -n namespace
 
 #3. how to create a namespace?
 kubectl create namespace namespacename
@@ -105,7 +105,7 @@ kubectl config use-context contextname
 kubectl create -f pod.yml -n namespace
 
 #9. how to see the pods on the cluster?
-kubectl get pods -o wide -n namespace
+kubectl get pods  -n namespace
 
 #10. how to see the details of a pod on the cluster?
 kubectl describe pod podName
@@ -585,6 +585,11 @@ It allows users to expose multiple services using a single external IP and provi
 
 4.What is the LoadBalancer in Kubernetes? 
 The LoadBalancer service is used to expose services to the internet. A Network load balancer, for example, creates a single IP address that forwards all traffic to your service. 
+
+example:
+LoadBalancer = gives entry point (door 🚪)
+Ingress = decides where to go inside (room routing 🧭)
+
 
 5. Headless Service
 A Headless Service in Kubernetes is a type of service that does not allocate a cluster IP and does not perform load balancing. 
