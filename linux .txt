@@ -61,7 +61,7 @@ LINUX BASIC COMMANDS
 	cat-- It reads data from the file and gives their content as output		
 	cp-- copy the files	from source to destination			
 	mv-- move to files from one location to another and rename the given file
-	rmdir-- delete a directories
+	rmdir  or rm -f x`-- delete a directories
 	rm-- delete a files
 	run-- execute a commands
 	sudo -i-- swith from normal user to root user
@@ -79,14 +79,14 @@ LINUX BASIC COMMANDS
 	du -- to display file and directories size
 	df -h -- to display disk utilities
 	tar commands-- zip , unzip and read the given file--tar -cvf, tar -xvf, tar -tvf
-	sed-- to edit a content of the gievn existing file sed 's/pattern/replacement/' filename
+	sed-- sed 's/old/new/' file.txt to edit a content of the gievn existing file
 	tr-- Use tr to perform different text transformations, including case conversion, squeezing or deleting characters, and basic text replacement
-	awk-- to print particular lines & Awk is mostly used for pattern scanning and processing.
+	awk-- to print particular lines & Awk is mostly used for pattern scanning and processing. awk '{print $3}' filename
 	$cut -c 5-9 emp.dat & It will display 5th to 9th characters in every record
 	kill-9-- forcely delete a files and folders
 	crontab-- to shedule a job at particular time
 	users and groups-- to create user and groups
-	netstat-- to display runningg ports
+	ss -tulnp  & netstat -tulnp -- to display runningg ports
 	top-- to display cpu and ram utilisation
 
 1. What are basic elements or components of Linux?
@@ -379,5 +379,40 @@ Subtract umask: 777 - 022 = 755 (rwxr-xr-x)
 what is telnet ?
 Telnet provides a command-line interface to interact with a remote system, allowing the user to execute commands on the remote server as if they were physically present at the machine.
 
+if 22 port down 
+1. check sshd status
+sudo systemctl status sshd
+sudo systemctl restart sshd
 
+2. allow port if blocked
+sudo ufw allow 22
+sudo ufw reload
+
+3. check ip tables
+sudo iptables -L
+
+
+it is possible to change the SSH port (default 22),
+1. You can modify the SSH configuration:
+sudo nano /etc/ssh/sshd_config
+2. chnage port instead of 22
+3. restart sshd
+sudo systemctl restart sshd
+
+Open the new port in firewall
+sudo ufw allow 2222
+
+and verify access with new port 
+
+
+port numbers 
+22 → SSH
+80 → HTTP
+443 → HTTPS
+3306 → MySQL
+5432 → PostgreSQL
+8080 → Web alt
+3389 → RDP
+6379 → Redis
+6443 → Kubernetes
 
