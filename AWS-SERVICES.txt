@@ -113,6 +113,7 @@ there are 3 types of scopes are there
 2. Availability Zone
 3. Edge Locations
 4. Scope of Services
+
 d/f region and az
 A region is a geographic location where every data center inside the region is called an availability zone,
 
@@ -778,7 +779,7 @@ Types of Routing Policy:
 6.Multivalue routing policy:  It is used when users want Route53 to return multiple values in response to DNS queries. It first checks the health of resources and then returns the multiple values only for the health resources.
 7.Weighted routing policy:  This routing policy routes traffic to multiple resources with a single domain name according to the proportion decided by the user.
 
-#7. SNS AND AQS:
+#7. SNS AND SQS:
 -----------------
 SNS is typically used for applications that need realtime notifications, while SQS is more suited for message processing use cases.
 Amazon Simple Queue Service (SQS) lets you send, store, and receive messages between software components at any volume, without losing messages or requiring other services to be available.
