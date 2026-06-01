@@ -21,3 +21,46 @@ Unauthorized Access Attempts
 SSL/TLS Certificate Expiry
 Page Load Time
 Application Downtime Impact
+
+System reliability and stability
+Website uptime = 99.99%
+👉 System is reliable
+
+App handles 10,000 users without crashing
+👉 System is stabler
+
+
+
+SLI (Service Level Indicator)
+A metric used to measure system performance
+✔ Examples:
+Uptime
+Latency (response time)
+Error rate
+
+👉 Focus: Measurement
+
+SLO (Service Level Objective)
+
+👉 Definition:
+A target value set for an SLI.
+
+✔ Examples:
+
+99.9% uptime
+Response time < 200 ms
+
+👉 Focus: Goal/Target
+
+
+SLA (Service Level Agreement) → Commitment with penalty
+If SLO not met → compensation
+
+
+Implemented automation tools, increasing deployment speed by 50%
+Optimized system performance, reducing downtime by 30% annually.
+Enhanced monitoring systems, improving incident response time by 40%.
+Developed scalable infrastructure, supporting 99.99% uptime.
+Streamlined CI/CD pipelines, boosting release frequency by 60%.
+Led cross-functional teams to resolve critical outages swiftly.
+Utilized advanced software tools to optimize engineering designs
