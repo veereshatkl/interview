@@ -399,7 +399,44 @@ Managing container networking
 Managing container namespaces and cgroups Docker leverages containerd as its runtime, abstracting the complexities of container orchestration while containerd handles the actual container management tasks.
 
 
+Docker-compose.yml
 
+version: '3'
+
+services:
+  documentuploader1:
+    image: us-docker.pkg.dev/optimum-agency-252/us.gcr.io/documentuploader/${env}:${tag}
+    container_name: documentuploader1
+    hostname: documentuploader1
+    restart: always
+
+    environment:
+      - DOTNET_ENV
+
+    volumes:
+      - /var/log/documentuploader1:/var/log/documentuploader1
+
+    command: >
+      bash -c "set -e
+      && cp Services/AutoProcessSolution/DocumentUploader/App.${DOTNET_ENV}_1.config Services/AutoProcessSolution/DocumentUploader/App.config
+      && dotnet publish Services/AutoProcessSolution/DocumentUploader/DocumentUploader.csproj -c Release -o /app/documentuploader
+      && cd /app/documentuploader
+      && echo '--- Listing files in /app/documentuploader ---'
+      && ls -la
+      && echo '--- End of file list ---'
+      && exec dotnet DocumentUploader.dll
+      && /bin/bash"
+
+    tty: true
+
+    healthcheck:
+      test: ["CMD-SHELL", "ps -ef | grep DocumentUploader.dll | grep -v grep | grep -v bash || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 1
+
+networks:
+  - backend-network
 
 
 
