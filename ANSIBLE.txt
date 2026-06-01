@@ -594,6 +594,9 @@ ansible -i inventoryFile group -m moduleName
 ansible -i gatherFactsHosts all -m gather_facts
 
 
+ansible
+
+
 failed_when & changed_when
 --------------------------
 By default ansible control node server marks an module execution as failed or changed based on the exitcode of the module execution, but if we want to mark the failed or changed status of a module based on evaluating a condition on the module outcome then we need to use failed_when & changed_when.
@@ -880,3 +883,105 @@ tasks:
      state: present
    tags: mysql
 $ansible-playbook playbook.yml --tags "apache"
+
+
+
+ex: Anssible playbook
+
+- name: fetch image from registry
+  remote_user: jenkins
+  hosts: "{{ Env }}"
+
+  tasks:
+    - name: pull image from GCR
+      shell: >
+        docker rmi -f $(docker images | grep pdf_table_extraction_gpu | awk '{print $3}');
+        docker pull us-docker.pkg.dev/optimum-agency-252/us.gcr.io/pdf_table_extraction_gpu/{{ Env }}:{{ Git_Revision_Number }};
+        rm -rf /home/jenkins/pdf_table_extraction_gpu
+      register: find_output
+
+    - debug:
+        var: find_output
+
+    - name: Code Transfer
+      synchronize:
+        src: /home/jenkins/pdf_table_extraction_gpu
+        dest: /home/jenkins/
+
+- name: start services
+  remote_user: jenkins
+  hosts: "{{ Env }}"
+  vars_files:
+    - "{{ Env }}_var.yml"
+  serial: "50%"
+
+  tasks:
+    - name: stop service and remove container and image
+      shell: docker-compose down
+      args:
+        chdir: /home/jenkins/pdf_table_extraction_gpu
+      ignore_errors: yes
+
+- name: status check -> wait for 35 sec
+  shell: "sleep 35"
+
+- name: Service STATUS CHECK on NODE 1
+  script: "status_check.sh {{ item }}"
+  with_items:
+    - pte_gpu_heartbeat
+    - pte_ci
+    - pte_celery_worker1
+    - pte_celery_worker2
+  register: find_output
+  when: "'{{ Env }}-node1' in group_names"
+
+- name: Service STATUS CHECK on NODE 2
+  script: "status_check.sh {{ item }}"
+  with_items:
+    - pte_gpu_heartbeat
+    - pte_ci
+    - pte_celery_worker1
+    - pte_celery_worker2
+  register: find_output
+  when: "'{{ Env }}-node2' in group_names"
+
+- debug:
+    var: find_output
+
+
+1. Ansible_gather facts uses
+Use gather_facts: yes when:
+You need system-based logic
+Conditional tasks
+Dynamic configs
+
+ex: when: ansible_os_family == "Debian"
+Because facts are not available
+
+Use gather_facts: no when:
+Simple tasks
+Speed matters
+
+2. What is plugin in ansible which one is used you in daily task
+Connection Plugin (Most used) - Uses SSH plugin internally.
+Lookup Plugin (Very common) : password: "{{ lookup('file', 'secret.txt') }}"
+Callback Plugin (for output/logging) : Controls how output looks like yaml or json
+
+3. In Ansible, the conf file means the main configuration file:
+It is the file where you define default settings for how Ansible behaves.
+
+4. How to improve the performance of ansible playbook
+1. Disable fact gathering (big impact)
+2. Increase parallel execution (forks)
+✔ Default is 5 → too slow for large environments
+👉 More forks = more hosts processed simultaneously
+3. Avoid unnecessary tasks
+
+How to configure ansible in jenkins
+1. Install Ansible on Jenkins server
+2. Install Ansible Plugin in Jenkins
+3. Configure Ansible in Jenkins
+4. Add Credentials (important)
+5. Store your Ansible files in git repo
+6. Create Jenkins Job
+
